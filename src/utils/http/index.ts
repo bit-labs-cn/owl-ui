@@ -13,6 +13,7 @@ import { stringify } from "qs";
 import NProgress from "../progress";
 import { getToken, formatToken } from "@bit-labs.cn/owl-ui/utils/auth";
 import { useUserStoreHook } from "@bit-labs.cn/owl-ui/store/modules/user";
+import { message } from "@bit-labs.cn/owl-ui/utils/message";
 
 // 相关配置请参考：www.axios-js.com/zh-cn/docs/#axios-request-config-1
 const defaultConfig: AxiosRequestConfig = {
@@ -132,6 +133,12 @@ class PureHttp {
           PureHttp.initConfig.beforeResponseCallback(response);
           return response.data;
         }
+
+        const data = response.data as any;
+        if (data && data.success === false) {
+          message(data.msg || "操作失败", { type: "error" });
+        }
+
         return response.data;
       },
       (error: PureHttpError) => {
@@ -140,6 +147,13 @@ class PureHttp {
         // 关闭进度条动画
         NProgress.done();
         // 所有的响应异常 区分来源为取消请求/非取消请求
+        if (!$error.isCancelRequest) {
+          const status = $error.response?.status;
+          const data = $error.response?.data as any;
+          message(data?.msg || getDefaultErrorMessage(status), {
+            type: "error"
+          });
+        }
         return Promise.reject($error);
       }
     );
@@ -192,3 +206,20 @@ class PureHttp {
 }
 
 export const http = new PureHttp();
+
+function getDefaultErrorMessage(status?: number): string {
+  switch (status) {
+    case 400:
+      return "请求参数有误";
+    case 401:
+      return "未登录或登录已过期";
+    case 403:
+      return "没有操作权限";
+    case 404:
+      return "请求的资源不存在";
+    case 500:
+      return "服务器内部错误";
+    default:
+      return "网络异常，请稍后重试";
+  }
+}
