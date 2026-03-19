@@ -135,11 +135,14 @@ class PureHttp {
         }
 
         const data = response.data as any;
+        const silentMessage = ($config as PureHttpRequestConfig).silentMessage;
         if (data && data.success === false) {
-          message(data.msg || "操作失败", { type: "error" });
+          if (!silentMessage) {
+            message(data.msg || "操作失败", { type: "error" });
+          }
           return Promise.reject(data);
         }
-        if (data?.msg) {
+        if (data?.msg && !silentMessage) {
           message(data.msg, { type: "success" });
         }
 
@@ -151,7 +154,8 @@ class PureHttp {
         // 关闭进度条动画
         NProgress.done();
         // 所有的响应异常 区分来源为取消请求/非取消请求
-        if (!$error.isCancelRequest) {
+        const silentMessage = ($error.config as PureHttpRequestConfig)?.silentMessage;
+        if (!$error.isCancelRequest && !silentMessage) {
           const status = $error.response?.status;
           const data = $error.response?.data as any;
           message(data?.msg || getDefaultErrorMessage(status), {
