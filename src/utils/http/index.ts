@@ -137,6 +137,10 @@ class PureHttp {
         const data = response.data as any;
         if (data && data.success === false) {
           message(data.msg || "操作失败", { type: "error" });
+          return Promise.reject(data);
+        }
+        if (data?.msg) {
+          message(data.msg, { type: "success" });
         }
 
         return response.data;
