@@ -70,23 +70,23 @@ class UserAPI {
   refreshTokenApi = (data?: object) => {
     return http.request<RefreshTokenResult>("post", "/refresh-token", {
       data
-    });
+    }, { silentMessage: true });
   };
   /** 获取当前用户路由菜单（动态路由） */
   getAsyncRoutes = () => {
-    return http.request<Result>("get", "/api/v1/users/me/menus");
+    return http.request<Result>("get", "/api/v1/users/me/menus", {}, { silentMessage: true });
   };
   /** 获取当前用户权限（按钮级） */
   getMyPermissions = () => {
-    return http.request<UserPermissionsResult>("get", "/api/v1/users/me/permissions");
+    return http.request<UserPermissionsResult>("get", "/api/v1/users/me/permissions", {}, { silentMessage: true });
   };
   /** 获取个人信息 */
   getMine = (data?: object) => {
-    return http.request<UserInfoResult>("get", "/mine", { data });
+    return http.request<UserInfoResult>("get", "/mine", { data }, { silentMessage: true });
   };
   /** 获取个人安全日志 */
   getMineLogs = (data?: object) => {
-    return http.request<ResultTable>("get", "/mine-logs", { data });
+    return http.request<ResultTable>("get", "/mine-logs", { data }, { silentMessage: true });
   };
 }
 

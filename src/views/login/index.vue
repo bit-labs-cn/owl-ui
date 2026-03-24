@@ -55,16 +55,12 @@ const onLogin = async (formEl: FormInstance | undefined) => {
           password: ruleForm.password
         })
         .then(res => {
-          if (res.success) {
-            // 获取后端路由
-            return initRouter().then(() => {
-              router.push(getTopMenu(true).path).then(() => {
-                message(t("login.pureLoginSuccess"), { type: "success" });
-              });
+          // 获取后端路由
+          return initRouter().then(() => {
+            router.push(getTopMenu(true).path).then(() => {
+              message(t("login.pureLoginSuccess"), { type: "success" });
             });
-          } else {
-            message(t("login.pureLoginFail"), { type: "error" });
-          }
+          });
         })
         .finally(() => (loading.value = false));
     }
