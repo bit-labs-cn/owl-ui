@@ -14,6 +14,7 @@ export function wrapperEnv(
     VITE_CDN: false,
     VITE_HIDE_HOME: "false",
     VITE_COMPRESSION: "none",
+    VITE_BASE_URL: "",
     ...defaults
   };
 
