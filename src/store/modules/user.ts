@@ -12,6 +12,7 @@ import { useMultiTagsStoreHook } from "./multiTags";
 import { type DataInfo, setToken, removeToken, userKey } from "@bit-labs.cn/owl-ui/utils/auth";
 
 const PERMISSIONS_CACHE_KEY = "user-permissions-cache";
+const ACCESS_TOKEN_KEY = "access-token";
 const PERMISSIONS_CACHE_TTL = 24 * 60 * 60 * 1000;
 
 type PermissionsCache = {
@@ -130,6 +131,7 @@ export const useUserStore = defineStore({
           .then(async data => {
             if (data?.success) {
               setToken(data.data);
+              localStorage.setItem(ACCESS_TOKEN_KEY, data.data?.accessToken);
               await this.fetchAndCachePermissions();
             }
             resolve(data);
@@ -145,6 +147,7 @@ export const useUserStore = defineStore({
       this.roles = [];
       this.permissions = [];
       storageLocal().removeItem(PERMISSIONS_CACHE_KEY);
+      storageLocal().removeItem(ACCESS_TOKEN_KEY);
       removeToken();
       useMultiTagsStoreHook().handleTags("equal", [...routerArrays]);
       resetRouter();
