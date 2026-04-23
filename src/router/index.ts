@@ -91,14 +91,6 @@ export const router: Router = createRouter({
 
 /** 重置路由 */
 export function resetRouter() {
-  router.getRoutes().forEach(route => {
-    const { name, meta } = route;
-    if (name && router.hasRoute(name) && meta?.backstage) {
-      router.removeRoute(name);
-      // 重置为框架核心静态路由（不包含后端动态路由）
-      router.options.routes = constantRoutes.concat(...(remainingRouter as any));
-    }
-  });
   usePermissionStoreHook().clearAllCachePage();
 }
 
