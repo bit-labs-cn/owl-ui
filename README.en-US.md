@@ -6,7 +6,7 @@
 
 ## Introduction
 
-`@bit-labs.cn/flex-admin` is an enterprise-grade **Vue 3 admin framework library** built on top of [vue-pure-admin](https://github.com/pure-admin/vue-pure-admin). Rather than a standalone application, it serves as a reusable core package that provides host applications with a full set of admin capabilities — authentication, dynamic routing, multiple layouts, theming, i18n, and a subsystem extension mechanism.
+`@bit-labs.cn/owl-admin` is an enterprise-grade **Vue 3 admin framework library** built on top of [vue-pure-admin](https://github.com/pure-admin/vue-pure-admin). Rather than a standalone application, it serves as a reusable core package that provides host applications with a full set of admin capabilities — authentication, dynamic routing, multiple layouts, theming, i18n, and a subsystem extension mechanism.
 
 ## Tech Stack
 
@@ -73,7 +73,7 @@ src/
 
 ```ts
 // main.ts
-import { createFlexAdmin } from "@bit-labs.cn/flex-admin/bootstrap";
+import { createFlexAdmin } from "@bit-labs.cn/owl-admin/bootstrap";
 import adminSubsystem from "@bit-labs.cn/subsystem-admin";
 
 createFlexAdmin({
