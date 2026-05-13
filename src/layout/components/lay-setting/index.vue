@@ -249,7 +249,9 @@ function setLayoutModel(layout: string) {
     sidebarStatus: $storage.layout?.sidebarStatus,
     epThemeColor: $storage.layout?.epThemeColor,
     themeColor: $storage.layout?.themeColor,
-    overallStyle: $storage.layout?.overallStyle
+    overallStyle: $storage.layout?.overallStyle,
+    loginBgTheme: $storage.layout?.loginBgTheme,
+    loginUiVariant: $storage.layout?.loginUiVariant
   };
   useAppStoreHook().setLayout(layout);
 }

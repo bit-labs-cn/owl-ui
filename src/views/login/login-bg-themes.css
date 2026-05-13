@@ -1,0 +1,69 @@
+﻿/**
+ * 登录页：整页 login_bg.jpg，无三主题渐变层
+ */
+html:has(.login-page),
+html.dark:has(.login-page),
+html:has(.login-page) body,
+html.dark:has(.login-page) body,
+html:has(.login-page) #app,
+html.dark:has(.login-page) #app {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+.login-page {
+  position: relative;
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: transparent;
+}
+
+.login-page .login-container {
+  position: relative;
+  z-index: 10;
+  background: transparent;
+}
+
+.login-page > .login-fullbg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.login-fullbg--jpgBg .login-fullbg__photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* 经典登录：在固定全屏背景图上叠半透明遮罩，突出表单卡片 */
+.login-page--classic > .login-fullbg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: rgba(15, 23, 42, 0.42);
+}
+
+html.dark .login-page--classic > .login-fullbg::after {
+  background: rgba(2, 6, 23, 0.55);
+}
+
+/* 渐变卡片布局：浅色整页，工具条改为浅色玻璃 */
+.login-page--cardflat .login-toolbar-shell {
+  border-color: rgba(15, 23, 42, 0.1);
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(12px);
+}
+
+.login-page--cardflat .login-toolbar-variant__icon {
+  color: rgba(15, 23, 42, 0.55) !important;
+}

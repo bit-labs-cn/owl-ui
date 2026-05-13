@@ -89,3 +89,37 @@ login:
   pureUsernameReg: Please enter username
   purePassWordReg: Please enter password
   purePassWordRuleReg: The password format should be any combination of 8-18 digits
+  pureLoginBgTheme: Login background
+  pureLoginBgDeepSpace: Deep space
+  pureLoginBgHud: HUD cyan
+  pureLoginBgAmber: Amber business
+  pureLoginSubtitle: Full-lifecycle management of communication network equipment · Operations at a glance
+  pureLoginHeroEyebrow: SMART INFRA
+  pureLoginHeroHeadline: Full-stack visibility
+  pureLoginHeroBody: A unified workspace for expressway communication assets, live status, and alerts—built for operators and control rooms.
+  pureLoginWelcome: Welcome
+  pureLoginRemember: Remember me
+  pureLoginForgot: Forgot password
+  pureLoginRegister: Sign up now
+  pureLoginUiBrand: Split
+  pureLoginUiClassic: Classic
+  pureLoginUiCardFlat: Gradient card
+  pureLoginCardFlatBrandName: Smart Link Expressway
+  pureLoginCardFlatBrandTitleLine1: Expressway
+  pureLoginCardFlatBrandTitleHighlight: communication network assets
+  pureLoginCardFlatBrandTitleSuffix: management system
+  pureLoginCardFlatBrandDesc: Deep integration of IoT sensing and digital twin technology for full-lifecycle control—from planning through retirement. Always-on, multi-dimensional operations visibility for faster fault awareness and smoother highway communications.
+  pureLoginCardFlatWelcomeTitle: Welcome back
+  pureLoginCardFlatWelcomeSub: Enter your account details to sign in
+  pureLoginCardFlatAccountLabel: Account
+  pureLoginCardFlatPasswordLabel: Password
+  pureLoginCardFlatUsernamePh: Username or email
+  pureLoginCardFlatPasswordPh: Enter password
+  pureLoginCardFlatForgotSuffix: Forgot password?
+  pureLoginCardFlatBtn: Sign in
+  pureLoginCardFlatTogglePwd: Show or hide password
+  pureLoginClassicUser: Username
+  pureLoginClassicPwd: Password
+  pureLoginClassicUserPh: Enter username
+  pureLoginClassicPwdPh: Enter password
+  pureLoginClassicRememberPwd: Remember password

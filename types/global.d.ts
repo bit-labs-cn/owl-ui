@@ -156,6 +156,9 @@ declare global {
       epThemeColor?: string;
       themeColor?: string;
       overallStyle?: string;
+      loginBgTheme?: "deepSpace" | "hudGrid" | "amberCorp";
+      /** 登录页布局：分栏品牌卡 / 经典竖版 / 蓝色渐变卡片扁平 */
+      loginUiVariant?: "brand" | "classic" | "cardFlat";
     };
     configure: {
       grey?: boolean;

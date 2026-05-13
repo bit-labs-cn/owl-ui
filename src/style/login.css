@@ -8,34 +8,27 @@
 }
 
 .login-container {
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  min-height: 100vh;
   max-width: 100%;
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  grid-gap: 18rem;
-  padding: 0 2rem;
-}
-
-.img {
   display: flex;
-  justify-content: flex-end;
   align-items: center;
-}
-
-.img img {
-  width: 500px;
+  justify-content: center;
+  padding: clamp(1rem, 3vw, 2.5rem);
+  padding-top: clamp(4rem, 8vh, 5rem);
+  box-sizing: border-box;
 }
 
 .login-box {
   display: flex;
   align-items: center;
   text-align: center;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .login-form {
-  width: 360px;
+  width: 100%;
+  max-width: 100%;
 }
 
 .avatar {
@@ -43,34 +36,7 @@
   height: 80px;
 }
 
-.login-form h2 {
-  text-transform: uppercase;
-  margin: 15px 0;
-  color: #999;
-  font:
-    bold 200% Consolas,
-    Monaco,
-    monospace;
-}
-
 @media screen and (max-width: 1180px) {
-  .login-container {
-    grid-gap: 9rem;
-  }
-
-  .login-form {
-    width: 290px;
-  }
-
-  .login-form h2 {
-    font-size: 2.4rem;
-    margin: 8px 0;
-  }
-
-  .img img {
-    width: 360px;
-  }
-
   .avatar {
     width: 280px;
     height: 80px;
@@ -82,12 +48,9 @@
     display: none;
   }
 
-  .img {
-    display: none;
-  }
-
   .login-container {
-    grid-template-columns: 1fr;
+    padding-top: 4.5rem;
+    padding-bottom: 1.5rem;
   }
 
   .login-box {

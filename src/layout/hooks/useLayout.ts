@@ -29,8 +29,17 @@ export function useLayout() {
         sidebarStatus: $config?.SidebarStatus ?? true,
         epThemeColor: $config?.EpThemeColor ?? "#409EFF",
         themeColor: $config?.Theme ?? "light",
-        overallStyle: $config?.OverallStyle ?? "light"
+        overallStyle: $config?.OverallStyle ?? "light",
+        loginBgTheme: "deepSpace",
+        loginUiVariant: "cardFlat"
       };
+    } else if ($storage.layout.loginBgTheme == null) {
+      $storage.layout.loginBgTheme = "deepSpace";
+    } else if (
+      $storage.layout.loginUiVariant == null ||
+      $storage.layout.loginUiVariant === ""
+    ) {
+      $storage.layout.loginUiVariant = "cardFlat";
     }
     /** 灰色模式、色弱模式、隐藏标签页 */
     if (!$storage.configure) {

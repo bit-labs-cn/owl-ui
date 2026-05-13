@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 540" fill="none">
+  <defs>
+    <linearGradient id="a_bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1c1410"/>
+      <stop offset="100%" stop-color="#0c0a08"/>
+    </linearGradient>
+    <linearGradient id="a_gold" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#b45309" stop-opacity="0.35"/>
+      <stop offset="50%" stop-color="#fbbf24" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#92400e" stop-opacity="0.15"/>
+    </linearGradient>
+    <linearGradient id="a_frame" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#78350f" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#f59e0b" stop-opacity="0.35"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="540" rx="28" fill="url(#a_bg)"/>
+  <ellipse cx="520" cy="120" rx="200" ry="120" fill="url(#a_gold)" opacity="0.5"/>
+  <path d="M40 480 Q180 200 360 260 T600 180 L640 200 L640 540 L0 540 Z" fill="#292524" opacity="0.55"/>
+  <path d="M60 500 Q200 260 380 300 T620 220" stroke="#d97706" stroke-width="2.5" opacity="0.45" fill="none"/>
+  <path d="M80 520 Q240 300 400 340 T600 260" stroke="#fbbf24" stroke-width="1.5" opacity="0.28" fill="none"/>
+  <rect x="48" y="56" width="544" height="360" rx="12" stroke="url(#a_frame)" stroke-width="2" fill="#292524" opacity="0.4"/>
+  <rect x="400" y="120" width="120" height="88" rx="8" fill="#44403c" stroke="#ca8a04" stroke-width="1.2" opacity="0.95"/>
+  <rect x="416" y="140" width="88" height="10" rx="2" fill="#ca8a04" opacity="0.35"/>
+  <rect x="416" y="158" width="64" height="8" rx="2" fill="#a8a29e" opacity="0.4"/>
+  <rect x="416" y="174" width="88" height="8" rx="2" fill="#a8a29e" opacity="0.35"/>
+  <circle cx="180" cy="260" r="72" stroke="#d97706" stroke-width="2" opacity="0.35" fill="none"/>
+  <path d="M180 200 V320 M120 260 H240" stroke="#fcd34d" stroke-width="1.5" opacity="0.3"/>
+  <g opacity="0.25" stroke="#a16207" stroke-width="1">
+    <path d="M500 400 L560 360"/>
+    <path d="M520 420 L600 380"/>
+    <path d="M480 440 L560 400"/>
+  </g>
+  <rect x="32" y="32" width="576" height="476" rx="22" stroke="#78350f" stroke-width="1" opacity="0.4"/>
+</svg>

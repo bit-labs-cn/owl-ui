@@ -89,3 +89,37 @@ login:
   pureUsernameReg: 请输入账号
   purePassWordReg: 请输入密码
   purePassWordRuleReg: 密码格式应为8-18位数字、字母、符号的任意两种组合
+  pureLoginBgTheme: 登录背景
+  pureLoginBgDeepSpace: 深空科技
+  pureLoginBgHud: 青锋 HUD
+  pureLoginBgAmber: 琥珀商务
+  pureLoginSubtitle: 通信网络设备全生命周期管理 · 运行态势一屏掌握
+  pureLoginHeroEyebrow: SMART INFRA
+  pureLoginHeroHeadline: 全域链路 · 一体监管
+  pureLoginHeroBody: 面向高速通信与路网设备，汇聚资产、状态与告警，为值守与调度提供一屏工作台。
+  pureLoginWelcome: 欢迎登录
+  pureLoginRemember: 记住我
+  pureLoginForgot: 忘记密码
+  pureLoginRegister: 马上注册
+  pureLoginUiBrand: 分栏
+  pureLoginUiClassic: 经典
+  pureLoginUiCardFlat: 渐变卡片
+  pureLoginCardFlatBrandName: 智联高速
+  pureLoginCardFlatBrandTitleLine1: 高速公路
+  pureLoginCardFlatBrandTitleHighlight: 通信网络设备
+  pureLoginCardFlatBrandTitleSuffix: 管理系统
+  pureLoginCardFlatBrandDesc: 深度融合物联网感知与数字孪生技术，实现通信网络设备从规划、运行、维护到退役的全生命周期精细化管控。全天候多维运行态势监测，让故障预警更敏捷，让高速通信更畅通。
+  pureLoginCardFlatWelcomeTitle: 欢迎回来
+  pureLoginCardFlatWelcomeSub: 请输入您的账号信息以登录系统
+  pureLoginCardFlatAccountLabel: 账号
+  pureLoginCardFlatPasswordLabel: 密码
+  pureLoginCardFlatUsernamePh: 请输入用户名或邮箱
+  pureLoginCardFlatPasswordPh: 请输入密码
+  pureLoginCardFlatForgotSuffix: 忘记密码?
+  pureLoginCardFlatBtn: "登 录"
+  pureLoginCardFlatTogglePwd: 显示或隐藏密码
+  pureLoginClassicUser: 用户名
+  pureLoginClassicPwd: 密码
+  pureLoginClassicUserPh: 请输入用户名
+  pureLoginClassicPwdPh: 请输入密码
+  pureLoginClassicRememberPwd: 记住密码

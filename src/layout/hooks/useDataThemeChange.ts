@@ -59,7 +59,9 @@ export function useDataThemeChange() {
       sidebarStatus: $storage.layout?.sidebarStatus,
       epThemeColor: $storage.layout?.epThemeColor,
       themeColor: isClick ? theme : storageThemeColor,
-      overallStyle: overallStyle.value
+      overallStyle: overallStyle.value,
+      loginBgTheme: $storage.layout?.loginBgTheme,
+      loginUiVariant: $storage.layout?.loginUiVariant
     };
 
     if (theme === "default" || theme === "light") {
