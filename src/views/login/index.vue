@@ -72,8 +72,8 @@ const loginUiSegmentedOptions = computed(() => [
 ]);
 
 const ruleForm = reactive({
-  username: "admin",
-  password: "123qwe"
+  username: "",
+  password: ""
 });
 
 const onLogin = async (formEl: FormInstance | undefined) => {

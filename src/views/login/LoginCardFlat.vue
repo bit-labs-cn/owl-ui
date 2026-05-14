@@ -6,8 +6,9 @@ import { transformI18n, $t } from "@bit-labs.cn/owl-ui/plugins/i18n";
 import { loginRules } from "./utils/rule";
 import EyeLine from "@iconify-icons/ri/eye-line";
 import EyeOffLine from "@iconify-icons/ri/eye-off-line";
-import NodeTree from "@iconify-icons/ri/node-tree";
 import WifiLine from "@iconify-icons/ri/wifi-line";
+import syslogo from "@bit-labs.cn/owl-ui/assets/login/syslogo.png";
+import loginLeftBg from "@bit-labs.cn/owl-ui/assets/login/login_left_bg.png";
 import UserLine from "@iconify-icons/ri/user-line";
 import LockLine from "@iconify-icons/ri/lock-line";
 
@@ -49,7 +50,7 @@ function togglePwd() {
 
 <template>
   <div class="login-card-flat-root">
-    <div class="left-panel">
+    <div class="left-panel" :style="{ backgroundImage: `url(${loginLeftBg})` }">
       <div class="orb orb-1" />
       <div class="orb orb-2" />
       <div class="orb orb-3" />
@@ -58,10 +59,10 @@ function togglePwd() {
       <div class="glow-line line-2" />
       <div class="brand-content">
         <div class="brand-logo">
-          <IconifyIconOffline
-            :icon="NodeTree"
-            class="brand-logo__mark"
-            aria-hidden="true"
+          <img
+            :src="syslogo"
+            class="brand-logo__mark brand-logo__mark--img"
+            alt="logo"
           />
           {{ t("login.pureLoginCardFlatBrandName") }}
         </div>
@@ -242,7 +243,10 @@ function togglePwd() {
 .left-panel {
   flex: 1.5;
   position: relative;
-  background: linear-gradient(135deg, #e0f7fa 0%, #f4f7f9 100%);
+  background-color: #f0f6fa;
+  background-repeat: no-repeat;
+  background-position: center bottom;
+  background-size: cover;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -318,6 +322,8 @@ function togglePwd() {
   z-index: 10;
   text-align: left;
   max-width: 600px;
+  align-self: flex-start;
+  margin-left: 6%
 }
 
 .brand-logo {
@@ -336,16 +342,18 @@ function togglePwd() {
 
 .brand-logo__mark {
   flex-shrink: 0;
-  width: 2.2rem;
-  height: 2.2rem;
+  width: 3.2rem;
+  height: 3.2rem;
   color: #4facfe;
   -webkit-text-fill-color: #4facfe;
   filter: drop-shadow(0 4px 10px rgba(79, 172, 254, 0.4));
 }
 
-.brand-logo__mark :deep(svg) {
-  width: 100%;
-  height: 100%;
+.brand-logo__mark--img {
+  object-fit: contain;
+  color: unset;
+  -webkit-text-fill-color: unset;
+  filter: drop-shadow(0 4px 10px rgba(79, 172, 254, 0.4));
 }
 
 .brand-title {
@@ -444,7 +452,8 @@ function togglePwd() {
   display: flex;
   justify-content: center;
   align-items: center;
-  background: transparent;
+  background: linear-gradient(to right top, rgba(234, 255, 255, 0.58) 0%, transparent 60%);
+    
   position: relative;
 }
 
