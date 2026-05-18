@@ -216,6 +216,8 @@ export function applySubsystemRoutes() {
   if (!subsystemRoutes.length) return;
 
   const allRoutes = ascending(subsystemRoutes.flat(Infinity));
+  const rootRoute = router.options.routes.find(route => route.path === "/");
+  let preferredRootRedirect: string | undefined;
 
   // 1. 保持原始层级合并到 constantMenus（菜单渲染用）
   allRoutes.forEach(route => constantMenus.push(route));
@@ -224,8 +226,11 @@ export function applySubsystemRoutes() {
   const flattened = formatFlatteningRoutes(cloneDeep(allRoutes));
 
   flattened.forEach((v: RouteRecordRaw) => {
-    // 跳过子系统自身的根路由（path "/"），避免无 component 的中间层导致子页无 Layout
-    if (v.path === "/") return;
+    // 子系统定义了 "/" 且带 redirect 时，优先将系统根路由重定向到该地址
+    if (v.path === "/") {
+      if (typeof v.redirect === "string") preferredRootRedirect = v.redirect;
+      return;
+    }
 
     // meta.noLayout：新窗口/全屏页，作为顶级路由注入，不经过根 Layout
     if ((v.meta as any)?.noLayout) {
@@ -254,6 +259,11 @@ export function applySubsystemRoutes() {
     const flattenRouters: any = router.getRoutes().find(n => n.path === "/");
     router.addRoute(flattenRouters);
   });
+
+  if (rootRoute && preferredRootRedirect && rootRoute.redirect !== preferredRootRedirect) {
+    rootRoute.redirect = preferredRootRedirect;
+    router.addRoute(rootRoute);
+  }
 
   // 3. 同步更新 permission store 的 constantMenus
   try {
