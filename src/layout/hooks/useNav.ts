@@ -138,9 +138,10 @@ export function useNav() {
     return remainingPaths.includes(path);
   }
 
-  /** 获取`logo` */
+  /** 获取`logo`（由 owl-ui-builder 按项目注入 /logo.png） */
   function getLogo() {
-    return new URL("/logo.png", import.meta.url).href;
+    const base = import.meta.env.BASE_URL || "/";
+    return `${base.replace(/\/?$/, "/")}logo.png`;
   }
 
   return {

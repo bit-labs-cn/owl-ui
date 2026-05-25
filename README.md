@@ -150,7 +150,7 @@ export default defineSubsystem({
 
 **覆盖优先级**：宿主应用 `createFlexAdmin({ subsystems: [...] })` 中，数组里**靠后**的子系统按字段覆盖靠前的（浅合并）。未声明的字段回退到 owl-ui 内置默认素材；`title` 未提供时使用平台配置中的标题（`useNav().title`）。
 
-**与 owl-ui-builder 的关系**：`builder.projects.yaml` 中的 `title` / `logo` 仍只影响浏览器标签页标题与 `/logo.png`，不替代 `login` 配置。若某 builder 项目希望登录页呈现某子系统风格，将该子系统放在 `subsystems` 数组较后位置即可（例如 asset 项目将 `assetManageSubsystem` 放在 `adminSubsystem` 之后）。
+**与 owl-ui-builder 的关系**：`builder.projects.yaml` 中的 `title` 影响浏览器标签页标题；logo 默认按**启动项目名**自动查找对应子系统包的 `src/assets/logo.png`（如 `pnpm dev xinren-water` → `@bit-labs.cn/xinren-water-ui`），一般无需单独配置 `logo`。`login` 配置仍只影响登录页，不替代侧边栏 logo。
 
 **类型导出**：`SubsystemLoginCustomization` 可从 `@bit-labs.cn/owl-ui` 引入。
 
