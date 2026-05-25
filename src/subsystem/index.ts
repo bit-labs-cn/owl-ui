@@ -3,11 +3,13 @@ export {
   getSubsystems,
   getSubsystemRoutes,
   getExtraViewModules,
-  getSubsystemMenuContributions
+  getSubsystemMenuContributions,
+  getLoginCustomization
 } from "./registry";
 export type {
   SubsystemDefinition,
-  SubsystemMenuContribution
+  SubsystemMenuContribution,
+  SubsystemLoginCustomization
 } from "./types";
 
 import type { SubsystemDefinition } from "./types";

@@ -121,6 +121,39 @@ export default defineSubsystem({
 - 若 `targetMenuName` 未命中，框架会跳过该贡献并输出告警，不影响其他菜单。
 - 同一父节点下按 `name + path` 去重，避免重复注入。
 
+### 登录页定制
+
+每个子系统可在 `defineSubsystem` 中声明 `login` 字段。声明 `bg` 后自动启用**全屏背景 + 右侧表单**布局；未声明时回退 owl-ui 默认登录页。登录路由与表单逻辑仍由 owl-ui 提供。
+
+**素材约定（推荐）**：将整屏背景图放在子系统包 `src/assets/login/bg.png`。
+
+**示例**：
+
+```ts
+import { defineSubsystem } from "@bit-labs.cn/owl-ui";
+import loginBg from "./assets/login/bg.png";
+
+export default defineSubsystem({
+  name: "myapp",
+  viewModules: import.meta.glob("./views/**/*.{vue,tsx}"),
+  login: {
+    bg: loginBg,
+    title: "欢迎回来",
+    subtitle: "请输入您的账号信息以登录系统",
+    primaryColor: "#06b6d4",
+    loginFormWidth: "480px"
+  }
+});
+```
+
+`bg.png` 建议使用**整屏**设计稿，右侧留出表单叠加区。
+
+**覆盖优先级**：宿主应用 `createFlexAdmin({ subsystems: [...] })` 中，数组里**靠后**的子系统按字段覆盖靠前的（浅合并）。未声明的字段回退到 owl-ui 内置默认素材；`title` 未提供时使用平台配置中的标题（`useNav().title`）。
+
+**与 owl-ui-builder 的关系**：`builder.projects.yaml` 中的 `title` / `logo` 仍只影响浏览器标签页标题与 `/logo.png`，不替代 `login` 配置。若某 builder 项目希望登录页呈现某子系统风格，将该子系统放在 `subsystems` 数组较后位置即可（例如 asset 项目将 `assetManageSubsystem` 放在 `adminSubsystem` 之后）。
+
+**类型导出**：`SubsystemLoginCustomization` 可从 `@bit-labs.cn/owl-ui` 引入。
+
 ### 开发与构建
 
 框架本身不独立运行，需通过宿主应用（如 `new/app`）启动：

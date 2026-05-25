@@ -2,7 +2,8 @@
 export { defineSubsystem } from "./subsystem";
 export type {
   SubsystemDefinition,
-  SubsystemMenuContribution
+  SubsystemMenuContribution,
+  SubsystemLoginCustomization
 } from "./subsystem";
 
 // ─── 应用引导 ───

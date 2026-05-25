@@ -7,6 +7,33 @@ export interface SubsystemMenuContribution {
   menus: RouteConfigsTable[];
 }
 
+/**
+ * 子系统对登录页的素材/文案定制。
+ *
+ * 仅支持替换已有渲染槽位（背景、插画、头像、主副标题、主题色），
+ * 不改变登录页布局与表单逻辑。多个子系统同时声明同一字段时，
+ * 在 `subsystems` 数组中靠后的子系统覆盖靠前的子系统（last-wins）。
+ */
+export interface SubsystemLoginCustomization {
+  /**
+   * 登录页全屏背景图（声明后自动启用全屏背景 + 右侧表单布局）。
+   * 建议使用 `import bg from "./assets/login/bg.png"` 取得 URL 字符串。
+   */
+  bg?: string;
+  /** 登录页大标题；未提供时回退到 `useNav().title` */
+  title?: string;
+  /** 登录页副标题/欢迎语；未提供时不渲染 */
+  subtitle?: string;
+  /** 主题色（写入 `--el-color-primary` CSS 变量，让 Element Plus 自动接管按钮等） */
+  primaryColor?: string;
+  /** 登录表单区域宽度，默认 `480px` */
+  loginFormWidth?: string;
+  /** 账号字段标签，默认「账号」 */
+  accountLabel?: string;
+  /** 密码字段标签，默认「密码」 */
+  passwordLabel?: string;
+}
+
 export interface SubsystemDefinition {
   /** 子系统唯一标识 */
   name: string;
@@ -34,6 +61,13 @@ export interface SubsystemDefinition {
   viewModulesPathPrefix?: string;
   /** 子系统 i18n 翻译，如 `{ 'zh-CN': {...}, en: {...} }` */
   locales?: Record<string, Record<string, any>>;
+  /**
+   * 登录页素材/文案定制。
+   *
+   * 多个子系统同时声明时，`subsystems` 数组中靠后的子系统按字段覆盖靠前的（浅合并）；
+   * 子系统未填写的字段会回退到 owl-ui 内置默认素材。
+   */
+  login?: SubsystemLoginCustomization;
   /** 安装钩子：可注册子系统专属的全局组件、指令、插件等 */
   install?: (app: App) => void;
 }
