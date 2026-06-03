@@ -73,6 +73,7 @@ export type menuType = {
     rank?: number;
     showParent?: boolean;
     extraIcon?: string;
+    noLayout?: boolean;
     target?: "_blank" | "_self" | "_parent" | "_top";
   };
   showTooltip?: boolean;

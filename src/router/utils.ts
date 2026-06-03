@@ -165,7 +165,7 @@ function addPathMatch() {
 }
 
 function getRouteUniqueKey(route: RouteRecordRaw): string {
-  return `${route.name ?? ""}::${route.path ?? ""}`;
+  return `${String(route.name ?? "")}::${route.path ?? ""}`;
 }
 
 function dedupeRoutesByNamePath(routes: RouteRecordRaw[] = []): RouteRecordRaw[] {
@@ -269,34 +269,73 @@ function handleAsyncRoutes(routeList) {
   if (mergedRouteList.length === 0) {
     usePermissionStoreHook().handleWholeMenus(mergedRouteList);
   } else {
-    formatFlatteningRoutes(addAsyncRoutes(mergedRouteList)).map(
-      (v: RouteRecordRaw) => {
-        const rootRoute = router.options.routes.find(route => route.path === "/");
-        const rootChildren = rootRoute
-          ? (rootRoute.children ?? (rootRoute.children = []))
-          : [];
-
-        // 防止重复添加路由
+    const removeRouteFromChildrenTree = (
+      routes: RouteRecordRaw[] = [],
+      target: RouteRecordRaw
+    ) => {
+      routes.forEach(route => {
+        if (!route.children?.length) return;
+        route.children = route.children.filter(
+          child =>
+            child.path !== target.path &&
+            (!target.name || child.name !== target.name)
+        );
+        removeRouteFromChildrenTree(route.children, target);
         if (
-          rootRoute &&
-          rootChildren.findIndex(value => value.path === v.path) !== -1
+          route.redirect &&
+          !route.children.some(child => child.path === route.redirect)
         ) {
-          return;
-        } else {
-          // 存在根布局路由时，优先挂到根路由 children，保持与框架行为一致
-          if (rootRoute) {
-            rootChildren.push(v);
-            ascending(rootChildren);
-          }
-
-          if (!router.hasRoute(v?.name)) router.addRoute(v);
-          const flattenRouters: any = router
-            .getRoutes()
-            .find(n => n.path === "/");
-          if (flattenRouters) router.addRoute(flattenRouters);
+          route.redirect = route.children[0]?.path;
         }
+      });
+    };
+
+    const rootRoute = router.options.routes.find(route => route.path === "/");
+    const rootChildren = rootRoute
+      ? (rootRoute.children ?? (rootRoute.children = []))
+      : [];
+
+    formatFlatteningRoutes(addAsyncRoutes(mergedRouteList)).forEach(
+      (v: RouteRecordRaw) => {
+        // 目录节点只参与菜单渲染，不注册为可导航路由（避免父级误绑 GIS 等页面组件）
+        if (v.children?.length) {
+          return;
+        }
+
+        // noLayout 页面作为顶级路由注入，不挂载到根 Layout 下
+        if (v.meta?.noLayout) {
+          if (v?.name && router.hasRoute(v.name)) {
+            router.removeRoute(v.name);
+          }
+          if (rootRoute?.children?.length) {
+            removeRouteFromChildrenTree(rootRoute.children, v);
+            rootRoute.children = rootRoute.children.filter(
+              child =>
+                child.path !== v.path && (!v.name || child.name !== v.name)
+            );
+          }
+          router.addRoute(v);
+          return;
+        }
+
+        if (!rootRoute) return;
+        if (rootChildren.findIndex(value => value.path === v.path) !== -1) {
+          return;
+        }
+
+        // 仅挂到 Home(Layout) 的 children；禁止 router.addRoute(v) 顶级注册，否则会丢失 layout
+        if (v?.name && router.hasRoute(v.name)) {
+          router.removeRoute(v.name);
+        }
+        rootChildren.push(v);
       }
     );
+
+    if (rootRoute) {
+      ascending(rootChildren);
+      const layoutRoute = router.getRoutes().find(n => n.path === "/");
+      if (layoutRoute) router.addRoute(layoutRoute);
+    }
     usePermissionStoreHook().handleWholeMenus(mergedRouteList);
   }
   if (!useMultiTagsStoreHook().getMultiTagsCache) {
@@ -312,9 +351,9 @@ function handleAsyncRoutes(routeList) {
 
 /** 初始化路由（`new Promise` 写法防止在异步请求中造成无限循环）*/
 function initRouter() {
+  const key = "async-routes";
   if (getConfig()?.CachingAsyncRoutes) {
     // 开启动态路由缓存本地localStorage
-    const key = "async-routes";
     const asyncRouteList = storageLocal().getItem(key) as any;
     if (asyncRouteList && asyncRouteList?.length > 0) {
       return new Promise(resolve => {
@@ -331,6 +370,8 @@ function initRouter() {
       });
     }
   } else {
+    // 未开启动态路由缓存时，清理历史缓存，避免旧会话污染路由结构
+    storageLocal().removeItem(key);
     return new Promise(resolve => {
       userAPI.getAsyncRoutes().then(({ data }) => {
         handleAsyncRoutes(cloneDeep(data));
@@ -419,6 +460,41 @@ function handleAliveRoute({ name }: ToRouteType, mode?: string) {
   }
 }
 
+/** 按 path/name 精确匹配子系统视图模块，避免 `/xinren-water` 误命中首个子路径 */
+function resolveViewModuleIndex(
+  keys: string[],
+  route: RouteRecordRaw
+): number {
+  const path = String(route.path ?? "");
+  const name = String(route.name ?? "");
+  if (!path && !name) return -1;
+
+  const exactIdx = keys.findIndex(
+    k => k === `${path}.vue` || k === `${path}.tsx`
+  );
+  if (exactIdx >= 0) return exactIdx;
+
+  const suffixMatches = keys
+    .map((k, i) => ({ k, i }))
+    .filter(({ k }) => {
+      const base = k.replace(/\.(vue|tsx)$/, "");
+      return base === path || base.endsWith(path);
+    });
+  if (suffixMatches.length === 1) return suffixMatches[0].i;
+  if (suffixMatches.length > 1) {
+    return suffixMatches.sort((a, b) => b.k.length - a.k.length)[0].i;
+  }
+
+  if (name) {
+    const nameIdx = keys.findIndex(
+      k => k.endsWith(`/${name}.vue`) || k.endsWith(`/${name}.tsx`)
+    );
+    if (nameIdx >= 0) return nameIdx;
+  }
+
+  return path ? keys.findIndex(k => k.includes(path)) : -1;
+}
+
 /** 过滤后端传来的动态路由 重新生成规范路由 */
 function addAsyncRoutes(arrRoutes: Array<RouteRecordRaw>) {
   if (!arrRoutes || !arrRoutes.length) return;
@@ -430,16 +506,19 @@ function addAsyncRoutes(arrRoutes: Array<RouteRecordRaw>) {
       v.redirect = v.children[0].path;
     if (v?.children && v.children.length && !v.name)
       v.name = (v.children[0].name as string) + "Parent";
+    if (v?.children && v.children.length) {
+      // 目录节点仅用于菜单，不绑定页面组件
+      delete v.component;
+      addAsyncRoutes(v.children);
+      return;
+    }
     if (v.meta?.frameSrc) {
       v.component = IFrame;
     } else {
-      const index = v?.component
-        ? modulesRoutesKeys.findIndex(ev => ev.includes(v.component as any))
-        : modulesRoutesKeys.findIndex(ev => ev.includes(v.path));
-      v.component = modulesRoutes[modulesRoutesKeys[index]];
-    }
-    if (v?.children && v.children.length) {
-      addAsyncRoutes(v.children);
+      const index = resolveViewModuleIndex(modulesRoutesKeys, v);
+      if (index >= 0) {
+        v.component = modulesRoutes[modulesRoutesKeys[index]];
+      }
     }
   });
   return arrRoutes;
@@ -499,10 +578,11 @@ function handleTopMenu(route) {
 
 /** 获取所有菜单中的第一个菜单（顶级菜单）*/
 function getTopMenu(tag = false): menuType {
-  const topMenu = handleTopMenu(
-    usePermissionStoreHook().wholeMenus[0]?.children[0]
-  );
-  tag && useMultiTagsStoreHook().handleTags("push", topMenu);
+  const firstMenu = usePermissionStoreHook().wholeMenus[0];
+  const topMenu = handleTopMenu(firstMenu?.children?.[0] ?? firstMenu);
+  if (tag && topMenu) {
+    useMultiTagsStoreHook().handleTags("push", topMenu);
+  }
   return topMenu;
 }
 
