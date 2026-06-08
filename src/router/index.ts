@@ -142,44 +142,44 @@ router.beforeEach(async (to: ToRouteType, _from, next) => {
         toCorrectRoute();
       }
     } else {
-      // 刷新
+      // 刷新或直接输入地址：须先完成动态路由注入，再放行，避免先命中 404
       if (
         usePermissionStoreHook().wholeMenus.length === 0 &&
         to.path !== "/login"
       ) {
-        initRouter().then((router: Router) => {
-          console.log("初始化动态路由");
-          if (!useMultiTagsStoreHook().getMultiTagsCache) {
-            const { path } = to;
-            const route = findRouteByPath(
+        await initRouter();
+        if (!useMultiTagsStoreHook().getMultiTagsCache) {
+          const { path } = to;
+          const matchedRoute =
+            findRouteByPath(
               path,
-              router.options.routes[0].children
-            );
-            getTopMenu(true);
-            // query、params模式路由传参数的标签页不在此处处理
-            if (route && route.meta?.title) {
-              if (isAllEmpty(route.parentId) && route.meta?.backstage) {
-                // 此处为动态顶级路由（目录）
-                const firstVisibleRoute = route.children?.[0] ?? route;
-                const { path, name, meta } = firstVisibleRoute;
-                useMultiTagsStoreHook().handleTags("push", {
-                  path,
-                  name,
-                  meta
-                });
-              } else {
-                const { path, name, meta } = route;
-                useMultiTagsStoreHook().handleTags("push", {
-                  path,
-                  name,
-                  meta
-                });
-              }
+              usePermissionStoreHook().flatteningRoutes
+            ) ??
+            findRouteByPath(path, router.options.routes[0]?.children ?? []);
+          getTopMenu(true);
+          // query、params模式路由传参数的标签页不在此处处理
+          if (matchedRoute && matchedRoute.meta?.title) {
+            if (isAllEmpty(matchedRoute.parentId) && matchedRoute.meta?.backstage) {
+              // 此处为动态顶级路由（目录）
+              const firstVisibleRoute =
+                matchedRoute.children?.[0] ?? matchedRoute;
+              const { path, name, meta } = firstVisibleRoute;
+              useMultiTagsStoreHook().handleTags("push", {
+                path,
+                name,
+                meta
+              });
+            } else {
+              const { path, name, meta } = matchedRoute;
+              useMultiTagsStoreHook().handleTags("push", {
+                path,
+                name,
+                meta
+              });
             }
           }
-          // 确保动态路由完全加入路由列表并且不影响静态路由（注意：动态路由刷新时router.beforeEach可能会触发两次，第一次触发动态路由还未完全添加，第二次动态路由才完全添加到路由列表，如果需要在router.beforeEach做一些判断可以在to.name存在的条件下去判断，这样就只会触发一次）
-          if (isAllEmpty(to.name)) router.push(to.fullPath);
-        });
+        }
+        return next({ ...to, replace: true });
       }
       toCorrectRoute();
     }

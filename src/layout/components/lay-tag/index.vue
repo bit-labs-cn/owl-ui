@@ -6,7 +6,11 @@ import { useTags } from "../../hooks/useTag";
 import { routerArrays } from "@bit-labs.cn/owl-ui/layout/types";
 import { onClickOutside } from "@vueuse/core";
 import TagChrome from "./components/TagChrome.vue";
-import { handleAliveRoute, getTopMenu } from "@bit-labs.cn/owl-ui/router/utils";
+import {
+  handleAliveRoute,
+  getTopMenu,
+  findRouteByPath
+} from "@bit-labs.cn/owl-ui/router/utils";
 import { useSettingStoreHook } from "@bit-labs.cn/owl-ui/store/modules/settings";
 import { useMultiTagsStoreHook } from "@bit-labs.cn/owl-ui/store/modules/multiTags";
 import { usePermissionStoreHook } from "@bit-labs.cn/owl-ui/store/modules/permission";
@@ -180,28 +184,23 @@ const smoothScroll = (offset: number): void => {
 };
 
 function dynamicRouteTag(value: string): void {
-  const hasValue = multiTags.value.some(item => {
-    return item.path === value;
-  });
+  if (!value || value.includes("/redirect")) return;
 
-  function concatPath(arr: object[], value: string) {
-    if (!hasValue) {
-      arr.forEach((arrItem: any) => {
-        if (arrItem.path === value) {
-          useMultiTagsStoreHook().handleTags("push", {
-            path: value,
-            meta: arrItem.meta,
-            name: arrItem.name
-          });
-        } else {
-          if (arrItem.children && arrItem.children.length > 0) {
-            concatPath(arrItem.children, value);
-          }
-        }
-      });
-    }
-  }
-  concatPath(router.options.routes as any, value);
+  const hasValue = multiTags.value.some(item => item.path === value);
+  if (hasValue) return;
+
+  // 优先从菜单拍平路由取 meta（动态菜单以此为准）；静态路由再回退 options.routes
+  const matched =
+    findRouteByPath(value, usePermissionStoreHook().flatteningRoutes) ??
+    findRouteByPath(value, router.options.routes as any);
+
+  if (!matched?.meta?.title) return;
+
+  useMultiTagsStoreHook().handleTags("push", {
+    path: value,
+    meta: matched.meta,
+    name: matched.name
+  });
 }
 
 /** 刷新路由 */
@@ -519,6 +518,7 @@ onClickOutside(contextmenuRef, closeMenu, {
 
 watch(route, () => {
   activeIndex.value = -1;
+  dynamicRouteTag(route.path);
   dynamicTagView();
 });
 
