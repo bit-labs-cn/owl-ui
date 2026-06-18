@@ -179,4 +179,131 @@ html.dark {
       background: rgb(92 93 96);
     }
   }
+
+  /* ============================================================
+     OwlUI Dark Mode Enhancement
+     Phase 5: Refined dark mode
+     ============================================================ */
+
+  /* 内容区背景色 - 深蓝灰替代纯黑 */
+  .main-container {
+    background: #141821 !important;
+  }
+
+  .app-main,
+  .app-main-nofixed-header {
+    background: #141821 !important;
+  }
+
+  /* 暗色模式设计令牌覆盖 */
+  --owl-border-color: rgba(255, 255, 255, 0.06);
+  --owl-border-color-strong: rgba(255, 255, 255, 0.1);
+  --owl-shadow-sm: none;
+  --owl-shadow-md: 0 0 0 1px rgba(255, 255, 255, 0.06);
+  --owl-shadow-lg: 0 0 0 1px rgba(255, 255, 255, 0.08);
+  --owl-shadow-xl: 0 0 0 1px rgba(255, 255, 255, 0.1);
+  --owl-primary-bg: color-mix(in srgb, var(--el-color-primary) 12%, #141821);
+  --owl-primary-bg-light: color-mix(in srgb, var(--el-color-primary) 6%, #141821);
+  --owl-primary-border: color-mix(in srgb, var(--el-color-primary) 30%, transparent);
+  --owl-primary-border-light: color-mix(in srgb, var(--el-color-primary) 20%, transparent);
+
+
+  /* 卡片暗色模式 */
+  .el-card {
+    background: #1a1f2b !important;
+    border: 1px solid rgba(255, 255, 255, 0.06) !important;
+    box-shadow: none !important;
+
+    &:hover {
+      border-color: rgba(255, 255, 255, 0.12) !important;
+      box-shadow: none !important;
+      transform: translateY(-1px);
+    }
+  }
+
+  /* 表格暗色模式 */
+  .el-table {
+    th.el-table__cell {
+      background-color: #1e2430 !important;
+    }
+
+    tr {
+      background-color: #12161f !important;
+    }
+
+    tbody tr:hover > td {
+      background-color: #222836 !important;
+    }
+  }
+
+  /* 弹窗暗色模式 */
+  .el-dialog {
+    background: #161b26 !important;
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1) !important;
+  }
+
+  .el-drawer {
+    background: #1a1f2b !important;
+  }
+
+
+  /* 滚动条暗色模式 */
+  ::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.15) !important;
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.25) !important;
+    }
+  }
+
+}
+
+
+/* ============================================================
+   OwlUI Dark Mode - Sidebar Text Color Override
+   
+   When light-themed sidebar variables are active in dark mode,
+   override them to ensure text is visible on dark backgrounds.
+   ============================================================ */
+
+html.dark {
+  /* Menu text: light gray for readability on dark bg */
+  --pure-theme-menu-text: rgba(203, 213, 225, 0.85) !important;
+  --pure-theme-menu-title-hover: #f8fafc !important;
+  --pure-theme-sub-menu-active-text: #f1f5f9 !important;
+  --pure-theme-menu-hover: rgba(255, 255, 255, 0.1) !important;
+  --pure-theme-sub-menu-bg: #1e2430 !important;
+  --pure-theme-sidebar-logo: #1a1f2b !important;
+  --pure-theme-menu-bg: #1a1f2b !important;
+  --owl-sidebar-gradient: none !important;
+
+  /* Active items: accent color on dark bg */
+  .sidebar-container {
+    .el-menu-item.is-active.nest-menu > *,
+    .is-active.submenu-title-noDropdown.outer-most > * {
+      color: #f1f5f9 !important;
+    }
+
+    .is-active .sub-menu-icon,
+    .is-active .el-icon,
+    .is-active svg {
+      color: var(--owl-accent-color, var(--el-color-primary)) !important;
+    }
+
+    .el-menu-item.is-active.nest-menu::before,
+    .is-active.submenu-title-noDropdown.outer-most::before {
+      background: var(--owl-accent-color, var(--el-color-primary)) !important;
+      opacity: 0.2 !important;
+    }
+  }
+
+  /* Logo area in dark mode */
+  .sidebar-logo-container {
+    background: #1a1f2b !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;
+
+    span {
+      color: #f1f5f9 !important;
+    }
+  }
 }

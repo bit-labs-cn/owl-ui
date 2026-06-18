@@ -187,3 +187,465 @@
     background: rgb(199 201 203); /* 滑块hover颜色 */
   }
 }
+
+
+/* ============================================================
+   OwlUI Visual Enhancement - Element Plus Overrides
+   Phase 2: Cards, Tables, Dialogs, Forms
+   ============================================================ */
+
+/* ---------- el-card: 卡片视觉升级 ---------- */
+.el-card {
+  border-radius: var(--owl-radius-md) !important;
+  border: 1px solid var(--owl-border-color) !important;
+  box-shadow: var(--owl-shadow-sm) !important;
+  transition:
+    box-shadow var(--owl-transition-normal),
+    transform var(--owl-transition-normal),
+    border-color var(--owl-transition-normal) !important;
+
+  &:hover {
+    box-shadow: var(--owl-shadow-md) !important;
+    transform: translateY(-2px);
+    border-color: var(--owl-primary-border-light) !important;
+  }
+
+  .el-card__header {
+    border-bottom: 1px solid var(--owl-border-color) !important;
+    padding: var(--owl-space-md) var(--owl-space-lg) !important;
+    font-weight: 600;
+  }
+
+  .el-card__body {
+    padding: var(--owl-space-lg) !important;
+  }
+}
+
+/* ---------- el-table: 表格增强 ---------- */
+.el-table {
+  border-radius: var(--owl-radius-md) !important;
+  overflow: hidden;
+
+  /* 表头样式 */
+  th.el-table__cell {
+    background-color: var(--owl-primary-bg-light, rgba(0, 0, 0, 0.02)) !important;
+    font-weight: 600 !important;
+    font-size: var(--owl-text-sm) !important;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--el-text-color-secondary) !important;
+  }
+
+  /* 行 hover 左侧指示条 */
+  tr {
+    position: relative;
+    transition: background-color var(--owl-transition-fast);
+  }
+
+  tbody tr:hover > td {
+    background-color: var(--owl-primary-bg-light, var(--el-fill-color-light)) !important;
+  }
+
+  /* 表格边框圆角 */
+  &.el-table--border {
+    border-radius: var(--owl-radius-md) !important;
+    border: 1px solid var(--owl-border-color) !important;
+  }
+}
+
+/* ---------- el-dialog: 弹窗升级 ---------- */
+.el-dialog {
+  border-radius: var(--owl-radius-lg) !important;
+  box-shadow: var(--owl-shadow-xl) !important;
+  overflow: hidden;
+  
+  /* 主题色点缀：淡边框 */
+  border: 1px solid rgba(0, 0, 0, 0.06) !important;
+
+  .el-dialog__header {
+    padding: var(--owl-space-md) var(--owl-space-lg) var(--owl-space-sm) !important;
+    margin-right: 0 !important;
+
+    .el-dialog__title {
+      font-size: var(--owl-text-lg) !important;
+      font-weight: 600 !important;
+      line-height: var(--owl-leading-tight) !important;
+    }
+  }
+
+  .el-dialog__body {
+    padding: var(--owl-space-md) var(--owl-space-lg) !important;
+  }
+
+  .el-dialog__footer {
+    padding: var(--owl-space-sm) var(--owl-space-lg) var(--owl-space-md) !important;
+  }
+}
+
+/* ---------- el-drawer: 抽屉升级 ---------- */
+.el-drawer {
+  border-radius: var(--owl-radius-lg) 0 0 var(--owl-radius-lg);
+  
+  /* 淡边框 */
+  border: 1px solid rgba(0, 0, 0, 0.06) !important;
+
+  .el-drawer__header {
+    padding: var(--owl-space-md) var(--owl-space-lg) var(--owl-space-sm) !important;
+    margin-bottom: 0 !important;
+
+    span {
+      font-size: var(--owl-text-lg) !important;
+      font-weight: 600 !important;
+    }
+  }
+
+  .el-drawer__body {
+    padding: var(--owl-space-md) var(--owl-space-lg) !important;
+  }
+}
+
+/* ---------- el-button: 按钮增强 ---------- */
+.el-button {
+  border-radius: var(--owl-radius-sm) !important;
+  font-weight: 500 !important;
+  transition:
+    all var(--owl-transition-fast) !important;
+
+  &--primary {
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+
+    &:hover {
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      transform: translateY(-1px);
+    }
+
+    &:active {
+      transform: translateY(0);
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    }
+  }
+
+  &--success:hover,
+  &--warning:hover,
+  &--danger:hover,
+  &--info:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  }
+}
+
+/* ---------- el-input: 输入框 focus-ring ---------- */
+.el-input {
+  .el-input__wrapper {
+    border-radius: var(--owl-radius-sm) !important;
+    transition:
+      box-shadow var(--owl-transition-fast),
+      border-color var(--owl-transition-fast) !important;
+
+    &.is-focus {
+      box-shadow: 0 0 0 2px var(--owl-primary-border) !important;
+    }
+  }
+}
+
+.el-textarea {
+  .el-textarea__inner {
+    border-radius: var(--owl-radius-sm) !important;
+    transition:
+      box-shadow var(--owl-transition-fast),
+      border-color var(--owl-transition-fast) !important;
+
+    &:focus {
+      box-shadow: 0 0 0 2px var(--owl-primary-border) !important;
+    }
+  }
+}
+
+/* ---------- el-select: 下拉框增强 ---------- */
+.el-select-dropdown {
+  border-radius: var(--owl-radius-sm) !important;
+  box-shadow: var(--owl-shadow-lg) !important;
+  border: 1px solid var(--owl-border-color) !important;
+}
+
+/* ---------- el-tag: 标签美化 ---------- */
+.el-tag {
+  border-radius: var(--owl-radius-full) !important;
+  font-weight: 500;
+}
+
+/* ---------- el-badge: 徽章圆角 ---------- */
+.el-badge__content {
+  font-weight: 600;
+}
+
+/* ---------- el-pagination: 分页增强 ---------- */
+.el-pagination {
+  .el-pager li {
+    border-radius: var(--owl-radius-sm) !important;
+    font-weight: 500;
+    transition: all var(--owl-transition-fast);
+
+    &.is-active {
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+  }
+
+  .btn-prev,
+  .btn-next {
+    border-radius: var(--owl-radius-sm) !important;
+  }
+}
+
+/* ---------- el-message-box: 消息框 ---------- */
+.el-message-box {
+  border-radius: var(--owl-radius-lg) !important;
+  box-shadow: var(--owl-shadow-xl) !important;
+  border: 1px solid rgba(0, 0, 0, 0.06) !important;
+}
+
+/* ---------- el-tooltip / el-popover ---------- */
+.el-tooltip__trigger {
+  transition: color var(--owl-transition-fast);
+}
+
+/* ---------- el-tabs: 标签页增强 ---------- */
+.el-tabs {
+  .el-tabs__item {
+    transition: all var(--owl-transition-fast);
+    font-weight: 500;
+
+    &.is-active {
+      font-weight: 600;
+    }
+  }
+
+  &.el-tabs--card > .el-tabs__header .el-tabs__item {
+    border-radius: var(--owl-radius-sm) var(--owl-radius-sm) 0 0;
+  }
+}
+
+/* ---------- el-progress: 进度条圆角 ---------- */
+.el-progress-bar__outer {
+  border-radius: var(--owl-radius-full) !important;
+}
+
+.el-progress-bar__inner {
+  border-radius: var(--owl-radius-full) !important;
+}
+
+/* ---------- el-descriptions: 描述列表 ---------- */
+.el-descriptions {
+  border-radius: var(--owl-radius-md);
+  overflow: hidden;
+}
+
+/* ---------- el-notification: 通知 ---------- */
+.el-notification {
+  border-radius: var(--owl-radius-md) !important;
+  box-shadow: var(--owl-shadow-lg) !important;
+  border-left: 3px solid var(--owl-accent-color) !important;
+  border-top: 1px solid color-mix(in srgb, var(--owl-accent-color) 12%, transparent) !important;
+  border-right: 1px solid color-mix(in srgb, var(--owl-accent-color) 12%, transparent) !important;
+  border-bottom: 1px solid color-mix(in srgb, var(--owl-accent-color) 12%, transparent) !important;
+}
+
+/* ---------- 全局 focus-visible 焦点环 ---------- */
+*:focus-visible {
+  outline: 2px solid var(--owl-primary-border);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* ---------- 滚动条美化 ---------- */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.12);
+  border-radius: var(--owl-radius-full);
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.2);
+  }
+}
+
+
+/* ============================================================
+   OwlUI Micro-Interactions and Glassmorphism
+   
+   Features:
+   1. Button hover glow effect
+   2. Card hover subtle glow
+   3. Table row left accent indicator on hover
+   4. Input focus underline animation
+   5. Glassmorphism for dialogs, drawers, dropdowns
+   ============================================================ */
+
+/* ---------- 1. Button hover glow ---------- */
+.el-button {
+  position: relative;
+  overflow: hidden;
+}
+
+.el-button--primary:hover {
+  box-shadow: 
+    0 4px 12px rgba(0, 0, 0, 0.15),
+    0 0 0 4px color-mix(in srgb, var(--owl-accent-color) 15%, transparent) !important;
+}
+
+.el-button--primary:active {
+  box-shadow: 
+    0 1px 2px rgba(0, 0, 0, 0.1),
+    0 0 0 2px color-mix(in srgb, var(--owl-accent-color) 20%, transparent) !important;
+}
+
+/* ---------- 2. Card hover glow ---------- */
+.el-card:hover {
+  box-shadow: 
+    0 4px 6px -1px rgba(0, 0, 0, 0.06),
+    0 2px 4px -2px rgba(0, 0, 0, 0.04),
+    0 0 0 1px color-mix(in srgb, var(--owl-accent-color) 8%, transparent) !important;
+}
+
+/* ---------- 3. Table row hover indicator ---------- */
+.el-table tbody tr {
+  position: relative;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.el-table tbody tr td:first-child::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 0;
+  background: var(--owl-accent-color);
+  transition: width 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1;
+}
+
+.el-table tbody tr:hover td:first-child::before {
+  width: 3px;
+}
+
+/* ---------- 4. Input focus underline ---------- */
+.el-input .el-input__wrapper {
+  position: relative;
+}
+
+.el-input .el-input__wrapper::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  right: 50%;
+  height: 2px;
+  background: var(--owl-accent-color);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  opacity: 0;
+  z-index: 1;
+}
+
+.el-input .el-input__wrapper.is-focus::after {
+  left: 0;
+  right: 0;
+  opacity: 1;
+}
+
+.el-textarea .el-textarea__inner {
+  position: relative;
+}
+
+.el-textarea .el-textarea__inner::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  right: 50%;
+  height: 2px;
+  background: var(--owl-accent-color);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  opacity: 0;
+  z-index: 1;
+}
+
+.el-textarea .el-textarea__inner:focus::after {
+  left: 0;
+  right: 0;
+  opacity: 1;
+}
+
+/* ---------- 5. Glassmorphism Effects ---------- */
+
+/* Dialog - clean solid background */
+.el-dialog {
+  background: #ffffff !important;
+}
+
+/* Drawer - clean solid */
+.el-drawer {
+  background: #ffffff !important;
+}
+
+/* Message Box - clean solid */
+.el-message-box {
+  background: #ffffff !important;
+}
+
+/* Dropdown Menu */
+.el-dropdown-menu {
+  background: rgba(255, 255, 255, 0.88) !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+}
+
+/* Select Dropdown */
+.el-select-dropdown {
+  background: rgba(255, 255, 255, 0.9) !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+}
+
+/* Popover */
+.el-popover.el-popper {
+  background: rgba(255, 255, 255, 0.88) !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+}
+
+/* ---------- Dark Mode Glassmorphism ---------- */
+html.dark .el-dialog {
+  background: rgba(22, 27, 38, 0.92) !important;
+}
+
+html.dark .el-drawer {
+  background: rgba(26, 31, 43, 0.95) !important;
+}
+
+html.dark .el-message-box {
+  background: rgba(22, 27, 38, 0.92) !important;
+}
+
+html.dark .el-dropdown-menu {
+  background: rgba(22, 27, 38, 0.88) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+html.dark .el-select-dropdown {
+  background: rgba(22, 27, 38, 0.9) !important;
+}
+
+html.dark .el-popover.el-popper {
+  background: rgba(22, 27, 38, 0.88) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+}

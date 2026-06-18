@@ -247,7 +247,14 @@ const optionsBasis: Array<OptionsType> = [
 
 <style lang="scss" scoped>
 :deep(.el-card) {
-  --el-card-border-color: none;
+  --el-card-border-color: var(--owl-border-color, rgba(0, 0, 0, 0.04));
+
+  /* 卡片标题增强 */
+  .text-md.font-medium {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--el-text-color-primary);
+  }
 
   /* 解决概率进度条宽度 */
   .el-progress--line {
@@ -270,7 +277,43 @@ const optionsBasis: Array<OptionsType> = [
   }
 }
 
+/* 统计卡片渐变背景 */
+.line-card {
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(
+      135deg,
+      transparent 0%,
+      var(--owl-primary-bg-light, rgba(64, 145, 247, 0.03)) 100%
+    );
+    pointer-events: none;
+  }
+}
+
+/* 数字指标增强 */
+:deep(.text-green-500) {
+  font-size: 13px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 12px;
+  background: rgba(34, 197, 94, 0.08);
+  display: inline-block;
+}
+
+/* 分析概览卡片 */
+.bar-card {
+  min-height: 320px;
+}
+
 .main-content {
-  margin: 20px 20px 0 !important;
+  margin: 24px 24px 0 !important;
 }
 </style>

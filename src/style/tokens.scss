@@ -1,0 +1,53 @@
+/* OwlUI Design Tokens - 统一设计令牌系统 */
+:root {
+  /* ========== 间距系统 (8pt Grid) ========== */
+  --owl-space-xs: 4px;
+  --owl-space-sm: 8px;
+  --owl-space-md: 16px;
+  --owl-space-lg: 24px;
+  --owl-space-xl: 32px;
+  --owl-space-2xl: 48px;
+
+  /* ========== 圆角系统 ========== */
+  --owl-radius-xs: 4px;
+  --owl-radius-sm: 6px;
+  --owl-radius-md: 10px;
+  --owl-radius-lg: 16px;
+  --owl-radius-xl: 24px;
+  --owl-radius-full: 9999px;
+
+  /* ========== 阴影系统 (Elevation) ========== */
+  --owl-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.04);
+  --owl-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.06), 0 2px 4px -2px rgba(0, 0, 0, 0.04);
+  --owl-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.04);
+  --owl-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.06);
+
+  /* ========== 过渡动画 ========== */
+  --owl-transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --owl-transition-normal: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  --owl-transition-slow: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* ========== 排版系统 (Major Third 1.25x) ========== */
+  --owl-text-xs: 12px;
+  --owl-text-sm: 13px;
+  --owl-text-base: 14px;
+  --owl-text-md: 16px;
+  --owl-text-lg: 20px;
+  --owl-text-xl: 24px;
+  --owl-text-2xl: 30px;
+
+  --owl-leading-tight: 1.25;
+  --owl-leading-normal: 1.5;
+  --owl-leading-relaxed: 1.75;
+
+  /* ========== 主题色扩展（动态计算） ========== */
+  --owl-primary-bg: color-mix(in srgb, var(--el-color-primary) 8%, white);
+  --owl-primary-bg-light: color-mix(in srgb, var(--el-color-primary) 4%, white);
+  --owl-primary-border: color-mix(in srgb, var(--el-color-primary) 20%, transparent);
+  --owl-primary-border-light: color-mix(in srgb, var(--el-color-primary) 12%, transparent);
+  --owl-primary-text: var(--el-color-primary);
+
+  /* ========== 边框颜色 ========== */
+  --owl-border-color: rgba(0, 0, 0, 0.04);
+  --owl-border-color-strong: rgba(0, 0, 0, 0.08);
+}

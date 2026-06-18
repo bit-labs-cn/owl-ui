@@ -48,7 +48,7 @@
     height: 100vh;
     min-height: 100%;
     margin-left: $sideBarWidth;
-    background: #f0f2f5;
+    background: var(--owl-content-bg, #f8fafc);
 
     /* main-content 属性动画 */
     transition: margin-left var(--pure-transition-duration);
@@ -92,7 +92,7 @@
     height: 100%;
     overflow: visible;
     font-size: 0;
-    background: var(--pure-theme-menu-bg) !important;
+    background: var(--owl-sidebar-gradient, var(--pure-theme-menu-bg)) !important;
     border-right: 1px solid var(--pure-border-color);
 
     /* 展开动画 */
@@ -413,7 +413,7 @@
     justify-content: space-around;
     width: 100%;
     height: 48px;
-    background: var(--pure-theme-menu-bg) !important;
+    background: var(--owl-sidebar-gradient, var(--pure-theme-menu-bg)) !important;
 
     .horizontal-header-left {
       display: flex;
@@ -531,7 +531,7 @@
     .el-sub-menu__title {
       height: 48px;
       line-height: 48px;
-      background: var(--pure-theme-menu-bg) !important;
+      background: var(--owl-sidebar-gradient, var(--pure-theme-menu-bg)) !important;
 
       svg {
         position: static !important;
@@ -724,4 +724,518 @@ body[layout="mix"] {
       }
     }
   }
+}
+
+
+/* ============================================================
+   OwlUI Visual Enhancement - Sidebar Texture & Depth
+   ============================================================ */
+
+/* ---------- Sidebar: gradient bg + noise texture overlay ---------- */
+.sidebar-container {
+  position: relative;
+
+  /* Noise texture overlay via ::before */
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.035;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 256px 256px;
+  }
+
+  /* Ensure menu content sits above the texture */
+  .el-menu,
+  .sidebar-logo-container {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Menu item transitions */
+  .el-menu-item,
+  .el-sub-menu__title {
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    border-radius: 0;
+    margin: 0;
+
+    &:hover {
+      background: var(--pure-theme-menu-hover) !important;
+    }
+  }
+
+  /* Active menu pill background */
+  .el-menu-item.is-active.nest-menu::before {
+    border-radius: 6px !important;
+    inset: 0 10px !important;
+    margin: 5px 0 !important;
+    opacity: 0.12;
+  }
+
+  .is-active.submenu-title-noDropdown.outer-most::before {
+    border-radius: 6px !important;
+    inset: 0 10px !important;
+    margin: 5px 0 !important;
+    opacity: 0.12;
+  }
+}
+
+/* ---------- Content area: subtle dot grid + corner glow ---------- */
+.main-container {
+  position: relative;
+
+  /* Dot grid pattern overlay */
+  &::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.3;
+    background-image: radial-gradient(
+      circle,
+      rgba(0, 0, 0, 0.06) 1px,
+      transparent 1px
+    );
+    background-size: 24px 24px;
+  }
+
+  /* Corner decorative glow */
+  &::after {
+    content: "";
+    position: fixed;
+    top: -120px;
+    right: -80px;
+    width: 400px;
+    height: 400px;
+    z-index: 0;
+    pointer-events: none;
+    border-radius: 50%;
+    background: radial-gradient(
+      circle,
+      color-mix(in srgb, var(--owl-accent-color, #3b82f6) 8%, transparent) 0%,
+      transparent 70%
+    );
+    filter: blur(40px);
+  }
+
+  /* Ensure content sits above textures */
+  .app-main,
+  .app-main-nofixed-header {
+    position: relative;
+    z-index: 1;
+  }
+}
+
+/* Dark mode: adjust dot grid opacity */
+html.dark .main-container::before {
+  opacity: 0.15;
+  background-image: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.12) 1px,
+    transparent 1px
+  );
+}
+
+html.dark .main-container::after {
+  opacity: 0.6;
+}
+
+/* Dark mode sidebar noise texture */
+html.dark .sidebar-container::before {
+  opacity: 0.04;
+}
+
+/* ---------- Navbar bottom accent line ---------- */
+.navbar {
+  position: relative;
+
+  &::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      var(--owl-accent-color, var(--el-color-primary)) 30%,
+      var(--owl-accent-color, var(--el-color-primary)) 70%,
+      transparent 100%
+    );
+    opacity: 0.15;
+  }
+}
+
+/* ---------- Tags-view 增强 ---------- */
+.tags-view {
+  .scroll-item {
+    .chrome-tab {
+      transition: all var(--owl-transition-fast);
+      border-radius: var(--owl-radius-sm);
+      margin: 0 2px;
+
+      &:hover {
+        .tag-title {
+          color: var(--owl-accent-color, var(--el-color-primary));
+        }
+      }
+
+      &.active {
+        .tag-title {
+          color: var(--owl-accent-color, var(--el-color-primary));
+          font-weight: 600;
+        }
+
+        .chrome-tab__bg {
+          color: var(--owl-primary-bg, rgba(64, 145, 247, 0.08));
+        }
+      }
+    }
+  }
+}
+
+/* ---------- 面包屑增强 ---------- */
+.el-breadcrumb {
+  .el-breadcrumb__inner {
+    transition: color var(--owl-transition-fast);
+
+    &.is-link:hover {
+      color: var(--owl-accent-color, var(--el-color-primary)) !important;
+    }
+  }
+
+  .el-breadcrumb__separator {
+    opacity: 0.4;
+  }
+}
+
+/* ============================================================
+   OwlUI Light Sidebar Fix - Active Menu Text Visibility
+   
+   Problem: hardcoded `color: #fff` on active items is invisible
+   on light sidebar backgrounds.
+   
+   Solution (Linear/Notion pattern):
+   - Active text → accent color (not white)
+   - Active bg  → subtle accent-tinted fill
+   - Applies to ALL light-mode themes (not just "light")
+   ============================================================ */
+
+html:not(.dark) {
+
+  /* --- Vertical sidebar active items --- */
+  .sidebar-container {
+
+    /* Active nested menu item text */
+    .el-menu-item.is-active.nest-menu > * {
+      color: var(--pure-theme-sub-menu-active-text) !important;
+    }
+
+    /* Active top-level item text (no children) */
+    .is-active.submenu-title-noDropdown.outer-most > * {
+      color: var(--pure-theme-sub-menu-active-text) !important;
+    }
+
+    /* Active icon color */
+    .is-active .sub-menu-icon,
+    .is-active .el-icon,
+    .is-active svg {
+      color: var(--pure-theme-sub-menu-active-text) !important;
+    }
+
+    /* Pill background: visible accent tint */
+    .el-menu-item.is-active.nest-menu::before,
+    .is-active.submenu-title-noDropdown.outer-most::before {
+      background: var(--owl-accent-color, var(--el-color-primary)) !important;
+      opacity: 0.12 !important;
+    }
+
+    /* Sub-menu active text override */
+    .is-active > .el-sub-menu__title {
+      color: var(--pure-theme-sub-menu-active-text) !important;
+    }
+  }
+
+  /* --- Horizontal menu active items --- */
+  .el-menu--horizontal {
+    .el-menu-item.is-active.nest-menu > * {
+      color: var(--pure-theme-sub-menu-active-text) !important;
+    }
+  }
+
+  /* --- Vertical popup menu (collapsed sidebar) --- */
+  .el-menu--vertical {
+    .el-menu-item.is-active.nest-menu > * {
+      color: var(--pure-theme-sub-menu-active-text) !important;
+    }
+  }
+
+  /* --- Logo area text in light sidebar --- */
+  .sidebar-logo-container {
+    background: var(--pure-theme-sidebar-logo) !important;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+
+    span {
+      color: #1e293b !important;
+    }
+  }
+}
+
+
+/* ============================================================
+   OwlUI Vercel-Style Menu Design
+   
+   Features:
+   1. Accent-colored pill background for active items
+   2. Rounded corners on the left side (modern look)
+   3. Enhanced hover states with subtle animations
+   4. Better visual hierarchy with spacing
+   5. Icon color changes to accent on active
+   ============================================================ */
+
+html:not(.dark) {
+  .sidebar-container {
+    /* Menu items: add horizontal padding for pill effect */
+    .el-menu-item,
+    .el-sub-menu__title {
+      margin: 4px 12px;
+      border-radius: 8px;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
+      &:hover {
+        background: color-mix(in srgb, var(--owl-accent-color) 8%, transparent) !important;
+      }
+    }
+
+    /* Active menu items: solid accent background */
+    .el-menu-item.is-active.submenu-title-noDropdown.outer-most {
+      background: linear-gradient(135deg, var(--owl-accent-color) 0%, var(--owl-accent-hover) 100%) !important;
+      color: #ffffff !important;
+      font-weight: 600;
+      margin: 0 !important;
+      border-radius: 0 !important;
+
+      > * {
+        color: #ffffff !important;
+      }
+
+      .sub-menu-icon {
+        color: #ffffff !important;
+      }
+
+      /* Remove the old ::before pill, we're using real background now */
+      &::before {
+        display: none;
+      }
+
+      &:hover {
+        background: linear-gradient(135deg, color-mix(in srgb, var(--owl-accent-color) 85%, white) 0%, color-mix(in srgb, var(--owl-accent-hover) 85%, white) 100%) !important;
+      }
+    }
+
+    /* Active nested menu items (inside sub-menus) */
+    .el-menu-item.is-active.nest-menu {
+      background: linear-gradient(135deg, color-mix(in srgb, var(--owl-accent-color) 12%, transparent) 0%, color-mix(in srgb, var(--owl-accent-hover) 8%, transparent) 100%) !important;
+      color: var(--pure-theme-sub-menu-active-text) !important;
+      font-weight: 600;
+
+      > * {
+        color: var(--pure-theme-sub-menu-active-text) !important;
+      }
+
+      .sub-menu-icon {
+        color: var(--owl-accent-color) !important;
+      }
+
+      &::before {
+        display: none;
+      }
+
+      &:hover {
+        background: linear-gradient(135deg, color-mix(in srgb, var(--owl-accent-color) 18%, transparent) 0%, color-mix(in srgb, var(--owl-accent-hover) 14%, transparent) 100%) !important;
+      }
+    }
+
+    /* Sub-menu background: slightly darker */
+    .el-menu .el-menu--inline {
+      background-color: var(--pure-theme-sub-menu-bg) !important;
+    }
+
+    /* Sub-menu title when expanded */
+    .el-sub-menu.is-opened > .el-sub-menu__title {
+      color: var(--pure-theme-sub-menu-active-text) !important;
+
+      .sub-menu-icon {
+        color: var(--pure-theme-sub-menu-active-text) !important;
+      }
+    }
+
+    /* Collapsed sidebar: center items */
+    .el-menu--collapse {
+      .el-menu-item,
+      .el-sub-menu__title {
+        margin: 4px 8px;
+      }
+    }
+  }
+}
+
+/* Dark mode: adjust for dark backgrounds */
+html.dark {
+  .sidebar-container {
+    .el-menu-item,
+    .el-sub-menu__title {
+      margin: 4px 12px;
+      border-radius: 8px;
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.08) !important;
+      }
+    }
+
+    .el-menu-item.is-active.submenu-title-noDropdown.outer-most {
+      background: linear-gradient(135deg, var(--owl-accent-color) 0%, var(--owl-accent-hover) 100%) !important;
+      color: #ffffff !important;
+      font-weight: 600;
+      margin: 0 !important;
+      border-radius: 0 !important;
+
+      > * {
+        color: #ffffff !important;
+      }
+
+      .sub-menu-icon {
+        color: #ffffff !important;
+      }
+
+      &::before {
+        display: none;
+      }
+
+      &:hover {
+        background: linear-gradient(135deg, color-mix(in srgb, var(--owl-accent-color) 85%, white) 0%, color-mix(in srgb, var(--owl-accent-hover) 85%, white) 100%) !important;
+      }
+    }
+
+    .el-menu-item.is-active.nest-menu {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.08) 100%) !important;
+      color: #f1f5f9 !important;
+      font-weight: 600;
+
+      > * {
+        color: #f1f5f9 !important;
+      }
+
+      .sub-menu-icon {
+        color: var(--owl-accent-color) !important;
+      }
+
+      &::before {
+        display: none;
+      }
+
+      &:hover {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.18) 0%, rgba(255, 255, 255, 0.14) 100%) !important;
+      }
+    }
+
+    .el-sub-menu.is-opened > .el-sub-menu__title {
+      color: #f1f5f9 !important;
+
+      .sub-menu-icon {
+        color: #f1f5f9 !important;
+      }
+    }
+
+    .el-menu--collapse {
+      .el-menu-item,
+      .el-sub-menu__title {
+        margin: 4px 8px;
+      }
+    }
+  }
+}
+
+/* ============================================================
+   OwlUI Vercel-Style: Logo and Collapse Button
+   ============================================================ */
+
+/* Logo area: clean, minimal */
+.sidebar-logo-container {
+  padding: 0 16px !important;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.04) !important;
+
+  .sidebar-logo-link {
+    display: flex;
+    align-items: center;
+    padding: 0 !important;
+    gap: 12px;
+  }
+
+  img {
+    height: 28px !important;
+    width: auto;
+  }
+
+  .sidebar-title {
+    font-size: 16px !important;
+    font-weight: 700 !important;
+    letter-spacing: -0.02em;
+    margin: 0 !important;
+    height: auto !important;
+    line-height: 1 !important;
+  }
+}
+
+html.dark .sidebar-logo-container {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;
+}
+
+/* Collapse button: subtle, modern */
+.left-collapse {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  margin: 8px 12px;
+  border-radius: 8px;
+  transition: all 0.2s;
+  cursor: pointer;
+  box-shadow: none !important;
+}
+
+.left-collapse:hover {
+  background: color-mix(in srgb, var(--owl-accent-color) 8%, transparent);
+}
+
+html.dark .left-collapse:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* Sub-menu arrow icon: modern chevron style */
+.el-sub-menu__icon-arrow {
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.el-sub-menu.is-opened > .el-sub-menu__title .el-sub-menu__icon-arrow {
+  transform: rotate(180deg) !important;
+}
+
+/* Scrollbar: hide when not scrolling */
+.sidebar-container .el-scrollbar__bar.is-vertical {
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.sidebar-container:hover .el-scrollbar__bar.is-vertical {
+  opacity: 1;
 }

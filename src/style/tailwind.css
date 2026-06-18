@@ -18,4 +18,46 @@
   .navbar-bg-hover {
     @apply dark:text-white dark:hover:!bg-[#242424];
   }
+
+  /* OwlUI Design Token Utilities */
+  .owl-card {
+    border-radius: var(--owl-radius-md);
+    border: 1px solid var(--owl-border-color);
+    box-shadow: var(--owl-shadow-sm);
+    transition:
+      box-shadow var(--owl-transition-normal),
+      transform var(--owl-transition-normal);
+  }
+
+  .owl-card:hover {
+    box-shadow: var(--owl-shadow-md);
+    transform: translateY(-2px);
+  }
+
+  .owl-pill {
+    border-radius: var(--owl-radius-full);
+    padding: 4px 12px;
+    font-size: var(--owl-text-sm);
+    font-weight: 500;
+  }
+
+  .owl-accent-bg {
+    background-color: var(--owl-primary-bg);
+  }
+
+  .owl-accent-text {
+    color: var(--owl-primary-text);
+  }
+
+  .owl-section-title {
+    font-size: var(--owl-text-md);
+    font-weight: 600;
+    line-height: var(--owl-leading-tight);
+    color: var(--el-text-color-primary);
+  }
+
+  .owl-subtitle {
+    font-size: var(--owl-text-sm);
+    color: var(--el-text-color-secondary);
+  }
 }

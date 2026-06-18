@@ -1,95 +1,193 @@
-/* 亮白色 */
+/* ============================================================
+   OwlUI Theme System - Professional Color Design
+   
+   Design Philosophy:
+   1. Sidebar uses LIGHT-TONE backgrounds (not dark)
+      to reduce contrast with the light content area
+   2. Theme identity comes from ACCENT color, not background
+   3. Text hierarchy via color weight
+   4. All colors from same hue family for harmony
+   
+   Inspired by: Linear, Vercel, Notion, Arc Browser, Raycast
+   ============================================================ */
+
+/* ---------- Light (亮白色) ---------- */
 html[data-theme="light"] {
-  --pure-theme-sub-menu-active-text: #000000d9;
-  --pure-theme-menu-bg: #fff;
-  --pure-theme-menu-hover: #f6f6f6;
-  --pure-theme-sub-menu-bg: #fff;
-  --pure-theme-menu-text: rgb(0 0 0 / 60%);
-  --pure-theme-sidebar-logo: #fff;
-  --pure-theme-menu-title-hover: #000;
-  --pure-theme-menu-active-before: #4091f7;
+  --pure-theme-sub-menu-active-text: #1e293b;
+  --pure-theme-menu-bg: #ffffff;
+  --pure-theme-menu-hover: #f1f5f9;
+  --pure-theme-sub-menu-bg: #fafbfc;
+  --pure-theme-menu-text: #64748b;
+  --pure-theme-sidebar-logo: #ffffff;
+  --pure-theme-menu-title-hover: #0f172a;
+  --pure-theme-menu-active-before: #3b82f6;
+  --owl-sidebar-gradient: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
 }
 
-/* 道奇蓝 */
+/* ---------- Midnight (午夜蓝) ---------- */
 html[data-theme="default"] {
-  --pure-theme-sub-menu-active-text: #fff;
-  --pure-theme-menu-bg: #001529;
-  --pure-theme-menu-hover: rgb(64 145 247 / 15%);
-  --pure-theme-sub-menu-bg: #0f0303;
-  --pure-theme-menu-text: rgb(254 254 254 / 65%);
-  --pure-theme-sidebar-logo: #002140;
-  --pure-theme-menu-title-hover: #fff;
-  --pure-theme-menu-active-before: #4091f7;
+  --pure-theme-sub-menu-active-text: #1e40af;
+  --pure-theme-menu-bg: #f0f4f8;
+  --pure-theme-menu-hover: rgba(59, 130, 246, 0.06);
+  --pure-theme-sub-menu-bg: #e8eef5;
+  --pure-theme-menu-text: #475569;
+  --pure-theme-sidebar-logo: #f0f4f8;
+  --pure-theme-menu-title-hover: #1e3a5f;
+  --pure-theme-menu-active-before: #3b82f6;
+  --owl-sidebar-gradient: linear-gradient(180deg, #f4f7fb 0%, #ecf0f6 50%, #e4eaf2 100%);
 }
 
-/* 深紫罗兰色 */
+/* ---------- Graphite (石墨灰) ---------- */
 html[data-theme="saucePurple"] {
-  --pure-theme-sub-menu-active-text: #fff;
-  --pure-theme-menu-bg: #130824;
-  --pure-theme-menu-hover: rgb(105 58 201 / 15%);
-  --pure-theme-sub-menu-bg: #000;
-  --pure-theme-menu-text: #7a80b4;
-  --pure-theme-sidebar-logo: #1f0c38;
-  --pure-theme-menu-title-hover: #fff;
-  --pure-theme-menu-active-before: #693ac9;
+  --pure-theme-sub-menu-active-text: #6d28d9;
+  --pure-theme-menu-bg: #f5f3ff;
+  --pure-theme-menu-hover: rgba(139, 92, 246, 0.06);
+  --pure-theme-sub-menu-bg: #ede9fe;
+  --pure-theme-menu-text: #6b7280;
+  --pure-theme-sidebar-logo: #f5f3ff;
+  --pure-theme-menu-title-hover: #4c1d95;
+  --pure-theme-menu-active-before: #8b5cf6;
+  --owl-sidebar-gradient: linear-gradient(180deg, #f8f6ff 0%, #f0ecfe 50%, #e8e3fc 100%);
 }
 
-/* 深粉色 */
+/* ---------- Rose (玫瑰粉) ---------- */
 html[data-theme="pink"] {
-  --pure-theme-sub-menu-active-text: #fff;
-  --pure-theme-menu-bg: #28081a;
-  --pure-theme-menu-hover: rgb(216 68 147 / 15%);
-  --pure-theme-sub-menu-bg: #000;
-  --pure-theme-menu-text: #7a80b4;
-  --pure-theme-sidebar-logo: #3f0d29;
-  --pure-theme-menu-title-hover: #fff;
-  --pure-theme-menu-active-before: #d84493;
+  --pure-theme-sub-menu-active-text: #be185d;
+  --pure-theme-menu-bg: #fdf2f8;
+  --pure-theme-menu-hover: rgba(236, 72, 153, 0.06);
+  --pure-theme-sub-menu-bg: #fce7f3;
+  --pure-theme-menu-text: #6b7280;
+  --pure-theme-sidebar-logo: #fdf2f8;
+  --pure-theme-menu-title-hover: #9d174d;
+  --pure-theme-menu-active-before: #ec4899;
+  --owl-sidebar-gradient: linear-gradient(180deg, #fef6fa 0%, #fceef5 50%, #f9e5f0 100%);
 }
 
-/* 猩红色 */
+/* ---------- Ember (琥珀红) ---------- */
 html[data-theme="dusk"] {
-  --pure-theme-sub-menu-active-text: #fff;
-  --pure-theme-menu-bg: #2a0608;
-  --pure-theme-menu-hover: rgb(225 60 57 / 15%);
-  --pure-theme-sub-menu-bg: #000;
-  --pure-theme-menu-text: rgb(254 254 254 / 65.1%);
-  --pure-theme-sidebar-logo: #42090c;
-  --pure-theme-menu-title-hover: #fff;
-  --pure-theme-menu-active-before: #e13c39;
+  --pure-theme-sub-menu-active-text: #b91c1c;
+  --pure-theme-menu-bg: #fef2f2;
+  --pure-theme-menu-hover: rgba(239, 68, 68, 0.06);
+  --pure-theme-sub-menu-bg: #fee2e2;
+  --pure-theme-menu-text: #6b7280;
+  --pure-theme-sidebar-logo: #fef2f2;
+  --pure-theme-menu-title-hover: #991b1b;
+  --pure-theme-menu-active-before: #ef4444;
+  --owl-sidebar-gradient: linear-gradient(180deg, #fef6f6 0%, #fceeed 50%, #f9e5e4 100%);
 }
 
-/* 橙红色 */
+/* ---------- Sunset (日落橙) ---------- */
 html[data-theme="volcano"] {
-  --pure-theme-sub-menu-active-text: #fff;
-  --pure-theme-menu-bg: #2b0e05;
-  --pure-theme-menu-hover: rgb(232 95 51 / 15%);
-  --pure-theme-sub-menu-bg: #0f0603;
-  --pure-theme-menu-text: rgb(254 254 254 / 65%);
-  --pure-theme-sidebar-logo: #441708;
-  --pure-theme-menu-title-hover: #fff;
-  --pure-theme-menu-active-before: #e85f33;
+  --pure-theme-sub-menu-active-text: #c2410c;
+  --pure-theme-menu-bg: #fff7ed;
+  --pure-theme-menu-hover: rgba(249, 115, 22, 0.06);
+  --pure-theme-sub-menu-bg: #ffedd5;
+  --pure-theme-menu-text: #6b7280;
+  --pure-theme-sidebar-logo: #fff7ed;
+  --pure-theme-menu-title-hover: #9a3412;
+  --pure-theme-menu-active-before: #f97316;
+  --owl-sidebar-gradient: linear-gradient(180deg, #fffaf3 0%, #fef2e8 50%, #fdead9 100%);
 }
 
-/* 绿宝石 */
+/* ---------- Teal (青碧) ---------- */
 html[data-theme="mingQing"] {
-  --pure-theme-sub-menu-active-text: #fff;
-  --pure-theme-menu-bg: #032121;
-  --pure-theme-menu-hover: rgb(89 191 193 / 15%);
-  --pure-theme-sub-menu-bg: #000;
-  --pure-theme-menu-text: #7a80b4;
-  --pure-theme-sidebar-logo: #053434;
-  --pure-theme-menu-title-hover: #fff;
-  --pure-theme-menu-active-before: #59bfc1;
+  --pure-theme-sub-menu-active-text: #0f766e;
+  --pure-theme-menu-bg: #f0fdfa;
+  --pure-theme-menu-hover: rgba(20, 184, 166, 0.06);
+  --pure-theme-sub-menu-bg: #ccfbf1;
+  --pure-theme-menu-text: #6b7280;
+  --pure-theme-sidebar-logo: #f0fdfa;
+  --pure-theme-menu-title-hover: #115e59;
+  --pure-theme-menu-active-before: #14b8a6;
+  --owl-sidebar-gradient: linear-gradient(180deg, #f4fefc 0%, #e8faf6 50%, #ddf7f1 100%);
 }
 
-/* 酸橙绿 */
+/* ---------- Forest (森林绿) ---------- */
 html[data-theme="auroraGreen"] {
-  --pure-theme-sub-menu-active-text: #fff;
-  --pure-theme-menu-bg: #0b1e15;
-  --pure-theme-menu-hover: rgb(96 172 128 / 15%);
-  --pure-theme-sub-menu-bg: #000;
-  --pure-theme-menu-text: #7a80b4;
-  --pure-theme-sidebar-logo: #112f21;
-  --pure-theme-menu-title-hover: #fff;
-  --pure-theme-menu-active-before: #60ac80;
+  --pure-theme-sub-menu-active-text: #15803d;
+  --pure-theme-menu-bg: #f0fdf4;
+  --pure-theme-menu-hover: rgba(34, 197, 94, 0.06);
+  --pure-theme-sub-menu-bg: #dcfce7;
+  --pure-theme-menu-text: #6b7280;
+  --pure-theme-sidebar-logo: #f0fdf4;
+  --pure-theme-menu-title-hover: #166534;
+  --pure-theme-menu-active-before: #22c55e;
+  --owl-sidebar-gradient: linear-gradient(180deg, #f4fef7 0%, #e8faef 50%, #ddf6e5 100%);
+}
+
+
+/* ============================================================
+   OwlUI Theme Accent - Content Area Color Penetration
+   ============================================================ */
+
+html[data-theme="light"] {
+  --owl-accent-color: #3b82f6;
+  --owl-accent-hover: #60a5fa;
+  --owl-accent-active: #2563eb;
+  --owl-content-bg: #f8fafc;
+}
+
+html[data-theme="default"] {
+  --owl-accent-color: #3b82f6;
+  --owl-accent-hover: #60a5fa;
+  --owl-accent-active: #2563eb;
+  --owl-content-bg: #f0f4f8;
+}
+
+html[data-theme="saucePurple"] {
+  --owl-accent-color: #8b5cf6;
+  --owl-accent-hover: #a78bfa;
+  --owl-accent-active: #7c3aed;
+  --owl-content-bg: #faf8ff;
+}
+
+html[data-theme="pink"] {
+  --owl-accent-color: #ec4899;
+  --owl-accent-hover: #f472b6;
+  --owl-accent-active: #db2777;
+  --owl-content-bg: #fdf2f8;
+}
+
+html[data-theme="dusk"] {
+  --owl-accent-color: #ef4444;
+  --owl-accent-hover: #f87171;
+  --owl-accent-active: #dc2626;
+  --owl-content-bg: #fef2f2;
+}
+
+html[data-theme="volcano"] {
+  --owl-accent-color: #f97316;
+  --owl-accent-hover: #fb923c;
+  --owl-accent-active: #ea580c;
+  --owl-content-bg: #fff7ed;
+}
+
+html[data-theme="mingQing"] {
+  --owl-accent-color: #14b8a6;
+  --owl-accent-hover: #2dd4bf;
+  --owl-accent-active: #0d9488;
+  --owl-content-bg: #f0fdfa;
+}
+
+html[data-theme="auroraGreen"] {
+  --owl-accent-color: #22c55e;
+  --owl-accent-hover: #4ade80;
+  --owl-accent-active: #16a34a;
+  --owl-content-bg: #f0fdf4;
+}
+
+/* Accent color penetration into Element Plus primary */
+html:not([data-theme="light"]) {
+  --el-color-primary: var(--owl-accent-color);
+  --el-color-primary-light-3: var(--owl-accent-hover);
+  --el-color-primary-light-5: color-mix(in srgb, var(--owl-accent-color) 50%, white);
+  --el-color-primary-light-7: color-mix(in srgb, var(--owl-accent-color) 30%, white);
+  --el-color-primary-light-8: color-mix(in srgb, var(--owl-accent-color) 20%, white);
+  --el-color-primary-light-9: color-mix(in srgb, var(--owl-accent-color) 10%, white);
+  --el-color-primary-dark-2: var(--owl-accent-active);
+}
+
+/* Content area background */
+.main-container {
+  background: var(--owl-content-bg, #f8fafc) !important;
 }

@@ -13,22 +13,22 @@ import { darken, lighten, useGlobal, storageLocal } from "@pureadmin/utils";
 export function useDataThemeChange() {
   const { layoutTheme, layout } = useLayout();
   const themeColors = ref<Array<themeColorsType>>([
-    /* 亮白色 */
+    /* 亮白色 - Light */
     { color: "#ffffff", themeColor: "light" },
-    /* 道奇蓝 */
-    { color: "#1b2a47", themeColor: "default" },
-    /* 深紫罗兰色 */
-    { color: "#722ed1", themeColor: "saucePurple" },
-    /* 深粉色 */
-    { color: "#eb2f96", themeColor: "pink" },
-    /* 猩红色 */
-    { color: "#f5222d", themeColor: "dusk" },
-    /* 橙红色 */
-    { color: "#fa541c", themeColor: "volcano" },
-    /* 绿宝石 */
-    { color: "#13c2c2", themeColor: "mingQing" },
-    /* 酸橙绿 */
-    { color: "#52c41a", themeColor: "auroraGreen" }
+    /* 午夜蓝 - Midnight */
+    { color: "#3b82f6", themeColor: "default" },
+    /* 石墨灰 - Graphite */
+    { color: "#8b5cf6", themeColor: "saucePurple" },
+    /* 玫瑰粉 - Rose */
+    { color: "#ec4899", themeColor: "pink" },
+    /* 琥珀红 - Ember */
+    { color: "#ef4444", themeColor: "dusk" },
+    /* 日落橙 - Sunset */
+    { color: "#f97316", themeColor: "volcano" },
+    /* 青碧 - Teal */
+    { color: "#14b8a6", themeColor: "mingQing" },
+    /* 森林绿 - Forest */
+    { color: "#22c55e", themeColor: "auroraGreen" }
   ]);
 
   const { $storage } = useGlobal<GlobalPropertiesApi>();
