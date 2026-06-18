@@ -78,7 +78,7 @@ const getThemeColorStyle = computed(() => {
 /** 当网页整体为暗色风格时不显示亮白色主题配色切换选项 */
 const showThemeColors = computed(() => {
   return themeColor => {
-    return themeColor === "light" && isDark.value ? false : true;
+    return themeColor === "clean" && isDark.value ? false : true;
   };
 });
 
@@ -174,12 +174,12 @@ const getThemeColor = computed(() => {
   return current => {
     if (
       current === layoutTheme.value.theme &&
-      layoutTheme.value.theme !== "light"
+      layoutTheme.value.theme !== "clean"
     ) {
       return "#fff";
     } else if (
       current === layoutTheme.value.theme &&
-      layoutTheme.value.theme === "light"
+      layoutTheme.value.theme === "clean"
     ) {
       return "#1d2b45";
     } else {
@@ -341,6 +341,7 @@ onUnmounted(() => removeMatchMedia);
           v-for="(item, index) in themeColors"
           v-show="showThemeColors(item.themeColor)"
           :key="index"
+          :title="item.title"
           :style="getThemeColorStyle(item.color)"
           @click="setLayoutThemeColor(item.themeColor)"
         >
@@ -540,14 +541,23 @@ onUnmounted(() => removeMatchMedia);
 }
 
 .theme-color {
-  height: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 0;
+  list-style: none;
 
   li {
-    float: left;
+    width: 20px;
     height: 20px;
-    margin-right: 8px;
     cursor: pointer;
     border-radius: 4px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+    &:hover {
+      transform: scale(1.2);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    }
 
     &:nth-child(1) {
       border: 1px solid #ddd;

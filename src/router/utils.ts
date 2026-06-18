@@ -361,22 +361,28 @@ function initRouter() {
         resolve(router);
       });
     } else {
-      return new Promise(resolve => {
-        userAPI.getAsyncRoutes().then(({ data }) => {
-          handleAsyncRoutes(cloneDeep(data));
-          storageLocal().setItem(key, data);
-          resolve(router);
-        });
+      return new Promise((resolve, reject) => {
+        userAPI
+          .getAsyncRoutes()
+          .then(({ data }) => {
+            handleAsyncRoutes(cloneDeep(data));
+            storageLocal().setItem(key, data);
+            resolve(router);
+          })
+          .catch(reject);
       });
     }
   } else {
     // 未开启动态路由缓存时，清理历史缓存，避免旧会话污染路由结构
     storageLocal().removeItem(key);
-    return new Promise(resolve => {
-      userAPI.getAsyncRoutes().then(({ data }) => {
-        handleAsyncRoutes(cloneDeep(data));
-        resolve(router);
-      });
+    return new Promise((resolve, reject) => {
+      userAPI
+        .getAsyncRoutes()
+        .then(({ data }) => {
+          handleAsyncRoutes(cloneDeep(data));
+          resolve(router);
+        })
+        .catch(reject);
     });
   }
 }

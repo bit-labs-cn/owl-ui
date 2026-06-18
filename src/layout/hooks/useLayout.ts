@@ -24,11 +24,11 @@ export function useLayout() {
     if (!$storage.layout) {
       $storage.layout = {
         layout: $config?.Layout ?? "vertical",
-        theme: $config?.Theme ?? "light",
+        theme: $config?.Theme ?? "clean",
         darkMode: $config?.DarkMode ?? false,
         sidebarStatus: $config?.SidebarStatus ?? true,
         epThemeColor: $config?.EpThemeColor ?? "#409EFF",
-        themeColor: $config?.Theme ?? "light",
+        themeColor: $config?.Theme ?? "clean",
         overallStyle: $config?.OverallStyle ?? "light"
       };
     }

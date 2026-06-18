@@ -85,6 +85,7 @@ export type menuType = {
 export type themeColorsType = {
   color: string;
   themeColor: string;
+  title?: string;
 };
 
 export interface scrollbarDomType extends HTMLElement {

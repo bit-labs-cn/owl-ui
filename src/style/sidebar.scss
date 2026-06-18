@@ -92,7 +92,7 @@
     height: 100%;
     overflow: visible;
     font-size: 0;
-    background: var(--owl-sidebar-gradient, var(--pure-theme-menu-bg)) !important;
+    background: var(--pure-theme-menu-bg) !important;
     border-right: 1px solid var(--pure-border-color);
 
     /* 展开动画 */
@@ -108,8 +108,7 @@
 
     &.has-logo {
       .el-scrollbar.pc {
-        /* logo: 48px、leftCollapse: 40px、leftCollapse-shadow: 4px */
-        height: calc(100% - 92px);
+        height: calc(100% - 48px);
       }
 
       /* logo: 48px */
@@ -120,8 +119,7 @@
 
     &.no-logo {
       .el-scrollbar.pc {
-        /* leftCollapse: 40px、leftCollapse-shadow: 4px */
-        height: calc(100% - 44px);
+        height: calc(100% - 48px);
       }
 
       .el-scrollbar.mobile {
@@ -200,9 +198,11 @@
 
     .el-menu .el-menu--inline .el-sub-menu__title,
     & .el-sub-menu .el-menu-item {
-      min-width: $sideBarWidth !important;
+      width: 100% !important;
+      min-width: unset !important;
       font-size: 14px;
-      background-color: var(--pure-theme-sub-menu-bg) !important;
+      background-color: transparent !important;
+      box-sizing: border-box;
     }
 
     /* 有子集的激活菜单左侧小竖条 */
@@ -280,7 +280,7 @@
     .el-menu .el-sub-menu__title {
       min-width: $sideBarWidth !important;
       font-size: 14px;
-      background-color: var(--pure-theme-sub-menu-bg) !important;
+      background-color: transparent !important;
     }
 
     .el-menu-item,
@@ -288,7 +288,7 @@
       height: 50px;
       line-height: 50px;
       color: var(--pure-theme-menu-text);
-      background-color: var(--pure-theme-sub-menu-bg);
+      background-color: transparent;
 
       &:hover {
         color: var(--pure-theme-menu-title-hover) !important;
@@ -413,7 +413,7 @@
     justify-content: space-around;
     width: 100%;
     height: 48px;
-    background: var(--owl-sidebar-gradient, var(--pure-theme-menu-bg)) !important;
+    background: var(--pure-theme-menu-bg) !important;
 
     .horizontal-header-left {
       display: flex;
@@ -531,7 +531,7 @@
     .el-sub-menu__title {
       height: 48px;
       line-height: 48px;
-      background: var(--owl-sidebar-gradient, var(--pure-theme-menu-bg)) !important;
+      background: var(--pure-theme-menu-bg) !important;
 
       svg {
         position: static !important;
@@ -728,103 +728,32 @@ body[layout="mix"] {
 
 
 /* ============================================================
-   OwlUI Visual Enhancement - Sidebar Texture & Depth
+/* ============================================================
+   OwlUI Sidebar - Clean Background
    ============================================================ */
 
-/* ---------- Sidebar: gradient bg + noise texture overlay ---------- */
 .sidebar-container {
   position: relative;
 
-  /* Noise texture overlay via ::before */
-  &::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    z-index: 0;
-    pointer-events: none;
-    opacity: 0.035;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-    background-size: 256px 256px;
-  }
-
-  /* Ensure menu content sits above the texture */
   .el-menu,
   .sidebar-logo-container {
     position: relative;
     z-index: 1;
   }
 
-  /* Menu item transitions */
   .el-menu-item,
   .el-sub-menu__title {
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
-    border-radius: 0;
-    margin: 0;
 
     &:hover {
       background: var(--pure-theme-menu-hover) !important;
     }
   }
-
-  /* Active menu pill background */
-  .el-menu-item.is-active.nest-menu::before {
-    border-radius: 6px !important;
-    inset: 0 10px !important;
-    margin: 5px 0 !important;
-    opacity: 0.12;
-  }
-
-  .is-active.submenu-title-noDropdown.outer-most::before {
-    border-radius: 6px !important;
-    inset: 0 10px !important;
-    margin: 5px 0 !important;
-    opacity: 0.12;
-  }
 }
 
-/* ---------- Content area: subtle dot grid + corner glow ---------- */
 .main-container {
   position: relative;
 
-  /* Dot grid pattern overlay */
-  &::before {
-    content: "";
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 0;
-    pointer-events: none;
-    opacity: 0.3;
-    background-image: radial-gradient(
-      circle,
-      rgba(0, 0, 0, 0.06) 1px,
-      transparent 1px
-    );
-    background-size: 24px 24px;
-  }
-
-  /* Corner decorative glow */
-  &::after {
-    content: "";
-    position: fixed;
-    top: -120px;
-    right: -80px;
-    width: 400px;
-    height: 400px;
-    z-index: 0;
-    pointer-events: none;
-    border-radius: 50%;
-    background: radial-gradient(
-      circle,
-      color-mix(in srgb, var(--owl-accent-color, #3b82f6) 8%, transparent) 0%,
-      transparent 70%
-    );
-    filter: blur(40px);
-  }
-
-  /* Ensure content sits above textures */
   .app-main,
   .app-main-nofixed-header {
     position: relative;
@@ -832,26 +761,7 @@ body[layout="mix"] {
   }
 }
 
-/* Dark mode: adjust dot grid opacity */
-html.dark .main-container::before {
-  opacity: 0.15;
-  background-image: radial-gradient(
-    circle,
-    rgba(255, 255, 255, 0.12) 1px,
-    transparent 1px
-  );
-}
-
-html.dark .main-container::after {
-  opacity: 0.6;
-}
-
-/* Dark mode sidebar noise texture */
-html.dark .sidebar-container::before {
-  opacity: 0.04;
-}
-
-/* ---------- Navbar bottom accent line ---------- */
+/* ---------- Navbar bottom divider (flat, no gradient) ---------- */
 .navbar {
   position: relative;
 
@@ -862,14 +772,7 @@ html.dark .sidebar-container::before {
     left: 0;
     right: 0;
     height: 1px;
-    background: linear-gradient(
-      90deg,
-      transparent 0%,
-      var(--owl-accent-color, var(--el-color-primary)) 30%,
-      var(--owl-accent-color, var(--el-color-primary)) 70%,
-      transparent 100%
-    );
-    opacity: 0.15;
+    background: var(--pure-border-color);
   }
 }
 
@@ -950,8 +853,7 @@ html:not(.dark) {
       color: var(--pure-theme-sub-menu-active-text) !important;
     }
 
-    /* Pill background: visible accent tint */
-    .el-menu-item.is-active.nest-menu::before,
+    /* Pill background: visible accent tint (top-level only; nest uses Vercel block) */
     .is-active.submenu-title-noDropdown.outer-most::before {
       background: var(--owl-accent-color, var(--el-color-primary)) !important;
       opacity: 0.12 !important;
@@ -1014,44 +916,26 @@ html:not(.dark) {
       }
     }
 
-    /* Active menu items: solid accent background */
-    .el-menu-item.is-active.submenu-title-noDropdown.outer-most {
-      background: linear-gradient(135deg, var(--owl-accent-color) 0%, var(--owl-accent-hover) 100%) !important;
-      color: #ffffff !important;
-      font-weight: 600;
-      margin: 0 !important;
-      border-radius: 0 !important;
-
-      > * {
-        color: #ffffff !important;
-      }
-
-      .sub-menu-icon {
-        color: #ffffff !important;
-      }
-
-      /* Remove the old ::before pill, we're using real background now */
-      &::before {
-        display: none;
-      }
-
-      &:hover {
-        background: linear-gradient(135deg, color-mix(in srgb, var(--owl-accent-color) 85%, white) 0%, color-mix(in srgb, var(--owl-accent-hover) 85%, white) 100%) !important;
-      }
+    /* Nested items use ::before pill — keep item bg transparent on hover */
+    .el-sub-menu .el-menu-item:hover {
+      background: transparent !important;
     }
 
-    /* Active nested menu items (inside sub-menus) */
-    .el-menu-item.is-active.nest-menu {
-      background: linear-gradient(135deg, color-mix(in srgb, var(--owl-accent-color) 12%, transparent) 0%, color-mix(in srgb, var(--owl-accent-hover) 8%, transparent) 100%) !important;
+    /* Active menu items: flat tint — visible identity without gradient shimmer */
+    .el-menu-item.is-active.submenu-title-noDropdown.outer-most {
+      background: color-mix(in srgb, var(--owl-accent-color) 16%, var(--pure-theme-menu-bg)) !important;
       color: var(--pure-theme-sub-menu-active-text) !important;
       font-weight: 600;
+      margin: 4px 12px !important;
+      border-radius: 8px !important;
 
       > * {
         color: var(--pure-theme-sub-menu-active-text) !important;
       }
 
-      .sub-menu-icon {
-        color: var(--owl-accent-color) !important;
+      .sub-menu-icon,
+      .sub-menu-icon svg {
+        color: inherit !important;
       }
 
       &::before {
@@ -1059,13 +943,70 @@ html:not(.dark) {
       }
 
       &:hover {
-        background: linear-gradient(135deg, color-mix(in srgb, var(--owl-accent-color) 18%, transparent) 0%, color-mix(in srgb, var(--owl-accent-hover) 14%, transparent) 100%) !important;
+        background: color-mix(in srgb, var(--owl-accent-color) 20%, var(--pure-theme-menu-bg)) !important;
       }
     }
 
-    /* Sub-menu background: slightly darker */
+    /* Nested items: pill via ::before so inset is not overridden by EP padding */
+    .el-sub-menu .el-menu-item {
+      position: relative;
+      width: 100% !important;
+      min-width: unset !important;
+      margin: 0 !important;
+      border-radius: 0 !important;
+      box-sizing: border-box;
+
+      &:hover::before {
+        content: "";
+        position: absolute;
+        inset: 4px 12px;
+        border-radius: 8px;
+        background: color-mix(in srgb, var(--owl-accent-color) 8%, transparent);
+        z-index: 0;
+      }
+
+      > * {
+        position: relative;
+        z-index: 1;
+      }
+    }
+
+    /* Active nested menu items (inside sub-menus) */
+    .el-menu-item.is-active.nest-menu {
+      background: transparent !important;
+      color: var(--pure-theme-sub-menu-active-text) !important;
+      font-weight: 600;
+      position: relative;
+
+      &::before {
+        display: block !important;
+        position: absolute;
+        inset: 4px 12px;
+        content: "";
+        border-radius: 8px;
+        background: color-mix(in srgb, var(--owl-accent-color) 16%, var(--pure-theme-menu-bg)) !important;
+        opacity: 1 !important;
+        z-index: 0;
+      }
+
+      > * {
+        color: var(--pure-theme-sub-menu-active-text) !important;
+      }
+
+      .sub-menu-icon,
+      .sub-menu-icon svg {
+        color: inherit !important;
+      }
+
+      &:hover::before {
+        background: color-mix(in srgb, var(--owl-accent-color) 20%, var(--pure-theme-menu-bg)) !important;
+      }
+    }
+
+    /* Sub-menu: inherit flat sidebar surface */
     .el-menu .el-menu--inline {
-      background-color: var(--pure-theme-sub-menu-bg) !important;
+      background-color: transparent !important;
+      padding: 0;
     }
 
     /* Sub-menu title when expanded */
@@ -1101,11 +1042,11 @@ html.dark {
     }
 
     .el-menu-item.is-active.submenu-title-noDropdown.outer-most {
-      background: linear-gradient(135deg, var(--owl-accent-color) 0%, var(--owl-accent-hover) 100%) !important;
+      background: color-mix(in srgb, var(--owl-accent-color) 22%, #1a1f2b) !important;
       color: #ffffff !important;
       font-weight: 600;
-      margin: 0 !important;
-      border-radius: 0 !important;
+      margin: 4px 12px !important;
+      border-radius: 8px !important;
 
       > * {
         color: #ffffff !important;
@@ -1120,14 +1061,25 @@ html.dark {
       }
 
       &:hover {
-        background: linear-gradient(135deg, color-mix(in srgb, var(--owl-accent-color) 85%, white) 0%, color-mix(in srgb, var(--owl-accent-hover) 85%, white) 100%) !important;
+        background: color-mix(in srgb, var(--owl-accent-color) 28%, #1a1f2b) !important;
       }
     }
 
     .el-menu-item.is-active.nest-menu {
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.08) 100%) !important;
+      background: transparent !important;
       color: #f1f5f9 !important;
       font-weight: 600;
+
+      &::before {
+        display: block !important;
+        position: absolute;
+        inset: 4px 12px;
+        content: "";
+        border-radius: 8px;
+        background: color-mix(in srgb, var(--owl-accent-color) 22%, #1a1f2b) !important;
+        opacity: 1 !important;
+        z-index: 0;
+      }
 
       > * {
         color: #f1f5f9 !important;
@@ -1137,12 +1089,17 @@ html.dark {
         color: var(--owl-accent-color) !important;
       }
 
-      &::before {
-        display: none;
+      &:hover::before {
+        background: color-mix(in srgb, var(--owl-accent-color) 28%, #1a1f2b) !important;
       }
+    }
 
-      &:hover {
-        background: linear-gradient(135deg, rgba(255, 255, 255, 0.18) 0%, rgba(255, 255, 255, 0.14) 100%) !important;
+    .el-sub-menu .el-menu-item {
+      position: relative;
+
+      > * {
+        position: relative;
+        z-index: 1;
       }
     }
 
@@ -1158,6 +1115,62 @@ html.dark {
       .el-menu-item,
       .el-sub-menu__title {
         margin: 4px 8px;
+      }
+    }
+  }
+}
+
+/* ============================================================
+   Clean theme — hover (same pill pattern as other themes, gray wash)
+   ============================================================ */
+html[data-theme="clean"]:not(.dark) {
+  .sidebar-container {
+    .el-menu-item,
+    .el-sub-menu__title {
+      &:hover {
+        background: var(--pure-theme-menu-hover) !important;
+        color: var(--pure-theme-menu-title-hover) !important;
+      }
+    }
+
+    .el-sub-menu .el-menu-item:hover {
+      background: transparent !important;
+    }
+
+    .el-sub-menu .el-menu-item:not(.is-active):hover::before {
+      background: var(--pure-theme-menu-hover) !important;
+    }
+
+    .el-menu-item.is-active.submenu-title-noDropdown.outer-most:hover {
+      background: var(--owl-accent-hover) !important;
+      color: #ffffff !important;
+
+      > * {
+        color: inherit !important;
+      }
+    }
+
+    .el-menu-item.is-active.nest-menu:hover {
+      background: transparent !important;
+      color: #ffffff !important;
+
+      > * {
+        color: inherit !important;
+      }
+    }
+
+    .el-menu-item.is-active.nest-menu:hover::before {
+      background: var(--owl-accent-hover) !important;
+    }
+
+    .is-active > .el-sub-menu__title:hover,
+    .el-sub-menu.is-opened > .el-sub-menu__title:hover {
+      background: var(--pure-theme-menu-hover) !important;
+      color: var(--owl-accent-color) !important;
+
+      .sub-menu-icon,
+      i {
+        color: var(--owl-accent-color) !important;
       }
     }
   }
@@ -1200,13 +1213,40 @@ html.dark .sidebar-logo-container {
   border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;
 }
 
-/* Collapse button: subtle, modern */
-.left-collapse {
+/* Sidebar header: logo + collapse toggle */
+.sidebar-header {
   display: flex;
   align-items: center;
+  flex-shrink: 0;
+  height: 48px;
+  padding-right: 4px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+
+  .sidebar-logo-container {
+    flex: 1;
+    min-width: 0;
+    height: 48px;
+    border-bottom: none !important;
+  }
+
+  &.no-logo {
+    justify-content: flex-end;
+  }
+}
+
+html.dark .sidebar-header {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* Collapse button in header */
+.left-collapse {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
   justify-content: center;
-  height: 40px;
-  margin: 8px 12px;
+  width: 40px;
+  height: 48px;
+  margin: 0;
   border-radius: 8px;
   transition: all 0.2s;
   cursor: pointer;

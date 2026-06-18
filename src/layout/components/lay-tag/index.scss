@@ -219,6 +219,12 @@
   }
 }
 
+/* 相邻标签激活/悬停时隐藏当前标签右侧分隔线，避免出现黑色竖线 */
+.scroll-item:has(+ .scroll-item.is-active) .chrome-tab-divider,
+.scroll-item:has(+ .scroll-item:hover) .chrome-tab-divider {
+  opacity: 0;
+}
+
 .arrow-left,
 .arrow-right,
 .arrow-down {
@@ -324,7 +330,9 @@
     right: 7px;
     width: 1px;
     height: 14px;
-    background-color: #2b2d2f;
+    background-color: var(--el-border-color, #dcdfe6);
+    opacity: 0.6;
+    transition: opacity var(--owl-transition-fast, 0.15s ease);
   }
 
   &:hover {

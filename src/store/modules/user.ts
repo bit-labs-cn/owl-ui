@@ -148,6 +148,7 @@ export const useUserStore = defineStore({
       this.permissions = [];
       storageLocal().removeItem(PERMISSIONS_CACHE_KEY);
       storageLocal().removeItem(ACCESS_TOKEN_KEY);
+      storageLocal().removeItem("async-routes");
       removeToken();
       useMultiTagsStoreHook().handleTags("equal", [...routerArrays]);
       resetRouter();

@@ -32,6 +32,9 @@ const defaultConfig: AxiosRequestConfig = {
   }
 };
 
+/** 不需要携带 token 的接口（防止刷新 token 失败时死循环） */
+const AUTH_WHITE_LIST = ["/refresh-token", "/login"];
+
 class PureHttp {
   constructor() {
     this.httpInterceptorsRequest();
@@ -43,6 +46,20 @@ class PureHttp {
 
   /** 防止重复刷新`token` */
   private static isRefreshing = false;
+
+  /** 防止并发 401 重复登出 */
+  private static isLoggingOut = false;
+
+  /** 登录失效：清理状态并跳转登录页 */
+  private static handleUnauthorized(): void {
+    if (PureHttp.isLoggingOut) return;
+    PureHttp.isLoggingOut = true;
+    message("未登录或登录已过期", { type: "warning" });
+    useUserStoreHook().logOut();
+    window.setTimeout(() => {
+      PureHttp.isLoggingOut = false;
+    }, 1000);
+  }
 
   /** 初始化配置对象 */
   private static initConfig: PureHttpRequestConfig = {};
@@ -75,9 +92,7 @@ class PureHttp {
           PureHttp.initConfig.beforeRequestCallback(config);
           return config;
         }
-        /** 请求白名单，放置一些不需要`token`的接口（通过设置请求白名单，防止`token`过期后再请求造成的死循环问题） */
-        const whiteList = ["/refresh-token", "/login"];
-        return whiteList.some(url => config.url.endsWith(url))
+        return AUTH_WHITE_LIST.some(url => config.url.endsWith(url))
           ? config
           : new Promise(resolve => {
               const data = getToken();
@@ -95,6 +110,10 @@ class PureHttp {
                         config.headers["Authorization"] = formatToken(token);
                         PureHttp.requests.forEach(cb => cb(token));
                         PureHttp.requests = [];
+                      })
+                      .catch(() => {
+                        PureHttp.requests = [];
+                        PureHttp.handleUnauthorized();
                       })
                       .finally(() => {
                         PureHttp.isRefreshing = false;
@@ -157,8 +176,15 @@ class PureHttp {
         NProgress.done();
         // 所有的响应异常 区分来源为取消请求/非取消请求
         const silentMessage = ($error.config as PureHttpRequestConfig)?.silentMessage;
-        if (!$error.isCancelRequest && !silentMessage) {
-          const status = $error.response?.status;
+        const status = $error.response?.status;
+        const requestUrl = $error.config?.url ?? "";
+        const isAuthRequest = AUTH_WHITE_LIST.some(url =>
+          requestUrl.endsWith(url)
+        );
+
+        if (status === 401 && !isAuthRequest && !$error.isCancelRequest) {
+          PureHttp.handleUnauthorized();
+        } else if (!$error.isCancelRequest && !silentMessage) {
           const data = $error.response?.data as any;
           message(data?.msg || getDefaultErrorMessage(status), {
             type: "error"

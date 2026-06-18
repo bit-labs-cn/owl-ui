@@ -19,8 +19,6 @@ const { tooltipEffect } = useNav();
 
 const iconClass = computed(() => {
   return [
-    "ml-4",
-    "mb-1",
     "w-[16px]",
     "h-[16px]",
     "inline-block",
@@ -54,7 +52,7 @@ const toggleClick = () => {
         placement: 'right'
       }"
       :icon="MenuFold"
-      :class="[iconClass, themeColor === 'light' ? '' : 'text-primary']"
+      :class="[iconClass, themeColor === 'clean' ? '' : 'text-primary']"
       :style="{ transform: isActive ? 'none' : 'rotateY(180deg)' }"
       @click="toggleClick"
     />
@@ -64,10 +62,17 @@ const toggleClick = () => {
 <style lang="scss" scoped>
 .left-collapse {
   position: absolute;
+  right: 0;
   bottom: 0;
-  width: 100%;
+  left: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
   height: 40px;
-  line-height: 40px;
-  box-shadow: 0 0 6px -3px var(--el-color-primary);
+  padding: 0 12px;
+  cursor: pointer;
+  background: var(--pure-theme-menu-bg);
+  border-top: 1px solid rgba(0, 0, 0, 0.04);
 }
 </style>

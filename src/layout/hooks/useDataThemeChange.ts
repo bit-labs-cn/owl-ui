@@ -13,22 +13,26 @@ import { darken, lighten, useGlobal, storageLocal } from "@pureadmin/utils";
 export function useDataThemeChange() {
   const { layoutTheme, layout } = useLayout();
   const themeColors = ref<Array<themeColorsType>>([
-    /* 亮白色 - Light */
-    { color: "#ffffff", themeColor: "light" },
-    /* 午夜蓝 - Midnight */
-    { color: "#3b82f6", themeColor: "default" },
-    /* 石墨灰 - Graphite */
-    { color: "#8b5cf6", themeColor: "saucePurple" },
-    /* 玫瑰粉 - Rose */
-    { color: "#ec4899", themeColor: "pink" },
-    /* 琥珀红 - Ember */
-    { color: "#ef4444", themeColor: "dusk" },
-    /* 日落橙 - Sunset */
-    { color: "#f97316", themeColor: "volcano" },
-    /* 青碧 - Teal */
-    { color: "#14b8a6", themeColor: "mingQing" },
-    /* 森林绿 - Forest */
-    { color: "#22c55e", themeColor: "auroraGreen" }
+    /* Cloud Dancer Minimal */
+    { color: "#ffffff", themeColor: "clean", title: "白色极简" },
+    /* SaaS Indigo */
+    { color: "#6366f1", themeColor: "tech", title: "科技互联网" },
+    /* Fintech Navy Trust */
+    { color: "#1e40af", themeColor: "finance", title: "金融科技" },
+    /* Clinical Teal */
+    { color: "#0d9488", themeColor: "healthcare", title: "医疗健康" },
+    /* Scholar Violet */
+    { color: "#7c3aed", themeColor: "education", title: "教育培训" },
+    /* Warm Coral Commerce */
+    { color: "#ea580c", themeColor: "ecommerce", title: "电商零售" },
+    /* Supply Chain Slate Blue */
+    { color: "#2563eb", themeColor: "logistics", title: "物流供应链" },
+    /* Industrial Steel */
+    { color: "#4a6fa5", themeColor: "manufacturing", title: "制造工业" },
+    /* Mist Blue Luxe */
+    { color: "#5b8dae", themeColor: "realestate", title: "房地产" },
+    /* Eco Emerald */
+    { color: "#059669", themeColor: "energy", title: "能源环保" }
   ]);
 
   const { $storage } = useGlobal<GlobalPropertiesApi>();
@@ -45,7 +49,7 @@ export function useDataThemeChange() {
 
   /** 设置导航主题色 */
   function setLayoutThemeColor(
-    theme = getConfig().Theme ?? "light",
+    theme = getConfig().Theme ?? "clean",
     isClick = true
   ) {
     layoutTheme.value.theme = theme;
@@ -62,11 +66,28 @@ export function useDataThemeChange() {
       overallStyle: overallStyle.value
     };
 
-    if (theme === "default" || theme === "light") {
+    // Fallback map for old theme keys to new industry keys
+    const legacyMap: Record<string, string> = {
+      light: "clean",
+      default: "tech",
+      saucePurple: "education",
+      pink: "healthcare",
+      dusk: "ecommerce",
+      volcano: "logistics",
+      mingQing: "energy",
+      auroraGreen: "realestate"
+    };
+    const resolvedTheme = legacyMap[theme] || theme;
+
+    if (resolvedTheme === "clean") {
       setEpThemeColor(getConfig().EpThemeColor);
     } else {
-      const colors = themeColors.value.find(v => v.themeColor === theme);
-      setEpThemeColor(colors.color);
+      const colors = themeColors.value.find(v => v.themeColor === resolvedTheme);
+      if (colors) {
+        setEpThemeColor(colors.color);
+      } else {
+        setEpThemeColor(getConfig().EpThemeColor);
+      }
     }
   }
 
@@ -92,8 +113,8 @@ export function useDataThemeChange() {
   /** 浅色、深色整体风格切换 */
   function dataThemeChange(overall?: string) {
     overallStyle.value = overall;
-    if (useEpThemeStoreHook().epTheme === "light" && dataTheme.value) {
-      setLayoutThemeColor("default", false);
+    if (useEpThemeStoreHook().epTheme === "clean" && dataTheme.value) {
+      setLayoutThemeColor("tech", false);
     } else {
       setLayoutThemeColor(useEpThemeStoreHook().epTheme, false);
     }
@@ -101,8 +122,8 @@ export function useDataThemeChange() {
     if (dataTheme.value) {
       document.documentElement.classList.add("dark");
     } else {
-      if ($storage.layout.themeColor === "light") {
-        setLayoutThemeColor("light", false);
+      if ($storage.layout.themeColor === "clean") {
+        setLayoutThemeColor("clean", false);
       }
       document.documentElement.classList.remove("dark");
     }

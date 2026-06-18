@@ -10,10 +10,8 @@ import { ref, computed, watch, onMounted, onBeforeUnmount } from "vue";
 import LaySidebarLogo from "../lay-sidebar/components/SidebarLogo.vue";
 import LaySidebarItem from "../lay-sidebar/components/SidebarItem.vue";
 import LaySidebarLeftCollapse from "../lay-sidebar/components/SidebarLeftCollapse.vue";
-import LaySidebarCenterCollapse from "../lay-sidebar/components/SidebarCenterCollapse.vue";
 
 const route = useRoute();
-const isShow = ref(false);
 const showLogo = ref(
   storageLocal().getItem<StorageConfigs>(
     `${responsiveStorageNameSpace()}configure`
@@ -90,8 +88,6 @@ onBeforeUnmount(() => {
   <div
     v-loading="loading"
     :class="['sidebar-container', showLogo ? 'has-logo' : 'no-logo']"
-    @mouseenter.prevent="isShow = true"
-    @mouseleave.prevent="isShow = false"
   >
     <LaySidebarLogo v-if="showLogo" :collapse="isCollapse" />
     <el-scrollbar
@@ -117,11 +113,6 @@ onBeforeUnmount(() => {
         />
       </el-menu>
     </el-scrollbar>
-    <LaySidebarCenterCollapse
-      v-if="device !== 'mobile' && (isShow || isCollapse)"
-      :is-active="pureApp.sidebar.opened"
-      @toggleClick="toggleSideBar"
-    />
     <LaySidebarLeftCollapse
       v-if="device !== 'mobile'"
       :is-active="pureApp.sidebar.opened"

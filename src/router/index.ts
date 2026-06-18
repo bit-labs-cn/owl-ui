@@ -147,7 +147,15 @@ router.beforeEach(async (to: ToRouteType, _from, next) => {
         usePermissionStoreHook().wholeMenus.length === 0 &&
         to.path !== "/login"
       ) {
-        await initRouter();
+        try {
+          await initRouter();
+        } catch (error: any) {
+          if (error?.response?.status === 401) {
+            removeToken();
+            return next({ path: "/login", replace: true });
+          }
+          throw error;
+        }
         if (!useMultiTagsStoreHook().getMultiTagsCache) {
           const { path } = to;
           const matchedRoute =
