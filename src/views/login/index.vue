@@ -23,6 +23,9 @@ import {
 } from "vue";
 import { useTranslationLang } from "@bit-labs.cn/owl-ui/layout/hooks/useTranslationLang";
 import { useDataThemeChange } from "@bit-labs.cn/owl-ui/layout/hooks/useDataThemeChange";
+import { getDeviceId } from "@bit-labs.cn/owl-ui/utils/device";
+import type { LoginCaptchaAnswer } from "@bit-labs.cn/owl-ui/api/user";
+import CaptchaDialog from "./components/CaptchaDialog.vue";
 
 import dayIcon from "@bit-labs.cn/owl-ui/assets/svg/day.svg?component";
 import darkIcon from "@bit-labs.cn/owl-ui/assets/svg/dark.svg?component";
@@ -88,40 +91,77 @@ const passwordPlaceholder = computed(() =>
 );
 
 const rememberMe = ref(false);
+const captchaVisible = ref(false);
+const captchaType = ref("");
+const captchaDialogRef = ref<InstanceType<typeof CaptchaDialog>>();
 
 const ruleForm = reactive({
   username: "",
   password: ""
 });
 
+const finishLogin = async () => {
+  return initRouter().then(() => {
+    router.push(getTopMenu(true).path).then(() => {
+      message(t("login.pureLoginSuccess"), { type: "success" });
+    });
+  });
+};
+
+const submitLogin = async (captcha?: LoginCaptchaAnswer) => {
+  const res = await useUserStoreHook().loginByUsername({
+    username: ruleForm.username,
+    password: ruleForm.password,
+    deviceId: getDeviceId(),
+    captcha
+  });
+  if (res?.success && res.data?.needCaptcha) {
+    captchaType.value = res.data.captchaType ?? "";
+    if (!captchaVisible.value) {
+      captchaVisible.value = true;
+    }
+    return false;
+  }
+  if (res?.success && res.data?.accessToken) {
+    captchaVisible.value = false;
+    await finishLogin();
+    return true;
+  }
+  return false;
+};
+
 const onLogin = async (formEl: FormInstance | undefined) => {
   if (!formEl) return;
-  await formEl.validate((valid, fields) => {
-    if (valid) {
-      loading.value = true;
-      if (isBrandPanel.value) {
-        if (rememberMe.value) {
-          localStorage.setItem(REMEMBER_USERNAME_KEY, ruleForm.username);
-        } else {
-          localStorage.removeItem(REMEMBER_USERNAME_KEY);
-        }
+  await formEl.validate(async (valid) => {
+    if (!valid) return;
+    loading.value = true;
+    if (isBrandPanel.value) {
+      if (rememberMe.value) {
+        localStorage.setItem(REMEMBER_USERNAME_KEY, ruleForm.username);
+      } else {
+        localStorage.removeItem(REMEMBER_USERNAME_KEY);
       }
-      useUserStoreHook()
-        .loginByUsername({
-          username: ruleForm.username,
-          password: ruleForm.password
-        })
-        .then(res => {
-          // 获取后端路由
-          return initRouter().then(() => {
-            router.push(getTopMenu(true).path).then(() => {
-              message(t("login.pureLoginSuccess"), { type: "success" });
-            });
-          });
-        })
-        .finally(() => (loading.value = false));
+    }
+    try {
+      await submitLogin();
+    } finally {
+      loading.value = false;
     }
   });
+};
+
+const onCaptchaConfirm = async (captcha: LoginCaptchaAnswer) => {
+  loading.value = true;
+  try {
+    const ok = await submitLogin(captcha);
+    if (!ok && captchaVisible.value) {
+      await captchaDialogRef.value?.refresh?.();
+    }
+  } catch {
+    await captchaDialogRef.value?.refresh?.();
+  } finally {
+    loading.value = false;
+  }
 };
 
 /** 使用公共函数，避免`removeEventListener`失效 */
@@ -285,6 +325,12 @@ onBeforeUnmount(() => {
         </div>
       </div>
     </div>
+    <CaptchaDialog
+      ref="captchaDialogRef"
+      v-model:visible="captchaVisible"
+      :captcha-type="captchaType"
+      @confirm="onCaptchaConfirm"
+    />
   </div>
 </template>
 

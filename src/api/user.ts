@@ -1,25 +1,76 @@
 import { http } from "@bit-labs.cn/owl-ui/utils/http";
 
+export type LoginCaptchaAnswer = {
+  captchaId: string;
+  x?: number;
+  y?: number;
+  angle?: number;
+  points?: Array<{ index: number; x: number; y: number }>;
+};
+
+export type CaptchaConfig = {
+  enabled: boolean;
+  type: string;
+  mode: string;
+};
+
+export type CaptchaConfigResult = {
+  success: boolean;
+  data: CaptchaConfig;
+};
+
+export type CaptchaGenerateData = SlideCaptchaData & {
+  captchaId: string;
+  masterImage: string;
+  thumbImage?: string;
+  tileImage?: string;
+};
+
+export type LoginParams = {
+  username: string;
+  password: string;
+  deviceId?: string;
+  captcha?: LoginCaptchaAnswer;
+};
+
 export type UserResult = {
   success: boolean;
   data: {
     /** 头像 */
-    avatar: string;
+    avatar?: string;
     /** 用户名 */
-    username: string;
+    username?: string;
     /** 昵称 */
-    nickname: string;
+    nickname?: string;
     /** 当前登录用户的角色 */
-    roles: Array<string>;
+    roles?: Array<string>;
     /** 按钮级别权限 */
-    permissions: Array<string>;
+    permissions?: Array<string>;
+    /** 是否需要验证码 */
+    needCaptcha?: boolean;
+    /** 验证码类型 */
+    captchaType?: string;
     /** `token` */
-    accessToken: string;
+    accessToken?: string;
     /** 用于调用刷新`accessToken`的接口时所需的`token` */
-    refreshToken: string;
+    refreshToken?: string;
     /** `accessToken`的过期时间（格式'xxxx/xx/xx xx:xx:xx'） */
-    expires: Date;
+    expires?: Date;
   };
+};
+
+export type SlideCaptchaData = {
+  captchaId: string;
+  masterImage: string;
+  tileImage: string;
+  tileY: number;
+  tileWidth: number;
+  tileHeight: number;
+};
+
+export type CaptchaGenerateResult = {
+  success: boolean;
+  data: CaptchaGenerateData;
 };
 
 export type RefreshTokenResult = {
@@ -61,10 +112,31 @@ export type UserPermissionsResult = {
 
 class UserAPI {
   /** 登录 */
-  login = (data?: object) => {
-    return http.request<UserResult>("post", "/api/v1/users/login", {
-      data
-    });
+  login = (data?: LoginParams) => {
+    return http.request<UserResult>(
+      "post",
+      "/api/v1/users/login",
+      { data },
+      { silentMessage: true }
+    );
+  };
+  /** 获取验证码配置（captcha.yaml） */
+  getCaptchaConfig = () => {
+    return http.request<CaptchaConfigResult>(
+      "get",
+      "/api/v1/captcha/config",
+      {},
+      { silentMessage: true }
+    );
+  };
+  /** 生成验证码（type 省略时使用服务端 captcha.yaml 配置） */
+  generateCaptcha = (type?: string) => {
+    return http.request<CaptchaGenerateResult>(
+      "post",
+      "/api/v1/captcha/generate",
+      { data: type ? { type } : {} },
+      { silentMessage: true }
+    );
   };
   /** 刷新 token */
   refreshTokenApi = (data?: object) => {

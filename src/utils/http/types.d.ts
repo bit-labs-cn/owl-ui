@@ -25,7 +25,7 @@ export interface PureHttpResponse extends AxiosResponse {
 export interface PureHttpRequestConfig extends AxiosRequestConfig {
   beforeRequestCallback?: (request: PureHttpRequestConfig) => void;
   beforeResponseCallback?: (response: PureHttpResponse) => void;
-  /** 为 true 时不展示成功/失败消息（适用于列表、options 等接口） */
+  /** 为 true 时不展示成功消息；失败（success: false）仍会提示 */
   silentMessage?: boolean;
 }
 

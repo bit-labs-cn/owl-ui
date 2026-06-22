@@ -129,9 +129,13 @@ export const useUserStore = defineStore({
         userAPI
           .login(data)
           .then(async data => {
-            if (data?.success) {
+            if (data?.success && data.data?.needCaptcha) {
+              resolve(data);
+              return;
+            }
+            if (data?.success && data.data?.accessToken) {
               setToken(data.data);
-              localStorage.setItem(ACCESS_TOKEN_KEY, data.data?.accessToken);
+              localStorage.setItem(ACCESS_TOKEN_KEY, data.data.accessToken);
               await this.fetchAndCachePermissions();
             }
             resolve(data);

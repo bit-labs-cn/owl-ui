@@ -158,12 +158,11 @@ class PureHttp {
         const data = response.data as any;
         const silentMessage = ($config as PureHttpRequestConfig).silentMessage;
         if (data && data.success === false) {
-          if (!silentMessage) {
-            message(data.msg || "操作失败", { type: "error" });
-          }
+          message(data.msg || "操作失败", { type: "error" });
           return Promise.reject(data);
         }
-        if (data?.msg && !silentMessage) {
+        // silentMessage 仅抑制成功提示，失败仍由上方分支弹出
+        if (data?.msg && data.success !== false && !silentMessage) {
           message(data.msg, { type: "success" });
         }
 
