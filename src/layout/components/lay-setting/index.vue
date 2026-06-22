@@ -48,8 +48,7 @@ const {
 /* body添加layout属性，作用于src/style/sidebar.scss */
 if (unref(layoutTheme)) {
   const layout = unref(layoutTheme).layout;
-  const theme = unref(layoutTheme).theme;
-  document.documentElement.setAttribute("data-theme", theme);
+  setLayoutThemeColor(unref(layoutTheme).theme, false);
   setLayoutModel(layout);
 }
 

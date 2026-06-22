@@ -5,6 +5,7 @@ import {
   storageLocal,
   responsiveStorageNameSpace
 } from "../utils";
+import { resolveLayoutTheme } from "@bit-labs.cn/owl-ui/layout/utils/resolveLayoutTheme";
 
 export const useEpThemeStore = defineStore({
   id: "pure-epTheme",
@@ -13,10 +14,11 @@ export const useEpThemeStore = defineStore({
       storageLocal().getItem<StorageConfigs>(
         `${responsiveStorageNameSpace()}layout`
       )?.epThemeColor ?? getConfig().EpThemeColor,
-    epTheme:
+    epTheme: resolveLayoutTheme(
       storageLocal().getItem<StorageConfigs>(
         `${responsiveStorageNameSpace()}layout`
-      )?.theme ?? getConfig().Theme
+      )?.theme ?? getConfig().Theme ?? "clean"
+    )
   }),
   getters: {
     getEpThemeColor(state) {

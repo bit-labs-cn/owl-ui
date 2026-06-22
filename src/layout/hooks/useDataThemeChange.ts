@@ -9,6 +9,7 @@ import { useAppStoreHook } from "@bit-labs.cn/owl-ui/store/modules/app";
 import { useEpThemeStoreHook } from "@bit-labs.cn/owl-ui/store/modules/epTheme";
 import { useMultiTagsStoreHook } from "@bit-labs.cn/owl-ui/store/modules/multiTags";
 import { darken, lighten, useGlobal, storageLocal } from "@pureadmin/utils";
+import { resolveLayoutTheme } from "../utils/resolveLayoutTheme";
 
 export function useDataThemeChange() {
   const { layoutTheme, layout } = useLayout();
@@ -49,35 +50,23 @@ export function useDataThemeChange() {
 
   /** 设置导航主题色 */
   function setLayoutThemeColor(
-    theme = getConfig().Theme ?? "clean",
+    theme = resolveLayoutTheme(getConfig().Theme ?? "clean"),
     isClick = true
   ) {
-    layoutTheme.value.theme = theme;
-    document.documentElement.setAttribute("data-theme", theme);
+    const resolvedTheme = resolveLayoutTheme(theme);
+    layoutTheme.value.theme = resolvedTheme;
+    document.documentElement.setAttribute("data-theme", resolvedTheme);
     // 如果非isClick，保留之前的themeColor
-    const storageThemeColor = $storage.layout.themeColor;
+    const storageThemeColor = resolveLayoutTheme($storage.layout.themeColor);
     $storage.layout = {
       layout: layout.value,
-      theme,
+      theme: resolvedTheme,
       darkMode: dataTheme.value,
       sidebarStatus: $storage.layout?.sidebarStatus,
       epThemeColor: $storage.layout?.epThemeColor,
-      themeColor: isClick ? theme : storageThemeColor,
+      themeColor: isClick ? resolvedTheme : storageThemeColor,
       overallStyle: overallStyle.value
     };
-
-    // Fallback map for old theme keys to new industry keys
-    const legacyMap: Record<string, string> = {
-      light: "clean",
-      default: "tech",
-      saucePurple: "education",
-      pink: "healthcare",
-      dusk: "ecommerce",
-      volcano: "logistics",
-      mingQing: "energy",
-      auroraGreen: "realestate"
-    };
-    const resolvedTheme = legacyMap[theme] || theme;
 
     if (resolvedTheme === "clean") {
       setEpThemeColor(getConfig().EpThemeColor);
@@ -113,16 +102,17 @@ export function useDataThemeChange() {
   /** 浅色、深色整体风格切换 */
   function dataThemeChange(overall?: string) {
     overallStyle.value = overall;
-    if (useEpThemeStoreHook().epTheme === "clean" && dataTheme.value) {
+    const epTheme = resolveLayoutTheme(useEpThemeStoreHook().epTheme);
+    if (epTheme === "clean" && dataTheme.value) {
       setLayoutThemeColor("tech", false);
     } else {
-      setLayoutThemeColor(useEpThemeStoreHook().epTheme, false);
+      setLayoutThemeColor(epTheme, false);
     }
 
     if (dataTheme.value) {
       document.documentElement.classList.add("dark");
     } else {
-      if ($storage.layout.themeColor === "clean") {
+      if (resolveLayoutTheme($storage.layout.themeColor) === "clean") {
         setLayoutThemeColor("clean", false);
       }
       document.documentElement.classList.remove("dark");

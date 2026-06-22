@@ -123,7 +123,9 @@ onMounted(() => {
 });
 
 onBeforeMount(() => {
-  useDataThemeChange().dataThemeChange($storage.layout?.overallStyle);
+  const { dataThemeChange, setLayoutThemeColor } = useDataThemeChange();
+  setLayoutThemeColor($storage.layout?.theme, false);
+  dataThemeChange($storage.layout?.overallStyle);
 });
 
 const LayHeader = defineComponent({

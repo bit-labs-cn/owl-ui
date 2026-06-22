@@ -3,6 +3,10 @@ import { useI18n } from "vue-i18n";
 import { routerArrays } from "../types";
 import { useGlobal } from "@pureadmin/utils";
 import { useMultiTagsStore } from "@bit-labs.cn/owl-ui/store/modules/multiTags";
+import {
+  createDefaultLayoutStorage,
+  normalizeLayoutStorage
+} from "../utils/resolveLayoutTheme";
 
 export function useLayout() {
   const { $storage, $config } = useGlobal<GlobalPropertiesApi>();
@@ -22,15 +26,9 @@ export function useLayout() {
     }
     /** 导航 */
     if (!$storage.layout) {
-      $storage.layout = {
-        layout: $config?.Layout ?? "vertical",
-        theme: $config?.Theme ?? "clean",
-        darkMode: $config?.DarkMode ?? false,
-        sidebarStatus: $config?.SidebarStatus ?? true,
-        epThemeColor: $config?.EpThemeColor ?? "#409EFF",
-        themeColor: $config?.Theme ?? "clean",
-        overallStyle: $config?.OverallStyle ?? "light"
-      };
+      $storage.layout = createDefaultLayoutStorage($config ?? {});
+    } else {
+      $storage.layout = normalizeLayoutStorage($storage.layout, $config ?? {});
     }
     /** 灰色模式、色弱模式、隐藏标签页 */
     if (!$storage.configure) {
