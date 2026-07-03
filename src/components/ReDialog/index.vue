@@ -205,11 +205,3 @@ function handleClose(
     </template>
   </el-dialog>
 </template>
-
-<style scoped>
-/* 弹窗内容区不超出可视区域，超出时在 body 内滚动 */
-.pure-dialog :deep(.el-dialog__body) {
-  max-height: calc(100vh - 160px);
-  overflow-y: auto;
-}
-</style>

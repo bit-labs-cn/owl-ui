@@ -44,6 +44,16 @@
 }
 
 .pure-dialog {
+  /* ReDialog：总高度不超过视口，上下留白，正文区内部滚动 */
+  max-height: calc(100vh - 64px);
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 32px;
+
+  .el-dialog__header {
+    flex-shrink: 0;
+  }
+
   .el-dialog__header.show-close {
     padding-right: 16px;
   }
@@ -55,11 +65,19 @@
     height: 24px;
   }
 
+  .el-dialog__body {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
   .pure-dialog-svg {
     color: var(--el-color-info);
   }
 
   .el-dialog__footer {
+    flex-shrink: 0;
     padding-top: 0;
   }
 }
