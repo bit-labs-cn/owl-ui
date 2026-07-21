@@ -921,6 +921,40 @@ html:not(.dark) {
       background: transparent !important;
     }
 
+    /*
+     * Nested sub-menu titles (二级及以下目录，如「模板配置」):
+     * width:100% + margin:0 12px 会整体超出侧栏，右侧折叠箭头被 overflow-x 裁切。
+     * 与嵌套 menu-item 一致：取消横向 margin，用 ::before 做 inset 胶囊。
+     */
+    .el-menu--inline .el-sub-menu > .el-sub-menu__title {
+      position: relative;
+      margin: 0 !important;
+      border-radius: 0 !important;
+      background: transparent !important;
+
+      &:hover {
+        background: transparent !important;
+      }
+
+      &:hover::before {
+        content: "";
+        position: absolute;
+        inset: 4px 12px;
+        border-radius: 8px;
+        background: color-mix(in srgb, var(--owl-accent-color) 8%, transparent);
+        z-index: 0;
+      }
+
+      > *:not(.el-sub-menu__icon-arrow) {
+        position: relative;
+        z-index: 1;
+      }
+
+      .el-sub-menu__icon-arrow {
+        z-index: 2;
+      }
+    }
+
     /* Active menu items: flat tint — visible identity without gradient shimmer */
     .el-menu-item.is-active.submenu-title-noDropdown.outer-most {
       background: color-mix(in srgb, var(--owl-accent-color) 16%, var(--pure-theme-menu-bg)) !important;
@@ -1094,6 +1128,36 @@ html.dark {
       }
     }
 
+    /* Nested sub-menu titles: same overflow fix as light mode */
+    .el-menu--inline .el-sub-menu > .el-sub-menu__title {
+      position: relative;
+      margin: 0 !important;
+      border-radius: 0 !important;
+      background: transparent !important;
+
+      &:hover {
+        background: transparent !important;
+      }
+
+      &:hover::before {
+        content: "";
+        position: absolute;
+        inset: 4px 12px;
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.08);
+        z-index: 0;
+      }
+
+      > *:not(.el-sub-menu__icon-arrow) {
+        position: relative;
+        z-index: 1;
+      }
+
+      .el-sub-menu__icon-arrow {
+        z-index: 2;
+      }
+    }
+
     .el-sub-menu .el-menu-item {
       position: relative;
 
@@ -1141,6 +1205,17 @@ html[data-theme="clean"]:not(.dark) {
       background: var(--pure-theme-menu-hover) !important;
     }
 
+    .el-menu--inline .el-sub-menu > .el-sub-menu__title {
+      &:hover,
+      &.is-active:hover {
+        background: transparent !important;
+      }
+
+      &:hover::before {
+        background: var(--pure-theme-menu-hover) !important;
+      }
+    }
+
     .el-menu-item.is-active.submenu-title-noDropdown.outer-most:hover {
       background: var(--owl-accent-hover) !important;
       color: #ffffff !important;
@@ -1165,13 +1240,18 @@ html[data-theme="clean"]:not(.dark) {
 
     .is-active > .el-sub-menu__title:hover,
     .el-sub-menu.is-opened > .el-sub-menu__title:hover {
-      background: var(--pure-theme-menu-hover) !important;
       color: var(--owl-accent-color) !important;
 
       .sub-menu-icon,
       i {
         color: var(--owl-accent-color) !important;
       }
+    }
+
+    /* Top-level opened titles keep solid hover; nested use ::before above */
+    .el-menu > .el-sub-menu.is-opened > .el-sub-menu__title:hover,
+    .el-menu > .is-active > .el-sub-menu__title:hover {
+      background: var(--pure-theme-menu-hover) !important;
     }
   }
 }
@@ -1263,6 +1343,10 @@ html.dark .left-collapse:hover {
 
 /* Sub-menu arrow icon: modern chevron style */
 .el-sub-menu__icon-arrow {
+  flex-shrink: 0;
+  width: 12px !important;
+  display: inline-flex !important;
+  z-index: 2;
   transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
