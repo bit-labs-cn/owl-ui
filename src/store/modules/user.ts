@@ -102,6 +102,28 @@ export const useUserStore = defineStore({
         // 权限接口异常时不阻断登录流程
       }
     },
+    /** 拉取当前用户信息（含头像）并写入 store / localStorage */
+    async fetchAndCacheUserInfo() {
+      try {
+        const meRes = await userAPI.getMe();
+        if (!meRes?.success || !meRes.data) return;
+        const { avatar, username, nickname } = meRes.data;
+        if (avatar !== undefined) this.SET_AVATAR(avatar ?? "");
+        if (username) this.SET_USERNAME(username);
+        if (nickname !== undefined) this.SET_NICKNAME(nickname ?? "");
+        const userInfo = storageLocal().getItem<DataInfo<number>>(userKey);
+        if (userInfo) {
+          storageLocal().setItem(userKey, {
+            ...userInfo,
+            avatar: avatar ?? userInfo.avatar ?? "",
+            username: username ?? userInfo.username ?? "",
+            nickname: nickname ?? userInfo.nickname ?? ""
+          });
+        }
+      } catch {
+        // 用户信息接口异常时不阻断登录流程
+      }
+    },
     /** 缓存过期时自动刷新权限 */
     async ensurePermissionsFresh() {
       if (isPermissionsCacheValid()) return;
@@ -137,6 +159,7 @@ export const useUserStore = defineStore({
               setToken(data.data);
               localStorage.setItem(ACCESS_TOKEN_KEY, data.data.accessToken);
               await this.fetchAndCachePermissions();
+              await this.fetchAndCacheUserInfo();
             }
             resolve(data);
           })

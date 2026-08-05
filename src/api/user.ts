@@ -87,17 +87,19 @@ export type RefreshTokenResult = {
 
 export type UserInfo = {
   /** 头像 */
-  avatar: string;
+  avatar?: string;
   /** 用户名 */
-  username: string;
+  username?: string;
   /** 昵称 */
-  nickname: string;
+  nickname?: string;
   /** 邮箱 */
-  email: string;
+  email?: string;
   /** 联系电话 */
-  phone: string;
+  phone?: string;
   /** 简介 */
-  description: string;
+  description?: string;
+  /** 角色 */
+  roles?: Array<{ id?: number | string; name?: string } | string>;
 };
 
 export type UserInfoResult = {
@@ -152,7 +154,11 @@ class UserAPI {
   getMyPermissions = () => {
     return http.request<UserPermissionsResult>("get", "/api/v1/users/me/permissions", {}, { silentMessage: true });
   };
-  /** 获取个人信息 */
+  /** 获取当前用户信息（含头像） */
+  getMe = () => {
+    return http.request<UserInfoResult>("get", "/api/v1/users/me", {}, { silentMessage: true });
+  };
+  /** 获取个人信息（遗留） */
   getMine = (data?: object) => {
     return http.request<UserInfoResult>("get", "/mine", { data }, { silentMessage: true });
   };
