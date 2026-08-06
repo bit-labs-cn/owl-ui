@@ -63,6 +63,25 @@ const loginSubtitle = custom.subtitle ?? "";
 const loginPageClass = computed(() =>
   isBrandPanel.value ? "login-page login-page--brand-panel" : "login-page"
 );
+
+/** brand 登录页与大屏一致：1920×1080 设计稿整体缩放，避免 4K 上表单过小 */
+const DESIGN_WIDTH = 1920;
+const DESIGN_HEIGHT = 1080;
+const scaleX = ref(1);
+const scaleY = ref(1);
+
+const brandCanvasStyle = computed(() => ({
+  transform: `scale(${scaleX.value}, ${scaleY.value})`,
+  width: `${DESIGN_WIDTH}px`,
+  height: `${DESIGN_HEIGHT}px`
+}));
+
+function updateBrandScale() {
+  if (!isBrandPanel.value) return;
+  scaleX.value = window.innerWidth / DESIGN_WIDTH;
+  scaleY.value = window.innerHeight / DESIGN_HEIGHT;
+}
+
 const loginRootStyle = computed(() => {
   const style: Record<string, string> = {};
   if (custom.primaryColor) {
@@ -174,6 +193,8 @@ function onkeypress({ code }: KeyboardEvent) {
 onMounted(() => {
   window.document.addEventListener("keypress", onkeypress);
   if (isBrandPanel.value) {
+    updateBrandScale();
+    window.addEventListener("resize", updateBrandScale);
     const saved = localStorage.getItem(REMEMBER_USERNAME_KEY);
     if (saved) {
       ruleForm.username = saved;
@@ -184,144 +205,154 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   window.document.removeEventListener("keypress", onkeypress);
+  window.removeEventListener("resize", updateBrandScale);
 });
 </script>
 
 <template>
   <div :class="['select-none', loginPageClass]" :style="loginRootStyle">
-    <img :src="bg" class="wave" decoding="async" fetchpriority="high" />
-    <div class="flex-c absolute right-5 top-3">
-      <!-- 主题 -->
-      <el-switch
-        v-model="dataTheme"
-        inline-prompt
-        :active-icon="dayIcon"
-        :inactive-icon="darkIcon"
-        @change="dataThemeChange"
-      />
-      <!-- 国际化 -->
-      <el-dropdown trigger="click">
-        <globalization
-          class="hover:text-primary hover:!bg-[transparent] w-[20px] h-[20px] ml-1.5 cursor-pointer outline-none duration-300"
-        />
-        <template #dropdown>
-          <el-dropdown-menu class="translation">
-            <el-dropdown-item
-              :style="getDropdownItemStyle(locale, 'zh')"
-              :class="['dark:!text-white', getDropdownItemClass(locale, 'zh')]"
-              @click="translationCh"
-            >
-              <IconifyIconOffline
-                v-show="locale === 'zh'"
-                class="check-zh"
-                :icon="Check"
-              />
-              简体中文
-            </el-dropdown-item>
-            <el-dropdown-item
-              :style="getDropdownItemStyle(locale, 'en')"
-              :class="['dark:!text-white', getDropdownItemClass(locale, 'en')]"
-              @click="translationEn"
-            >
-              <span v-show="locale === 'en'" class="check-en">
-                <IconifyIconOffline :icon="Check" />
-              </span>
-              English
-            </el-dropdown-item>
-          </el-dropdown-menu>
-        </template>
-      </el-dropdown>
-    </div>
     <div
-      class="login-container"
-      :class="{ 'login-container--brand-panel': isBrandPanel }"
+      :class="{ 'login-scale-viewport': isBrandPanel }"
     >
-      <div v-if="!isBrandPanel" class="img">
-        <component :is="toRaw(defaultIllustration)" />
-      </div>
-      <div class="login-box">
-        <div class="login-form">
-          <component
-            v-if="!isBrandPanel"
-            :is="toRaw(defaultAvatar)"
-            class="avatar"
+      <div
+        :class="{ 'login-scale-canvas': isBrandPanel }"
+        :style="isBrandPanel ? brandCanvasStyle : undefined"
+      >
+        <img :src="bg" class="wave" decoding="async" fetchpriority="high" />
+        <div class="flex-c absolute right-5 top-3">
+          <!-- 主题 -->
+          <el-switch
+            v-model="dataTheme"
+            inline-prompt
+            :active-icon="dayIcon"
+            :inactive-icon="darkIcon"
+            @change="dataThemeChange"
           />
-          <component :is="isBrandPanel ? 'div' : Motion">
-            <h2 class="outline-none">{{ loginTitle }}</h2>
-            <p v-if="loginSubtitle" class="login-subtitle">
-              {{ loginSubtitle }}
-            </p>
-          </component>
+          <!-- 国际化 -->
+          <el-dropdown trigger="click">
+            <globalization
+              class="hover:text-primary hover:!bg-[transparent] w-[20px] h-[20px] ml-1.5 cursor-pointer outline-none duration-300"
+            />
+            <template #dropdown>
+              <el-dropdown-menu class="translation">
+                <el-dropdown-item
+                  :style="getDropdownItemStyle(locale, 'zh')"
+                  :class="['dark:!text-white', getDropdownItemClass(locale, 'zh')]"
+                  @click="translationCh"
+                >
+                  <IconifyIconOffline
+                    v-show="locale === 'zh'"
+                    class="check-zh"
+                    :icon="Check"
+                  />
+                  简体中文
+                </el-dropdown-item>
+                <el-dropdown-item
+                  :style="getDropdownItemStyle(locale, 'en')"
+                  :class="['dark:!text-white', getDropdownItemClass(locale, 'en')]"
+                  @click="translationEn"
+                >
+                  <span v-show="locale === 'en'" class="check-en">
+                    <IconifyIconOffline :icon="Check" />
+                  </span>
+                  English
+                </el-dropdown-item>
+              </el-dropdown-menu>
+            </template>
+          </el-dropdown>
+        </div>
+        <div
+          class="login-container"
+          :class="{ 'login-container--brand-panel': isBrandPanel }"
+        >
+          <div v-if="!isBrandPanel" class="img">
+            <component :is="toRaw(defaultIllustration)" />
+          </div>
+          <div class="login-box">
+            <div class="login-form">
+              <component
+                v-if="!isBrandPanel"
+                :is="toRaw(defaultAvatar)"
+                class="avatar"
+              />
+              <component :is="isBrandPanel ? 'div' : Motion">
+                <h2 class="outline-none">{{ loginTitle }}</h2>
+                <p v-if="loginSubtitle" class="login-subtitle">
+                  {{ loginSubtitle }}
+                </p>
+              </component>
 
-          <el-form
-            ref="ruleFormRef"
-            :model="ruleForm"
-            :rules="loginRules"
-            :size="isBrandPanel ? 'large' : 'large'"
-            :label-position="isBrandPanel ? 'top' : undefined"
-            :class="{ 'login-form-fields': isBrandPanel }"
-          >
-            <component :is="isBrandPanel ? 'div' : Motion" :delay="100">
-              <el-form-item
-                :label="isBrandPanel ? accountLabel : undefined"
-                :rules="[
-                  {
-                    required: true,
-                    message: transformI18n($t('login.pureUsernameReg')),
-                    trigger: 'blur'
-                  }
-                ]"
-                prop="username"
-                :class="{ 'login-field-item': isBrandPanel }"
+              <el-form
+                ref="ruleFormRef"
+                :model="ruleForm"
+                :rules="loginRules"
+                :size="isBrandPanel ? 'large' : 'large'"
+                :label-position="isBrandPanel ? 'top' : undefined"
+                :class="{ 'login-form-fields': isBrandPanel }"
               >
-                <el-input
-                  v-model="ruleForm.username"
-                  clearable
-                  :placeholder="usernamePlaceholder"
-                  :prefix-icon="usernamePrefixIcon"
-                />
-              </el-form-item>
-            </component>
+                <component :is="isBrandPanel ? 'div' : Motion" :delay="100">
+                  <el-form-item
+                    :label="isBrandPanel ? accountLabel : undefined"
+                    :rules="[
+                      {
+                        required: true,
+                        message: transformI18n($t('login.pureUsernameReg')),
+                        trigger: 'blur'
+                      }
+                    ]"
+                    prop="username"
+                    :class="{ 'login-field-item': isBrandPanel }"
+                  >
+                    <el-input
+                      v-model="ruleForm.username"
+                      clearable
+                      :placeholder="usernamePlaceholder"
+                      :prefix-icon="usernamePrefixIcon"
+                    />
+                  </el-form-item>
+                </component>
 
-            <component :is="isBrandPanel ? 'div' : Motion" :delay="150">
-              <el-form-item
-                :label="isBrandPanel ? passwordLabel : undefined"
-                prop="password"
-                :class="{ 'login-field-item': isBrandPanel }"
-              >
-                <el-input
-                  v-model="ruleForm.password"
-                  clearable
-                  show-password
-                  :placeholder="passwordPlaceholder"
-                  :prefix-icon="passwordPrefixIcon"
-                />
-              </el-form-item>
-            </component>
+                <component :is="isBrandPanel ? 'div' : Motion" :delay="150">
+                  <el-form-item
+                    :label="isBrandPanel ? passwordLabel : undefined"
+                    prop="password"
+                    :class="{ 'login-field-item': isBrandPanel }"
+                  >
+                    <el-input
+                      v-model="ruleForm.password"
+                      clearable
+                      show-password
+                      :placeholder="passwordPlaceholder"
+                      :prefix-icon="passwordPrefixIcon"
+                    />
+                  </el-form-item>
+                </component>
 
-            <div v-if="isBrandPanel" class="login-form-options">
-              <el-checkbox v-model="rememberMe" label="记住我" />
-              <a class="login-forgot-link" href="javascript:void(0)"
-                >忘记密码？</a
-              >
+                <div v-if="isBrandPanel" class="login-form-options">
+                  <el-checkbox v-model="rememberMe" label="记住我" />
+                  <a class="login-forgot-link" href="javascript:void(0)"
+                    >忘记密码？</a
+                  >
+                </div>
+
+                <component :is="isBrandPanel ? 'div' : Motion" :delay="250">
+                  <el-button
+                    class="w-full login-submit-btn"
+                    :class="{
+                      'mt-4': !isBrandPanel,
+                      'login-submit-btn--brand': isBrandPanel
+                    }"
+                    :size="isBrandPanel ? 'large' : 'default'"
+                    type="primary"
+                    :loading="loading"
+                    @click="onLogin(ruleFormRef)"
+                  >
+                    {{ t("login.pureLogin") }}
+                  </el-button>
+                </component>
+              </el-form>
             </div>
-
-            <component :is="isBrandPanel ? 'div' : Motion" :delay="250">
-              <el-button
-                class="w-full login-submit-btn"
-                :class="{
-                  'mt-4': !isBrandPanel,
-                  'login-submit-btn--brand': isBrandPanel
-                }"
-                :size="isBrandPanel ? 'large' : 'default'"
-                type="primary"
-                :loading="loading"
-                @click="onLogin(ruleFormRef)"
-              >
-                {{ t("login.pureLogin") }}
-              </el-button>
-            </component>
-          </el-form>
+          </div>
         </div>
       </div>
     </div>
