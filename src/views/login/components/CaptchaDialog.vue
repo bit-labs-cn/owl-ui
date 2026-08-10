@@ -43,6 +43,29 @@ const imageData = reactive({
 
 const resolvedType = computed(() => props.captchaType || "slide");
 
+/**
+ * 必须用组件真实宽高，禁止再用 CSS transform:scale。
+ * scale 只放大画面不放大坐标系，会导致滑块与拼图错位。
+ * 尺寸与 go-captcha 默认 / 后端出图一致（300×220）。
+ */
+const slideConfig = {
+  title: "请拖动滑块完成验证",
+  width: 300,
+  height: 220
+};
+
+const clickConfig = {
+  title: "请依次点击图中的文字",
+  width: 300,
+  height: 220
+};
+
+const rotateConfig = {
+  title: "请旋转图片至正确角度",
+  width: 300,
+  height: 220
+};
+
 function toDataUri(base64: string) {
   if (!base64) return "";
   if (base64.startsWith("data:")) return base64;
@@ -116,7 +139,6 @@ const clickEvents = {
   ...commonEvents,
   confirm: (dots: Array<{ index: number; x: number; y: number }>) =>
     emitConfirm({
-      // go-captcha-vue 为 1-based 点击序号，后端 go-captcha 为 0-based
       points: dots.map(dot => ({
         index: dot.index - 1,
         x: dot.x,
@@ -148,7 +170,9 @@ defineExpose({
   <el-dialog
     :model-value="visible"
     title="安全验证"
-    width="420px"
+    width="340px"
+    class="captcha-verify-dialog"
+    align-center
     append-to-body
     destroy-on-close
     :close-on-click-modal="false"
@@ -158,21 +182,21 @@ defineExpose({
       <Slide
         v-if="resolvedType === 'slide'"
         :key="`slide-${captchaRenderKey}`"
-        :config="{ title: '请拖动滑块完成验证' }"
+        :config="slideConfig"
         :data="slideData"
         :events="slideEvents"
       />
       <Click
         v-else-if="resolvedType === 'click'"
         :key="`click-${captchaRenderKey}`"
-        :config="{ title: '请依次点击图中的文字' }"
+        :config="clickConfig"
         :data="imageData"
         :events="clickEvents"
       />
       <Rotate
         v-else-if="resolvedType === 'rotate'"
         :key="`rotate-${captchaRenderKey}`"
-        :config="{ title: '请旋转图片至正确角度' }"
+        :config="rotateConfig"
         :data="imageData"
         :events="rotateEvents"
       />
@@ -185,12 +209,48 @@ defineExpose({
 
 <style scoped>
 .captcha-dialog-body {
-  min-height: 280px;
+  display: flex;
+  justify-content: center;
+  min-height: 0;
 }
 
 .captcha-unsupported {
   padding: 24px 0;
   text-align: center;
   color: var(--el-text-color-secondary);
+}
+</style>
+
+<style>
+.captcha-verify-dialog.el-dialog {
+  width: 340px !important;
+  max-width: calc(100vw - 48px);
+  margin: 0 !important;
+}
+
+.captcha-verify-dialog .el-dialog__header {
+  padding: 12px 16px 0 !important;
+}
+
+.captcha-verify-dialog .el-dialog__body {
+  /* 去掉底部大块留白 */
+  padding: 4px 12px 8px !important;
+}
+
+.captcha-verify-dialog .go-captcha.gc-wrapper {
+  padding: 4px 8px 0 !important;
+  box-shadow: none;
+}
+
+.captcha-verify-dialog .go-captcha .gc-footer {
+  height: 40px;
+  padding-top: 6px;
+  box-sizing: border-box;
+}
+
+.el-overlay-dialog:has(.captcha-verify-dialog) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 </style>
