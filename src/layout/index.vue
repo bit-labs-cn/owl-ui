@@ -5,6 +5,10 @@ import "@bit-labs.cn/owl-ui/components/ReIcon/src/offlineIcon";
 import { setType } from "./types";
 import { useI18n } from "vue-i18n";
 import { useLayout } from "./hooks/useLayout";
+import {
+  DEFAULT_HEADER_HEIGHT,
+  EXPANDED_HEADER_HEIGHT
+} from "./constants";
 import { useAppStoreHook } from "@bit-labs.cn/owl-ui/store/modules/app";
 import { useSettingStoreHook } from "@bit-labs.cn/owl-ui/store/modules/settings";
 import { useDataThemeChange } from "@bit-labs.cn/owl-ui/layout/hooks/useDataThemeChange";
@@ -36,6 +40,9 @@ const { t } = useI18n();
 const appWrapperRef = ref();
 const { isDark } = useDark();
 const { layout } = useLayout();
+const headerHeight = computed(() =>
+  layout.value === "vertical" ? DEFAULT_HEADER_HEIGHT : EXPANDED_HEADER_HEIGHT
+);
 const isMobile = deviceDetection();
 const pureSetting = useSettingStoreHook();
 const { $storage } = useGlobal<GlobalPropertiesApi>();
@@ -161,7 +168,11 @@ const LayHeader = defineComponent({
 </script>
 
 <template>
-  <div ref="appWrapperRef" :class="['app-wrapper', set.classes]">
+  <div
+    ref="appWrapperRef"
+    :class="['app-wrapper', set.classes]"
+    :style="{ '--owl-header-height': `${headerHeight}px` }"
+  >
     <div
       v-show="
         set.device === 'mobile' &&

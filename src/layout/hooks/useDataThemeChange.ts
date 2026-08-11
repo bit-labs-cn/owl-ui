@@ -14,26 +14,18 @@ import { resolveLayoutTheme } from "../utils/resolveLayoutTheme";
 export function useDataThemeChange() {
   const { layoutTheme, layout } = useLayout();
   const themeColors = ref<Array<themeColorsType>>([
-    /* Cloud Dancer Minimal */
     { color: "#ffffff", themeColor: "clean", title: "白色极简" },
-    /* SaaS Indigo */
-    { color: "#6366f1", themeColor: "tech", title: "科技互联网" },
-    /* Fintech Navy Trust */
-    { color: "#1e40af", themeColor: "finance", title: "金融科技" },
-    /* Clinical Teal */
-    { color: "#0d9488", themeColor: "healthcare", title: "医疗健康" },
-    /* Scholar Violet */
-    { color: "#7c3aed", themeColor: "education", title: "教育培训" },
-    /* Warm Coral Commerce */
-    { color: "#ea580c", themeColor: "ecommerce", title: "电商零售" },
-    /* Supply Chain Slate Blue */
-    { color: "#2563eb", themeColor: "logistics", title: "物流供应链" },
-    /* Industrial Steel */
-    { color: "#4a6fa5", themeColor: "manufacturing", title: "制造工业" },
-    /* Mist Blue Luxe */
-    { color: "#5b8dae", themeColor: "realestate", title: "房地产" },
-    /* Eco Emerald */
-    { color: "#059669", themeColor: "energy", title: "能源环保" }
+    { color: "#2563eb", themeColor: "ocean", title: "海洋蓝" },
+    { color: "#7c3aed", themeColor: "violet", title: "紫罗兰" },
+    { color: "#c026d3", themeColor: "fuchsia", title: "洋红色" },
+    { color: "#dc2626", themeColor: "crimson", title: "绯红色" },
+    { color: "#ea580c", themeColor: "orange", title: "橙色" },
+    { color: "#b45309", themeColor: "amber", title: "琥珀黄" },
+    { color: "#15803d", themeColor: "emerald", title: "森林绿" },
+    { color: "#0f766e", themeColor: "teal", title: "青绿色" },
+    { color: "#0891b2", themeColor: "cyan", title: "青蓝色" },
+    { color: "#475569", themeColor: "slate", title: "岩灰色" },
+    { color: "#78350f", themeColor: "coffee", title: "咖啡色" },
   ]);
 
   const { $storage } = useGlobal<GlobalPropertiesApi>();
@@ -104,7 +96,7 @@ export function useDataThemeChange() {
     overallStyle.value = overall;
     const epTheme = resolveLayoutTheme(useEpThemeStoreHook().epTheme);
     if (epTheme === "clean" && dataTheme.value) {
-      setLayoutThemeColor("tech", false);
+      setLayoutThemeColor("ocean", false);
     } else {
       setLayoutThemeColor(epTheme, false);
     }

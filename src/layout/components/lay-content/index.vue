@@ -3,6 +3,10 @@ import { useI18n } from "vue-i18n";
 import LayFrame from "../lay-frame/index.vue";
 import LayFooter from "../lay-footer/index.vue";
 import { useTags } from "@bit-labs.cn/owl-ui/layout/hooks/useTag";
+import {
+  DEFAULT_HEADER_HEIGHT,
+  EXPANDED_HEADER_HEIGHT
+} from "@bit-labs.cn/owl-ui/layout/constants";
 import { useGlobal, isNumber } from "@pureadmin/utils";
 import BackTopIcon from "@bit-labs.cn/owl-ui/assets/svg/back_top.svg?component";
 import { h, computed, Transition, defineComponent } from "vue";
@@ -42,6 +46,11 @@ const layout = computed(() => {
   return $storage?.layout.layout === "vertical";
 });
 
+const headerHeight = computed(() =>
+  layout.value ? DEFAULT_HEADER_HEIGHT : EXPANDED_HEADER_HEIGHT
+);
+const tabHeight = computed(() => (showModel.value === "chrome" ? 37 : 33));
+
 const getMainWidth = computed(() => {
   return isNumber(stretch.value)
     ? stretch.value + "px"
@@ -52,24 +61,16 @@ const getMainWidth = computed(() => {
 
 const getSectionStyle = computed(() => {
   return [
-    hideTabs.value && layout ? "padding-top: 48px;" : "",
-    !hideTabs.value && layout
-      ? showModel.value == "chrome"
-        ? "padding-top: 85px;"
-        : "padding-top: 81px;"
-      : "",
-    hideTabs.value && !layout.value ? "padding-top: 48px;" : "",
-    !hideTabs.value && !layout.value
-      ? showModel.value == "chrome"
-        ? "padding-top: 85px;"
-        : "padding-top: 81px;"
+    hideTabs.value ? `padding-top: ${headerHeight.value}px;` : "",
+    !hideTabs.value
+      ? `padding-top: ${headerHeight.value + tabHeight.value}px;`
       : "",
     props.fixedHeader
       ? ""
       : `padding-top: 0;${
           hideTabs.value
-            ? "min-height: calc(100vh - 48px);"
-            : "min-height: calc(100vh - 86px);"
+            ? `min-height: calc(100vh - ${headerHeight.value}px);`
+            : `min-height: calc(100vh - ${headerHeight.value + 38}px);`
         }`
   ];
 });

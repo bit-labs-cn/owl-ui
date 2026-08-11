@@ -1,5 +1,5 @@
 /* ============================================================
-   OwlUI Industry Theme System - 10 Professional Color Schemes
+   OwlUI Distinct Theme System - 12 Color Schemes
 
    Fatigue-safe rules (sidebar.scss enforces the rest):
    - Flat sidebar surface, no vertical gradient
@@ -26,89 +26,14 @@ html[data-theme="clean"] {
   --owl-content-bg: #f0f2f5;
 }
 
-/* 2. Tech/Internet - muted indigo wash */
-html[data-theme="tech"] {
-  --pure-theme-sub-menu-active-text: #4338ca;
-  --pure-theme-menu-bg: #eef0fb;
-  --pure-theme-menu-hover: rgba(99, 102, 241, 0.1);
-  --pure-theme-sub-menu-bg: #eef0fb;
-  --pure-theme-menu-text: #475569;
-  --pure-theme-sidebar-logo: #eef0fb;
-  --pure-theme-menu-title-hover: #3730a3;
-  --pure-theme-menu-active-before: #6366f1;
-  --owl-accent-color: #6366f1;
-  --owl-accent-hover: #818cf8;
-  --owl-accent-active: #4f46e5;
-}
-
-/* 3. FinTech - muted navy-blue wash */
-html[data-theme="finance"] {
-  --pure-theme-sub-menu-active-text: #1e3a5f;
-  --pure-theme-menu-bg: #edf2fa;
-  --pure-theme-menu-hover: rgba(37, 99, 235, 0.1);
-  --pure-theme-sub-menu-bg: #edf2fa;
-  --pure-theme-menu-text: #475569;
-  --pure-theme-sidebar-logo: #edf2fa;
-  --pure-theme-menu-title-hover: #0a2540;
-  --pure-theme-menu-active-before: #2563eb;
-  --owl-accent-color: #1e40af;
-  --owl-accent-hover: #2563eb;
-  --owl-accent-active: #1e3a5f;
-}
-
-/* 4. Healthcare - muted clinical teal (not mint neon) */
-html[data-theme="healthcare"] {
-  --pure-theme-sub-menu-active-text: #115e59;
-  --pure-theme-menu-bg: #edf5f4;
-  --pure-theme-menu-hover: rgba(13, 148, 136, 0.1);
-  --pure-theme-sub-menu-bg: #edf5f4;
-  --pure-theme-menu-text: #475569;
-  --pure-theme-sidebar-logo: #edf5f4;
-  --pure-theme-menu-title-hover: #0f766e;
-  --pure-theme-menu-active-before: #0d9488;
-  --owl-accent-color: #0d9488;
-  --owl-accent-hover: #14b8a6;
-  --owl-accent-active: #115e59;
-}
-
-/* 5. Education - muted scholarly violet */
-html[data-theme="education"] {
-  --pure-theme-sub-menu-active-text: #6d28d9;
-  --pure-theme-menu-bg: #f0ecf8;
-  --pure-theme-menu-hover: rgba(124, 58, 237, 0.1);
-  --pure-theme-sub-menu-bg: #f0ecf8;
-  --pure-theme-menu-text: #475569;
-  --pure-theme-sidebar-logo: #f0ecf8;
-  --pure-theme-menu-title-hover: #5b21b6;
-  --pure-theme-menu-active-before: #7c3aed;
-  --owl-accent-color: #7c3aed;
-  --owl-accent-hover: #8b5cf6;
-  --owl-accent-active: #6d28d9;
-}
-
-/* 6. E-commerce - muted warm sand */
-html[data-theme="ecommerce"] {
-  --pure-theme-sub-menu-active-text: #c2410c;
-  --pure-theme-menu-bg: #faf3ed;
-  --pure-theme-menu-hover: rgba(234, 88, 12, 0.1);
-  --pure-theme-sub-menu-bg: #faf3ed;
-  --pure-theme-menu-text: #57534e;
-  --pure-theme-sidebar-logo: #faf3ed;
-  --pure-theme-menu-title-hover: #9a3412;
-  --pure-theme-menu-active-before: #ea580c;
-  --owl-accent-color: #ea580c;
-  --owl-accent-hover: #f97316;
-  --owl-accent-active: #c2410c;
-}
-
-/* 7. Logistics - muted slate-blue */
-html[data-theme="logistics"] {
+/* 2. Ocean blue */
+html[data-theme="ocean"] {
   --pure-theme-sub-menu-active-text: #1d4ed8;
-  --pure-theme-menu-bg: #edf0f6;
-  --pure-theme-menu-hover: rgba(37, 99, 235, 0.1);
-  --pure-theme-sub-menu-bg: #edf0f6;
+  --pure-theme-menu-bg: #f5f9ff;
+  --pure-theme-menu-hover: rgb(37 99 235 / 7%);
+  --pure-theme-sub-menu-bg: #f5f9ff;
   --pure-theme-menu-text: #475569;
-  --pure-theme-sidebar-logo: #edf0f6;
+  --pure-theme-sidebar-logo: #f5f9ff;
   --pure-theme-menu-title-hover: #1e40af;
   --pure-theme-menu-active-before: #2563eb;
   --owl-accent-color: #2563eb;
@@ -116,49 +41,156 @@ html[data-theme="logistics"] {
   --owl-accent-active: #1d4ed8;
 }
 
-/* 8. Manufacturing - muted steel gray-blue */
-html[data-theme="manufacturing"] {
-  --pure-theme-sub-menu-active-text: #3d5a80;
-  --pure-theme-menu-bg: #eaedf2;
-  --pure-theme-menu-hover: rgba(74, 111, 165, 0.12);
-  --pure-theme-sub-menu-bg: #eaedf2;
+/* 3. Violet */
+html[data-theme="violet"] {
+  --pure-theme-sub-menu-active-text: #6d28d9;
+  --pure-theme-menu-bg: #faf8ff;
+  --pure-theme-menu-hover: rgb(124 58 237 / 7%);
+  --pure-theme-sub-menu-bg: #faf8ff;
   --pure-theme-menu-text: #475569;
-  --pure-theme-sidebar-logo: #eaedf2;
-  --pure-theme-menu-title-hover: #334155;
-  --pure-theme-menu-active-before: #4a6fa5;
-  --owl-accent-color: #4a6fa5;
-  --owl-accent-hover: #5b82b8;
-  --owl-accent-active: #3d5a80;
+  --pure-theme-sidebar-logo: #faf8ff;
+  --pure-theme-menu-title-hover: #5b21b6;
+  --pure-theme-menu-active-before: #7c3aed;
+  --owl-accent-color: #7c3aed;
+  --owl-accent-hover: #8b5cf6;
+  --owl-accent-active: #6d28d9;
 }
 
-/* 9. Real Estate - muted mist blue */
-html[data-theme="realestate"] {
-  --pure-theme-sub-menu-active-text: #4a7a96;
-  --pure-theme-menu-bg: #ecf2f6;
-  --pure-theme-menu-hover: rgba(91, 141, 174, 0.12);
-  --pure-theme-sub-menu-bg: #ecf2f6;
+/* 4. Fuchsia */
+html[data-theme="fuchsia"] {
+  --pure-theme-sub-menu-active-text: #a21caf;
+  --pure-theme-menu-bg: #fef9ff;
+  --pure-theme-menu-hover: rgb(192 38 211 / 7%);
+  --pure-theme-sub-menu-bg: #fef9ff;
   --pure-theme-menu-text: #475569;
-  --pure-theme-sidebar-logo: #ecf2f6;
-  --pure-theme-menu-title-hover: #3d667d;
-  --pure-theme-menu-active-before: #5b8dae;
-  --owl-accent-color: #5b8dae;
-  --owl-accent-hover: #7ba7c4;
-  --owl-accent-active: #4a7a96;
+  --pure-theme-sidebar-logo: #fef9ff;
+  --pure-theme-menu-title-hover: #a21caf;
+  --pure-theme-menu-active-before: #c026d3;
+  --owl-accent-color: #c026d3;
+  --owl-accent-hover: #d946ef;
+  --owl-accent-active: #a21caf;
 }
 
-/* 10. Energy - muted sage emerald */
-html[data-theme="energy"] {
-  --pure-theme-sub-menu-active-text: #047857;
-  --pure-theme-menu-bg: #ecf4f0;
-  --pure-theme-menu-hover: rgba(5, 150, 105, 0.1);
-  --pure-theme-sub-menu-bg: #ecf4f0;
+/* 5. Teal */
+html[data-theme="teal"] {
+  --pure-theme-sub-menu-active-text: #115e59;
+  --pure-theme-menu-bg: #f5fffd;
+  --pure-theme-menu-hover: rgb(15 118 110 / 7%);
+  --pure-theme-sub-menu-bg: #f5fffd;
   --pure-theme-menu-text: #475569;
-  --pure-theme-sidebar-logo: #ecf4f0;
-  --pure-theme-menu-title-hover: #065f46;
-  --pure-theme-menu-active-before: #059669;
-  --owl-accent-color: #059669;
-  --owl-accent-hover: #10b981;
-  --owl-accent-active: #047857;
+  --pure-theme-sidebar-logo: #f5fffd;
+  --pure-theme-menu-title-hover: #0f766e;
+  --pure-theme-menu-active-before: #0f766e;
+  --owl-accent-color: #0f766e;
+  --owl-accent-hover: #14b8a6;
+  --owl-accent-active: #115e59;
+}
+
+/* 6. Emerald */
+html[data-theme="emerald"] {
+  --pure-theme-sub-menu-active-text: #166534;
+  --pure-theme-menu-bg: #f6fff8;
+  --pure-theme-menu-hover: rgb(21 128 61 / 7%);
+  --pure-theme-sub-menu-bg: #f6fff8;
+  --pure-theme-menu-text: #475569;
+  --pure-theme-sidebar-logo: #f6fff8;
+  --pure-theme-menu-title-hover: #166534;
+  --pure-theme-menu-active-before: #15803d;
+  --owl-accent-color: #15803d;
+  --owl-accent-hover: #16a34a;
+  --owl-accent-active: #166534;
+}
+
+/* 7. Amber */
+html[data-theme="amber"] {
+  --pure-theme-sub-menu-active-text: #92400e;
+  --pure-theme-menu-bg: #fffdf5;
+  --pure-theme-menu-hover: rgb(180 83 9 / 7%);
+  --pure-theme-sub-menu-bg: #fffdf5;
+  --pure-theme-menu-text: #57534e;
+  --pure-theme-sidebar-logo: #fffdf5;
+  --pure-theme-menu-title-hover: #92400e;
+  --pure-theme-menu-active-before: #b45309;
+  --owl-accent-color: #b45309;
+  --owl-accent-hover: #d97706;
+  --owl-accent-active: #92400e;
+}
+
+/* 8. Crimson */
+html[data-theme="crimson"] {
+  --pure-theme-sub-menu-active-text: #b91c1c;
+  --pure-theme-menu-bg: #fff7f7;
+  --pure-theme-menu-hover: rgb(220 38 38 / 7%);
+  --pure-theme-sub-menu-bg: #fff7f7;
+  --pure-theme-menu-text: #57534e;
+  --pure-theme-sidebar-logo: #fff7f7;
+  --pure-theme-menu-title-hover: #b91c1c;
+  --pure-theme-menu-active-before: #dc2626;
+  --owl-accent-color: #dc2626;
+  --owl-accent-hover: #ef4444;
+  --owl-accent-active: #b91c1c;
+}
+
+/* 9. Orange */
+html[data-theme="orange"] {
+  --pure-theme-sub-menu-active-text: #c2410c;
+  --pure-theme-menu-bg: #fffaf5;
+  --pure-theme-menu-hover: rgb(234 88 12 / 7%);
+  --pure-theme-sub-menu-bg: #fffaf5;
+  --pure-theme-menu-text: #57534e;
+  --pure-theme-sidebar-logo: #fffaf5;
+  --pure-theme-menu-title-hover: #9a3412;
+  --pure-theme-menu-active-before: #ea580c;
+  --owl-accent-color: #ea580c;
+  --owl-accent-hover: #f97316;
+  --owl-accent-active: #c2410c;
+  --owl-accent-on-color: #431407;
+}
+
+/* 10. Cyan */
+html[data-theme="cyan"] {
+  --pure-theme-sub-menu-active-text: #0e7490;
+  --pure-theme-menu-bg: #f4feff;
+  --pure-theme-menu-hover: rgb(8 145 178 / 7%);
+  --pure-theme-sub-menu-bg: #f4feff;
+  --pure-theme-menu-text: #475569;
+  --pure-theme-sidebar-logo: #f4feff;
+  --pure-theme-menu-title-hover: #0e7490;
+  --pure-theme-menu-active-before: #0891b2;
+  --owl-accent-color: #0891b2;
+  --owl-accent-hover: #06b6d4;
+  --owl-accent-active: #0e7490;
+  --owl-accent-on-color: #083344;
+}
+
+/* 11. Slate */
+html[data-theme="slate"] {
+  --pure-theme-sub-menu-active-text: #334155;
+  --pure-theme-menu-bg: #fafcff;
+  --pure-theme-menu-hover: rgb(71 85 105 / 7%);
+  --pure-theme-sub-menu-bg: #fafcff;
+  --pure-theme-menu-text: #475569;
+  --pure-theme-sidebar-logo: #fafcff;
+  --pure-theme-menu-title-hover: #1e293b;
+  --pure-theme-menu-active-before: #475569;
+  --owl-accent-color: #475569;
+  --owl-accent-hover: #64748b;
+  --owl-accent-active: #334155;
+}
+
+/* 12. Coffee */
+html[data-theme="coffee"] {
+  --pure-theme-sub-menu-active-text: #78350f;
+  --pure-theme-menu-bg: #fffaf5;
+  --pure-theme-menu-hover: rgb(120 53 15 / 7%);
+  --pure-theme-sub-menu-bg: #fffaf5;
+  --pure-theme-menu-text: #57534e;
+  --pure-theme-sidebar-logo: #fffaf5;
+  --pure-theme-menu-title-hover: #78350f;
+  --pure-theme-menu-active-before: #78350f;
+  --owl-accent-color: #78350f;
+  --owl-accent-hover: #a16207;
+  --owl-accent-active: #451a03;
 }
 
 

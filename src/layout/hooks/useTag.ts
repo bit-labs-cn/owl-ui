@@ -165,7 +165,7 @@ export function useTags() {
     visible.value = false;
   };
 
-  /** 鼠标移入添加激活样式 */
+  /** 鼠标移入时显示可关闭按钮并更新灵动页签进度条 */
   function onMouseenter(index) {
     if (index) activeIndex.value = index;
     if (unref(showModel) === "smart") {
@@ -173,14 +173,10 @@ export function useTags() {
         return;
       toggleClass(true, "schedule-in", instance.refs["schedule" + index][0]);
       toggleClass(false, "schedule-out", instance.refs["schedule" + index][0]);
-    } else {
-      if (hasClass(instance.refs["dynamic" + index][0], "is-active")) return;
-      toggleClass(true, "card-in", instance.refs["dynamic" + index][0]);
-      toggleClass(false, "card-out", instance.refs["dynamic" + index][0]);
     }
   }
 
-  /** 鼠标移出恢复默认样式 */
+  /** 鼠标移出时隐藏可关闭按钮并恢复灵动页签进度条 */
   function onMouseleave(index) {
     activeIndex.value = -1;
     if (unref(showModel) === "smart") {
@@ -188,10 +184,6 @@ export function useTags() {
         return;
       toggleClass(false, "schedule-in", instance.refs["schedule" + index][0]);
       toggleClass(true, "schedule-out", instance.refs["schedule" + index][0]);
-    } else {
-      if (hasClass(instance.refs["dynamic" + index][0], "is-active")) return;
-      toggleClass(false, "card-in", instance.refs["dynamic" + index][0]);
-      toggleClass(true, "card-out", instance.refs["dynamic" + index][0]);
     }
   }
 

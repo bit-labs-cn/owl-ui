@@ -1,28 +1,39 @@
 const LEGACY_THEME_MAP: Record<string, string> = {
   light: "clean",
-  default: "tech",
-  saucePurple: "education",
-  pink: "healthcare",
-  dusk: "ecommerce",
-  volcano: "logistics",
-  mingQing: "energy",
-  auroraGreen: "realestate"
+  default: "ocean",
+  saucePurple: "violet",
+  pink: "crimson",
+  dusk: "orange",
+  volcano: "crimson",
+  mingQing: "teal",
+  auroraGreen: "emerald",
+  tech: "violet",
+  finance: "ocean",
+  healthcare: "teal",
+  education: "violet",
+  ecommerce: "orange",
+  logistics: "ocean",
+  manufacturing: "ocean",
+  realestate: "ocean",
+  energy: "emerald"
 };
 
 const VALID_THEMES = new Set([
   "clean",
-  "tech",
-  "finance",
-  "healthcare",
-  "education",
-  "ecommerce",
-  "logistics",
-  "manufacturing",
-  "realestate",
-  "energy"
+  "ocean",
+  "violet",
+  "fuchsia",
+  "crimson",
+  "orange",
+  "amber",
+  "emerald",
+  "teal",
+  "cyan",
+  "slate",
+  "coffee"
 ]);
 
-/** 将旧版主题键映射为行业主题键，无效值回退到白色极简 */
+/** 将旧版主题键映射为色相明确的主题键，无效值回退到白色极简 */
 export function resolveLayoutTheme(theme?: string | null): string {
   if (!theme) return "clean";
   const resolved = LEGACY_THEME_MAP[theme] ?? theme;

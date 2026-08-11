@@ -39,7 +39,7 @@
     align-items: center;
     justify-content: center;
     width: 40px;
-    height: 48px;
+    height: var(--owl-header-height);
     cursor: pointer;
   }
 
@@ -108,12 +108,12 @@
 
     &.has-logo {
       .el-scrollbar.pc {
-        height: calc(100% - 48px);
+        height: calc(100% - 64px);
       }
 
-      /* logo: 48px */
+      /* logo: 64px */
       .el-scrollbar.mobile {
-        height: calc(100% - 48px);
+        height: calc(100% - 64px);
       }
     }
 
@@ -410,34 +410,34 @@
   .horizontal-header {
     display: flex;
     align-items: center;
-    justify-content: space-around;
+    justify-content: flex-start;
     width: 100%;
-    height: 48px;
+    height: var(--owl-header-height);
     background: var(--pure-theme-menu-bg) !important;
 
     .horizontal-header-left {
       display: flex;
       align-items: center;
       width: auto;
-      min-width: 200px;
+      min-width: 240px;
       height: 100%;
-      padding-left: 10px;
+      padding: 0 24px;
       cursor: pointer;
       transition: all var(--pure-transition-duration) ease;
 
       img {
         display: inline-block;
-        height: 32px;
+        height: 36px;
       }
 
       span {
         display: inline-block;
-        height: 32px;
-        margin: 2px 0 0 12px;
+        height: 36px;
+        margin: 0 0 0 12px;
         overflow: hidden;
-        font-size: 18px;
+        font-size: 20px;
         font-weight: 600;
-        line-height: 32px;
+        line-height: 36px;
         color: var(--pure-theme-sub-menu-active-text);
         text-overflow: ellipsis;
         white-space: nowrap;
@@ -455,7 +455,8 @@
       display: flex;
       align-items: center;
       justify-content: flex-end;
-      min-width: 340px;
+      min-width: 300px;
+      height: 100%;
       color: var(--pure-theme-sub-menu-active-text);
 
       /* 搜索 */
@@ -476,14 +477,14 @@
       }
 
       .dropdown-badge {
-        height: 48px;
+        height: var(--owl-header-height);
         color: var(--pure-theme-sub-menu-active-text);
       }
 
       .globalization {
         width: 40px;
-        height: 48px;
-        padding: 11px;
+        height: var(--owl-header-height);
+        padding: calc((var(--owl-header-height) - 26px) / 2) 11px;
         color: var(--pure-theme-sub-menu-active-text);
         cursor: pointer;
         outline: none;
@@ -493,8 +494,8 @@
         display: flex;
         align-items: center;
         justify-content: space-around;
-        height: 48px;
-        padding: 10px;
+        height: var(--owl-header-height);
+        padding: calc((var(--owl-header-height) - 36px) / 2) 12px;
         color: var(--pure-theme-sub-menu-active-text);
         cursor: pointer;
 
@@ -508,6 +509,11 @@
           border-radius: 50%;
         }
       }
+
+      .set-icon,
+      .fullscreen-icon {
+        height: var(--owl-header-height);
+      }
     }
 
     .el-menu {
@@ -519,18 +525,23 @@
 
     .el-menu-item,
     .el-sub-menu__title {
-      padding-right: var(--el-menu-base-level-padding);
+      height: var(--owl-header-height);
+      line-height: var(--owl-header-height);
+      padding: 0 18px;
+      font-size: 15px;
+      font-weight: 500;
       color: var(--pure-theme-menu-text);
 
       &:hover {
+        background: var(--pure-theme-menu-hover) !important;
         color: var(--pure-theme-menu-title-hover) !important;
       }
     }
 
     .submenu-title-noDropdown,
     .el-sub-menu__title {
-      height: 48px;
-      line-height: 48px;
+      height: var(--owl-header-height);
+      line-height: var(--owl-header-height);
       background: var(--pure-theme-menu-bg) !important;
 
       svg {
@@ -821,10 +832,10 @@ body[layout="mix"] {
 
 /* ============================================================
    OwlUI Light Sidebar Fix - Active Menu Text Visibility
-   
+
    Problem: hardcoded `color: #fff` on active items is invisible
    on light sidebar backgrounds.
-   
+
    Solution (Linear/Notion pattern):
    - Active text → accent color (not white)
    - Active bg  → subtle accent-tinted fill
@@ -867,15 +878,31 @@ html:not(.dark) {
 
   /* --- Horizontal menu active items --- */
   .el-menu--horizontal {
-    .el-menu-item.is-active.nest-menu > * {
-      color: var(--pure-theme-sub-menu-active-text) !important;
+    .el-menu-item.is-active.nest-menu {
+      color: var(--owl-accent-on-color, #fff) !important;
+
+      > *,
+      .sub-menu-icon,
+      .sub-menu-icon svg,
+      .el-icon,
+      svg {
+        color: var(--owl-accent-on-color, #fff) !important;
+      }
     }
   }
 
   /* --- Vertical popup menu (collapsed sidebar) --- */
   .el-menu--vertical {
-    .el-menu-item.is-active.nest-menu > * {
-      color: var(--pure-theme-sub-menu-active-text) !important;
+    .el-menu-item.is-active.nest-menu {
+      color: var(--owl-accent-on-color, #fff) !important;
+
+      > *,
+      .sub-menu-icon,
+      .sub-menu-icon svg,
+      .el-icon,
+      svg {
+        color: var(--owl-accent-on-color, #fff) !important;
+      }
     }
   }
 
@@ -893,7 +920,7 @@ html:not(.dark) {
 
 /* ============================================================
    OwlUI Vercel-Style Menu Design
-   
+
    Features:
    1. Accent-colored pill background for active items
    2. Rounded corners on the left side (modern look)
@@ -912,7 +939,7 @@ html:not(.dark) {
       transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 
       &:hover {
-        background: color-mix(in srgb, var(--owl-accent-color) 8%, transparent) !important;
+        background: color-mix(in srgb, var(--owl-accent-color) 5%, transparent) !important;
       }
     }
 
@@ -941,7 +968,7 @@ html:not(.dark) {
         position: absolute;
         inset: 4px 12px;
         border-radius: 8px;
-        background: color-mix(in srgb, var(--owl-accent-color) 8%, transparent);
+        background: color-mix(in srgb, var(--owl-accent-color) 5%, transparent);
         z-index: 0;
       }
 
@@ -957,7 +984,7 @@ html:not(.dark) {
 
     /* Active menu items: flat tint — visible identity without gradient shimmer */
     .el-menu-item.is-active.submenu-title-noDropdown.outer-most {
-      background: color-mix(in srgb, var(--owl-accent-color) 16%, var(--pure-theme-menu-bg)) !important;
+      background: color-mix(in srgb, var(--owl-accent-color) 10%, var(--pure-theme-menu-bg)) !important;
       color: var(--pure-theme-sub-menu-active-text) !important;
       font-weight: 600;
       margin: 4px 12px !important;
@@ -977,7 +1004,7 @@ html:not(.dark) {
       }
 
       &:hover {
-        background: color-mix(in srgb, var(--owl-accent-color) 20%, var(--pure-theme-menu-bg)) !important;
+        background: color-mix(in srgb, var(--owl-accent-color) 13%, var(--pure-theme-menu-bg)) !important;
       }
     }
 
@@ -995,7 +1022,7 @@ html:not(.dark) {
         position: absolute;
         inset: 4px 12px;
         border-radius: 8px;
-        background: color-mix(in srgb, var(--owl-accent-color) 8%, transparent);
+        background: color-mix(in srgb, var(--owl-accent-color) 5%, transparent);
         z-index: 0;
       }
 
@@ -1018,7 +1045,7 @@ html:not(.dark) {
         inset: 4px 12px;
         content: "";
         border-radius: 8px;
-        background: color-mix(in srgb, var(--owl-accent-color) 16%, var(--pure-theme-menu-bg)) !important;
+        background: color-mix(in srgb, var(--owl-accent-color) 10%, var(--pure-theme-menu-bg)) !important;
         opacity: 1 !important;
         z-index: 0;
       }
@@ -1033,7 +1060,7 @@ html:not(.dark) {
       }
 
       &:hover::before {
-        background: color-mix(in srgb, var(--owl-accent-color) 20%, var(--pure-theme-menu-bg)) !important;
+        background: color-mix(in srgb, var(--owl-accent-color) 13%, var(--pure-theme-menu-bg)) !important;
       }
     }
 
@@ -1262,7 +1289,7 @@ html[data-theme="clean"]:not(.dark) {
 
 /* Logo area: clean, minimal */
 .sidebar-logo-container {
-  padding: 0 16px !important;
+  padding: 0 12px !important;
   display: flex;
   align-items: center;
   border-bottom: 1px solid rgba(0, 0, 0, 0.04) !important;
@@ -1271,7 +1298,8 @@ html[data-theme="clean"]:not(.dark) {
     display: flex;
     align-items: center;
     padding: 0 !important;
-    gap: 12px;
+    gap: 8px;
+    min-width: 0;
   }
 
   img {
@@ -1280,12 +1308,33 @@ html[data-theme="clean"]:not(.dark) {
   }
 
   .sidebar-title {
-    font-size: 16px !important;
+    display: -webkit-box;
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    font-size: 14px !important;
     font-weight: 700 !important;
-    letter-spacing: -0.02em;
+    letter-spacing: 0;
     margin: 0 !important;
     height: auto !important;
-    line-height: 1 !important;
+    line-height: 18px !important;
+    text-overflow: ellipsis;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    white-space: normal;
+  }
+
+  &.collapses {
+    padding: 0 !important;
+
+    .sidebar-logo-link {
+      justify-content: center;
+    }
+
+    .sidebar-title {
+      display: none;
+    }
   }
 }
 
@@ -1334,7 +1383,7 @@ html.dark .sidebar-header {
 }
 
 .left-collapse:hover {
-  background: color-mix(in srgb, var(--owl-accent-color) 8%, transparent);
+  background: color-mix(in srgb, var(--owl-accent-color) 5%, transparent);
 }
 
 html.dark .left-collapse:hover {

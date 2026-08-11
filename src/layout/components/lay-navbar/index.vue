@@ -53,7 +53,7 @@ const { t, locale, translationCh, translationEn } = useTranslationLang();
       <!-- 国际化 -->
       <el-dropdown id="header-translation" trigger="click">
         <GlobalizationIcon
-          class="navbar-bg-hover w-[40px] h-[48px] p-[11px] cursor-pointer outline-none"
+          class="navbar-bg-hover w-[40px] h-(--owl-header-height) p-[11px] cursor-pointer outline-none"
         />
         <template #dropdown>
           <el-dropdown-menu class="translation">
@@ -118,13 +118,13 @@ const { t, locale, translationCh, translationEn } = useTranslationLang();
 <style lang="scss" scoped>
 .navbar {
   width: 100%;
-  height: 48px;
+  height: var(--owl-header-height);
   overflow: hidden;
 
   .hamburger-container {
     float: left;
     height: 100%;
-    line-height: 48px;
+    line-height: var(--owl-header-height);
     cursor: pointer;
   }
 
@@ -133,14 +133,14 @@ const { t, locale, translationCh, translationEn } = useTranslationLang();
     align-items: center;
     justify-content: flex-end;
     min-width: 280px;
-    height: 48px;
+    height: var(--owl-header-height);
     color: #000000d9;
 
     .el-dropdown-link {
       display: flex;
       align-items: center;
       justify-content: space-around;
-      height: 48px;
+      height: var(--owl-header-height);
       padding: 10px;
       color: #000000d9;
       cursor: pointer;

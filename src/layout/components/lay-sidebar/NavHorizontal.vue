@@ -83,7 +83,7 @@ onMounted(() => {
       <!-- 国际化 -->
       <el-dropdown id="header-translation" trigger="click">
         <GlobalizationIcon
-          class="navbar-bg-hover w-[40px] h-[48px] p-[11px] cursor-pointer outline-none"
+          class="navbar-bg-hover w-[40px] h-(--owl-header-height) px-[11px] py-[19px] cursor-pointer outline-none"
         />
         <template #dropdown>
           <el-dropdown-menu class="translation">
