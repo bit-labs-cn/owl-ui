@@ -17,8 +17,9 @@ import { message } from "@bit-labs.cn/owl-ui/utils/message";
 
 // 相关配置请参考：www.axios-js.com/zh-cn/docs/#axios-request-config-1
 const defaultConfig: AxiosRequestConfig = {
-  // API 基础地址（由消费方 .env 中的 VITE_BASE_URL 注入）
-  baseURL: import.meta.env.VITE_BASE_URL ?? "",
+  // 开发环境走当前 Vite 同源，由 proxy 转发到 VITE_BASE_URL，避免浏览器 CORS
+  // 生产环境使用打包时注入的 VITE_BASE_URL（通常为 /）
+  baseURL: import.meta.env.DEV ? "" : (import.meta.env.VITE_BASE_URL ?? ""),
   // 请求超时时间
   timeout: 10000,
   headers: {
