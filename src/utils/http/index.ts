@@ -158,8 +158,11 @@ class PureHttp {
 
         const data = response.data as any;
         const silentMessage = ($config as PureHttpRequestConfig).silentMessage;
+        const silentError = ($config as PureHttpRequestConfig).silentError;
         if (data && data.success === false) {
-          message(data.msg || "操作失败", { type: "error" });
+          if (!silentError) {
+            message(data.msg || "操作失败", { type: "error" });
+          }
           return Promise.reject(data);
         }
         // silentMessage 仅抑制成功提示，失败仍由上方分支弹出
@@ -176,6 +179,7 @@ class PureHttp {
         NProgress.done();
         // 所有的响应异常 区分来源为取消请求/非取消请求
         const silentMessage = ($error.config as PureHttpRequestConfig)?.silentMessage;
+        const silentError = ($error.config as PureHttpRequestConfig)?.silentError;
         const status = $error.response?.status;
         const requestUrl = $error.config?.url ?? "";
         const isAuthRequest = AUTH_WHITE_LIST.some(url =>
@@ -184,7 +188,7 @@ class PureHttp {
 
         if (status === 401 && !isAuthRequest && !$error.isCancelRequest) {
           PureHttp.handleUnauthorized();
-        } else if (!$error.isCancelRequest && !silentMessage) {
+        } else if (!$error.isCancelRequest && !silentMessage && !silentError) {
           const data = $error.response?.data as any;
           message(data?.msg || getDefaultErrorMessage(status), {
             type: "error"
