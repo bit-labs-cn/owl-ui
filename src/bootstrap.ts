@@ -1,7 +1,8 @@
 import App from "./App.vue";
 import { setupStore } from "@bit-labs.cn/owl-ui/store";
 import { useI18n } from "@bit-labs.cn/owl-ui/plugins/i18n";
-import { getPlatformConfig } from "./config";
+import { getPlatformConfig, getConfig } from "./config";
+import { setHttpTimeout } from "./utils/http";
 import { MotionPlugin } from "@vueuse/motion";
 import { createApp, type App as VueApp, type Directive } from "vue";
 import { useElementPlus } from "@bit-labs.cn/owl-ui/plugins/elementPlus";
@@ -68,6 +69,10 @@ export async function createFlexAdmin(
 
   // 5. 加载平台配置 → 初始化 store / router / 插件
   const config = await getPlatformConfig(app);
+  const httpTimeout = getConfig()?.HttpTimeout;
+  if (httpTimeout != null) {
+    setHttpTimeout(httpTimeout);
+  }
   setupStore(app);
   useEcharts(app);
 

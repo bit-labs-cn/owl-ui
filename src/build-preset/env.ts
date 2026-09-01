@@ -15,6 +15,7 @@ export function wrapperEnv(
     VITE_HIDE_HOME: "false",
     VITE_COMPRESSION: "none",
     VITE_BASE_URL: "",
+    VITE_HTTP_TIMEOUT: 60_000,
     ...defaults
   };
 
@@ -27,7 +28,7 @@ export function wrapperEnv(
           ? false
           : realValue;
 
-    if (envName === "VITE_PORT") {
+    if (envName === "VITE_PORT" || envName === "VITE_HTTP_TIMEOUT") {
       realValue = Number(realValue);
     }
 

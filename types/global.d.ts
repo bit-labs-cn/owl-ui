@@ -66,6 +66,8 @@ declare global {
   interface ViteEnv {
     /** 接口请求基础地址，如 https://api.example.com */
     VITE_BASE_URL?: string;
+    /** 接口请求超时（毫秒），缺省 60000 */
+    VITE_HTTP_TIMEOUT?: number;
     VITE_PORT: number;
     VITE_PUBLIC_PATH: string;
     VITE_ROUTER_HISTORY: string;
@@ -110,6 +112,8 @@ declare global {
     TooltipEffect?: Effect;
     ResponsiveStorageNameSpace?: string;
     MenuSearchHistory?: number;
+    /** 接口请求超时（毫秒），缺省 60000；0 表示不超时 */
+    HttpTimeout?: number;
   }
 
   /**

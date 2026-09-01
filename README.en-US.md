@@ -109,6 +109,7 @@ pnpm lint
 | `VITE_PUBLIC_PATH` | Public base path |
 | `VITE_ROUTER_HISTORY` | Router mode (`hash` / `history`) |
 | `VITE_HIDE_HOME` | Whether to hide the home page |
+| `VITE_HTTP_TIMEOUT` | HTTP timeout in milliseconds, default `60000` (60s); `0` disables timeout |
 
 ### Platform Configuration
 
@@ -121,7 +122,8 @@ Runtime configuration via `public/platform-config.json`:
   "Layout": "vertical",           // Layout mode
   "Theme": "light",               // Theme
   "Locale": "zh",                 // Locale
-  "EpThemeColor": "#409EFF"       // Element Plus theme color
+  "EpThemeColor": "#409EFF",      // Element Plus theme color
+  "HttpTimeout": 60000            // HTTP timeout (ms), optional, default 60s
 }
 ```
 

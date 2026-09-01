@@ -182,6 +182,7 @@ pnpm lint
 | `VITE_PUBLIC_PATH` | 公共基础路径 |
 | `VITE_ROUTER_HISTORY` | 路由模式（`hash` / `history`） |
 | `VITE_HIDE_HOME` | 是否隐藏首页 |
+| `VITE_HTTP_TIMEOUT` | 接口请求超时（毫秒），缺省 `60000`（60 秒）；`0` 表示不超时 |
 
 ### 平台配置
 
@@ -194,7 +195,8 @@ pnpm lint
   "Layout": "vertical",           // 布局模式
   "Theme": "light",               // 主题
   "Locale": "zh",                 // 语言
-  "EpThemeColor": "#409EFF"       // Element Plus 主题色
+  "EpThemeColor": "#409EFF",      // Element Plus 主题色
+  "HttpTimeout": 60000            // 接口超时（毫秒），可省略，默认 60 秒
 }
 ```
 

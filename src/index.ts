@@ -39,7 +39,7 @@ export { useEpThemeStoreHook } from "./store/modules/epTheme";
 export { useSettingStoreHook } from "./store/modules/settings";
 
 // ─── 工具函数 ───
-export { http } from "./utils/http";
+export { http, setHttpTimeout } from "./utils/http";
 export {
   setToken,
   removeToken,

@@ -15,13 +15,27 @@ import { getToken, formatToken } from "@bit-labs.cn/owl-ui/utils/auth";
 import { useUserStoreHook } from "@bit-labs.cn/owl-ui/store/modules/user";
 import { message } from "@bit-labs.cn/owl-ui/utils/message";
 
+/** 默认请求超时：60 秒（axios 单位为毫秒） */
+const DEFAULT_HTTP_TIMEOUT = 60_000;
+
+function parseHttpTimeout(raw: unknown, fallback = DEFAULT_HTTP_TIMEOUT): number {
+  if (raw === undefined || raw === null || raw === "") {
+    return fallback;
+  }
+  const n = Number(raw);
+  if (!Number.isFinite(n) || n < 0) {
+    return fallback;
+  }
+  return n;
+}
+
 // 相关配置请参考：www.axios-js.com/zh-cn/docs/#axios-request-config-1
 const defaultConfig: AxiosRequestConfig = {
   // 开发环境走当前 Vite 同源，由 proxy 转发到 VITE_BASE_URL，避免浏览器 CORS
   // 生产环境使用打包时注入的 VITE_BASE_URL（通常为 /）
   baseURL: import.meta.env.DEV ? "" : (import.meta.env.VITE_BASE_URL ?? ""),
-  // 请求超时时间
-  timeout: 10000,
+  // 请求超时：VITE_HTTP_TIMEOUT（毫秒），缺省 60000；单次请求可再传 timeout
+  timeout: parseHttpTimeout(import.meta.env.VITE_HTTP_TIMEOUT),
   headers: {
     Accept: "application/json, text/plain, */*",
     "Content-Type": "application/json",
@@ -67,6 +81,11 @@ class PureHttp {
 
   /** 保存当前`Axios`实例对象 */
   private static axiosInstance: AxiosInstance = Axios.create(defaultConfig);
+
+  /** 覆盖默认请求超时（毫秒）。0 表示不超时。 */
+  static setTimeout(ms: unknown): void {
+    PureHttp.axiosInstance.defaults.timeout = parseHttpTimeout(ms);
+  }
 
   /** 重连原始请求 */
   private static retryOriginalRequest(config: PureHttpRequestConfig) {
@@ -246,6 +265,11 @@ class PureHttp {
 }
 
 export const http = new PureHttp();
+
+/** 运行时覆盖默认超时（毫秒）。0 表示不超时。 */
+export function setHttpTimeout(ms: unknown): void {
+  PureHttp.setTimeout(ms);
+}
 
 function getDefaultErrorMessage(status?: number): string {
   switch (status) {

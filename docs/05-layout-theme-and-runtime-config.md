@@ -18,6 +18,7 @@
 ## 注意事项
 
 - 框架不包含 `platform-config.json` 内容，宿主必须提供；否则 `getPlatformConfig` 会 reject。
+- 接口超时默认 60 秒。构建时用 `VITE_HTTP_TIMEOUT`（毫秒）；运行时用 `platform-config.json` 的 `HttpTimeout`（覆盖前者）。单次请求仍可传 axios `timeout`。
 - 路由 meta 中与布局/标签相关的字段见 `CustomizeRouteMeta`：`noLayout`、`hiddenTag`、`fixedTag`、`dynamicLevel`、`activePath` 等。
 
 ## 完成定义

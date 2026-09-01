@@ -10,6 +10,8 @@ export type ViteCompression =
 export interface BuildPresetEnv {
   /** 接口基础地址（开发代理 target / 前端 axios baseURL） */
   VITE_BASE_URL: string;
+  /** 接口请求超时（毫秒），缺省 60000 */
+  VITE_HTTP_TIMEOUT: number;
   VITE_PORT: number;
   VITE_PUBLIC_PATH: string;
   VITE_ROUTER_HISTORY: string;
