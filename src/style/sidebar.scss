@@ -205,30 +205,9 @@
       box-sizing: border-box;
     }
 
-    /* 有子集的激活菜单左侧小竖条 */
-    .el-menu--collapse
-      .is-active.outer-most.el-sub-menu
-      > .el-sub-menu__title::before {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 2px;
-      height: 100%;
-      clear: both;
-      content: "";
-      background-color: var(--pure-theme-menu-active-before);
-      transition: all var(--pure-transition-duration) ease-in-out;
-      transform: translateY(0);
-    }
-
+    /* 折叠后不画左侧竖条，选中态只靠图标颜色 */
     .el-menu--collapse .outer-most.el-sub-menu > .el-sub-menu__title::before {
-      position: absolute;
-      top: 50%;
-      display: block;
-      width: 3px;
-      height: 0;
-      content: "";
-      transform: translateY(-50%);
+      display: none;
     }
 
     /* 无子集的激活菜单背景 */
@@ -618,16 +597,16 @@ body[layout="vertical"] {
       width: 54px !important;
       transition: width var(--pure-transition-duration);
 
-      .is-active.submenu-title-noDropdown.outer-most {
-        background: transparent !important;
-      }
     }
 
     .main-container {
       margin-left: 54px;
     }
 
-    /* 菜单折叠 */
+    /* 菜单折叠。
+       Element Plus 会把 title 里的 span 收成 0。这里再展开，避免图标组件本身是 span 时被藏掉。
+       无图标时标题也靠这条露出来。有图标时标题由下方 :has(.sub-menu-icon) 规则去掉，
+       否则 54px 轨道里会在图标旁露出一个字。 */
     .el-menu--collapse {
       .el-sub-menu {
         & > .el-sub-menu__title {
@@ -638,10 +617,6 @@ body[layout="vertical"] {
             visibility: visible;
           }
         }
-      }
-
-      .submenu-title-noDropdown {
-        background: transparent !important;
       }
 
       .el-sub-menu__title {
@@ -710,16 +685,13 @@ body[layout="mix"] {
       width: 54px !important;
       transition: width var(--pure-transition-duration);
 
-      .is-active.submenu-title-noDropdown.outer-most {
-        background: transparent !important;
-      }
     }
 
     .main-container {
       margin-left: 54px;
     }
 
-    /* 菜单折叠 */
+    /* 菜单折叠。见 vertical 布局同段注释。 */
     .el-menu--collapse {
       .el-sub-menu {
         & > .el-sub-menu__title {
@@ -733,6 +705,28 @@ body[layout="mix"] {
           }
         }
       }
+    }
+  }
+}
+
+/* 有图标的一级项：折叠后标题不占位。弹出菜单不在 .el-menu--collapse 里，不受影响。 */
+body[layout="vertical"],
+body[layout="mix"] {
+  .hideSidebar .el-menu--collapse {
+    .el-sub-menu__title:has(> .sub-menu-icon) > .el-text,
+    .el-menu-item:has(.sub-menu-icon)
+      > div:not(.el-menu-tooltip__trigger):not(.sub-menu-icon) {
+      display: none !important;
+    }
+
+    .el-sub-menu__title:has(> .sub-menu-icon),
+    .el-menu-tooltip__trigger {
+      justify-content: center;
+    }
+
+    .el-menu-tooltip__trigger {
+      padding-right: 0 !important;
+      padding-left: 0 !important;
     }
   }
 }
@@ -1079,11 +1073,17 @@ html:not(.dark) {
       }
     }
 
-    /* Collapsed sidebar: center items */
+    /* Collapsed sidebar: center items, active uses the same fill as hover */
     .el-menu--collapse {
       .el-menu-item,
       .el-sub-menu__title {
         margin: 4px 8px;
+      }
+
+      > .el-menu-item.is-active,
+      > .el-sub-menu.is-active > .el-sub-menu__title,
+      > .el-sub-menu.is-opened > .el-sub-menu__title {
+        background: color-mix(in srgb, var(--owl-accent-color) 5%, transparent) !important;
       }
     }
   }
@@ -1206,6 +1206,12 @@ html.dark {
       .el-menu-item,
       .el-sub-menu__title {
         margin: 4px 8px;
+      }
+
+      > .el-menu-item.is-active,
+      > .el-sub-menu.is-active > .el-sub-menu__title,
+      > .el-sub-menu.is-opened > .el-sub-menu__title {
+        background: rgba(255, 255, 255, 0.08) !important;
       }
     }
   }
@@ -1390,13 +1396,18 @@ html.dark .left-collapse:hover {
   background: rgba(255, 255, 255, 0.08);
 }
 
-/* Sub-menu arrow icon: modern chevron style */
+/* Sub-menu arrow icon: modern chevron style.
+   展开时显示；折叠轨道里 Element Plus 会藏箭头，这里的 inline-flex !important 不能把它又露出来。 */
 .el-sub-menu__icon-arrow {
   flex-shrink: 0;
   width: 12px !important;
   display: inline-flex !important;
   z-index: 2;
   transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.el-menu--collapse > .el-sub-menu > .el-sub-menu__title > .el-sub-menu__icon-arrow {
+  display: none !important;
 }
 
 .el-sub-menu.is-opened > .el-sub-menu__title .el-sub-menu__icon-arrow {

@@ -73,6 +73,16 @@ const expandCloseIcon = computed(() => {
 
 const onlyOneChild: menuType = ref(null);
 
+/**
+ * 折叠侧栏的一级项只留图标。弹出层里的子项（isNest）仍显示标题。
+ * 不用 parentId === null：后端根节点常是 0 或未赋值，标题会漏在 54px 轨道里，只露出一个字。
+ */
+const showSubMenuTitle = computed(() => {
+  if (layout.value === "horizontal") return true;
+  if (!isCollapse.value || props.isNest) return true;
+  return !toRaw(props.item?.meta?.icon);
+});
+
 function hasOneShowingChild(children: menuType[] = [], parent: menuType) {
   const showingChildren = children.filter((item: any) => {
     onlyOneChild.value = item;
@@ -181,16 +191,7 @@ function resolvePath(routePath) {
         <component :is="useRenderIcon(item.meta && toRaw(item.meta.icon))" />
       </div>
       <ReText
-        v-if="
-          layout === 'mix' && toRaw(item.meta.icon)
-            ? !isCollapse || item?.pathList?.length !== 2
-            : !(
-                layout === 'vertical' &&
-                isCollapse &&
-                toRaw(item.meta.icon) &&
-                item.parentId === null
-              )
-        "
+        v-if="showSubMenuTitle"
         :tippyProps="{
           offset: [0, -10],
           theme: tooltipEffect
@@ -201,8 +202,8 @@ function resolvePath(routePath) {
           '!pl-4':
             layout !== 'horizontal' &&
             isCollapse &&
-            !toRaw(item.meta.icon) &&
-            item.parentId === null
+            !isNest &&
+            !toRaw(item.meta.icon)
         }"
       >
         {{ transformI18n(item.meta.title) }}
