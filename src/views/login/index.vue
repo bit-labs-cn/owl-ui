@@ -133,7 +133,12 @@ const ruleForm = reactive({
 
 const finishLogin = async () => {
   await initRouter();
-  await router.push(getTopMenu(true).path);
+  const topMenu = getTopMenu(true);
+  if (!topMenu?.path) {
+    await router.replace("/unauthorized");
+    return;
+  }
+  await router.push(topMenu.path);
   message(t("login.pureLoginSuccess"), { type: "success" });
 };
 

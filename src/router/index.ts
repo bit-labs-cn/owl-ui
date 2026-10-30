@@ -156,6 +156,10 @@ router.beforeEach(async (to: ToRouteType, _from, next) => {
           }
           throw error;
         }
+        if (!getTopMenu(false)?.path) {
+          if (to.path === "/unauthorized") return next();
+          return next({ path: "/unauthorized", replace: true });
+        }
         if (!useMultiTagsStoreHook().getMultiTagsCache) {
           const { path } = to;
           const matchedRoute =

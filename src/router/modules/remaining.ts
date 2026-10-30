@@ -13,6 +13,16 @@ export default [
     }
   },
   {
+    path: "/unauthorized",
+    name: "Unauthorized",
+    component: () => import("@bit-labs.cn/owl-ui/views/error/unauthorized.vue"),
+    meta: {
+      title: "系统未授权",
+      showLink: false,
+      rank: 103
+    }
+  },
+  {
     path: "/redirect",
     component: Layout,
     meta: {
