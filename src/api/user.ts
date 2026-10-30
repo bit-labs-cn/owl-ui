@@ -33,6 +33,16 @@ export type LoginParams = {
   captcha?: LoginCaptchaAnswer;
 };
 
+export type OAuthProvider = {
+  provider: string;
+  name: string;
+};
+
+export type OAuthProviderResult = {
+  success: boolean;
+  data?: OAuthProvider[];
+};
+
 export type UserResult = {
   success: boolean;
   data: {
@@ -120,6 +130,15 @@ class UserAPI {
       "/api/v1/users/login",
       { data },
       { silentMessage: true }
+    );
+  };
+  /** 已启用的第三方登录 */
+  getOAuthProviders = () => {
+    return http.request<OAuthProviderResult>(
+      "get",
+      "/oauth2/providers",
+      {},
+      { silentMessage: true, silentError: true }
     );
   };
   /** 获取验证码配置（captcha.yaml） */

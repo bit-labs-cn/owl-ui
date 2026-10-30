@@ -32,6 +32,23 @@ function getCachedPermissions(): Array<string> {
   return permissionsCache.permissions;
 }
 
+function accessTokenExpires(token: string): Date {
+  try {
+    const payload = token.split(".")[1];
+    if (!payload) throw new Error("empty");
+    const normalized = payload.replace(/-/g, "+").replace(/_/g, "/");
+    const padded = normalized.padEnd(
+      normalized.length + ((4 - (normalized.length % 4)) % 4),
+      "="
+    );
+    const json = JSON.parse(atob(padded));
+    if (typeof json.exp === "number") return new Date(json.exp * 1000);
+  } catch {
+    // 令牌没有标准过期时间时，按两小时处理。
+  }
+  return new Date(Date.now() + 2 * 60 * 60 * 1000);
+}
+
 function isPermissionsCacheValid(): boolean {
   const permissionsCache = storageLocal().getItem<PermissionsCache>(PERMISSIONS_CACHE_KEY);
   return !!permissionsCache && permissionsCache.expiresAt > Date.now();
@@ -144,6 +161,17 @@ export const useUserStore = defineStore({
     /** 设置登录页的免登录存储几天 */
     SET_LOGINDAY(value: number) {
       this.loginDay = Number(value);
+    },
+    /** 用第三方登录拿到的访问令牌建立本地会话 */
+    async loginByToken(accessToken: string) {
+      setToken({
+        accessToken,
+        refreshToken: "",
+        expires: accessTokenExpires(accessToken)
+      });
+      localStorage.setItem(ACCESS_TOKEN_KEY, accessToken);
+      await this.fetchAndCachePermissions();
+      await this.fetchAndCacheUserInfo();
     },
     /** 登入 */
     async loginByUsername(data) {

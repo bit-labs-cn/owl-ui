@@ -24,7 +24,11 @@ import {
 import { useTranslationLang } from "@bit-labs.cn/owl-ui/layout/hooks/useTranslationLang";
 import { useDataThemeChange } from "@bit-labs.cn/owl-ui/layout/hooks/useDataThemeChange";
 import { getDeviceId } from "@bit-labs.cn/owl-ui/utils/device";
-import type { LoginCaptchaAnswer } from "@bit-labs.cn/owl-ui/api/user";
+import {
+  userAPI,
+  type LoginCaptchaAnswer,
+  type OAuthProvider
+} from "@bit-labs.cn/owl-ui/api/user";
 import CaptchaDialog from "./components/CaptchaDialog.vue";
 
 import dayIcon from "@bit-labs.cn/owl-ui/assets/svg/day.svg?component";
@@ -33,6 +37,10 @@ import globalization from "@bit-labs.cn/owl-ui/assets/svg/globalization.svg?comp
 import Lock from "@iconify-icons/ri/lock-fill";
 import Check from "@iconify-icons/ep/check";
 import User from "@iconify-icons/ri/user-3-fill";
+import Github from "@iconify-icons/ri/github-fill";
+import Google from "@iconify-icons/ri/google-fill";
+import Gitee from "@iconify-icons/ri/git-branch-fill";
+import Owl from "@iconify-icons/ri/shield-keyhole-fill";
 
 const usernamePrefixIcon = useRenderIcon(User);
 const passwordPrefixIcon = useRenderIcon(Lock);
@@ -110,6 +118,10 @@ const passwordPlaceholder = computed(() =>
 );
 
 const rememberMe = ref(false);
+const oauthProviders = ref<OAuthProvider[]>([]);
+const oauthLoading = ref(false);
+const oauthState = ref("");
+let oauthPopup: Window | null = null;
 const captchaVisible = ref(false);
 const captchaType = ref("");
 const captchaDialogRef = ref<InstanceType<typeof CaptchaDialog>>();
@@ -120,11 +132,9 @@ const ruleForm = reactive({
 });
 
 const finishLogin = async () => {
-  return initRouter().then(() => {
-    router.push(getTopMenu(true).path).then(() => {
-      message(t("login.pureLoginSuccess"), { type: "success" });
-    });
-  });
+  await initRouter();
+  await router.push(getTopMenu(true).path);
+  message(t("login.pureLoginSuccess"), { type: "success" });
 };
 
 const submitLogin = async (captcha?: LoginCaptchaAnswer) => {
@@ -183,6 +193,82 @@ const onCaptchaConfirm = async (captcha: LoginCaptchaAnswer) => {
   }
 };
 
+const oauthIcon = (provider: string) => {
+  if (provider === "github") return Github;
+  if (provider === "google") return Google;
+  if (provider === "gitee") return Gitee;
+  if (provider === "owl") return Owl;
+  return null;
+};
+
+const loadOAuthProviders = async () => {
+  try {
+    const res = await userAPI.getOAuthProviders();
+    oauthProviders.value = (res?.data ?? []).filter(
+      item => item?.provider && item?.name
+    );
+  } catch {
+    oauthProviders.value = [];
+  }
+};
+
+const onOAuthMessage = (event: MessageEvent) => {
+  const data = event.data;
+  if (!data || data.source !== "owl-oauth") return;
+  if (!oauthState.value || data.state !== oauthState.value) return;
+  if (typeof data.token !== "string" || !data.token) return;
+  oauthState.value = "";
+  oauthPopup?.close();
+  oauthPopup = null;
+  void completeOAuthLogin(data.token);
+};
+
+const completeOAuthLogin = async (token: string) => {
+  oauthLoading.value = true;
+  try {
+    await useUserStoreHook().loginByToken(token);
+    await finishLogin();
+  } catch {
+    message("第三方登录失败，请重试", { type: "error" });
+  } finally {
+    oauthLoading.value = false;
+  }
+};
+
+const onOAuthLogin = (item: OAuthProvider) => {
+  if (oauthLoading.value) return;
+  const state =
+    crypto.randomUUID?.() ??
+    `${Date.now().toString(16)}-${Math.random().toString(16).slice(2)}`;
+  oauthState.value = state;
+  const url = `/oauth2/${encodeURIComponent(item.provider)}/login?state=${encodeURIComponent(state)}`;
+  const margin = 48;
+  const width = Math.min(
+    960,
+    Math.max(720, window.screen.availWidth - margin * 2)
+  );
+  const height = Math.min(
+    800,
+    Math.max(680, window.screen.availHeight - margin * 2)
+  );
+  const originLeft =
+    "availLeft" in window.screen ? Number(window.screen.availLeft) : 0;
+  const originTop =
+    "availTop" in window.screen ? Number(window.screen.availTop) : 0;
+  const left = Math.round(originLeft + (window.screen.availWidth - width) / 2);
+  const top = Math.round(originTop + (window.screen.availHeight - height) / 2);
+  oauthPopup?.close();
+  oauthPopup = window.open(
+    url,
+    "owl-oauth-login",
+    `popup=yes,width=${width},height=${height},left=${left},top=${top},screenX=${left},screenY=${top}`
+  );
+  if (!oauthPopup) {
+    oauthState.value = "";
+    message("浏览器拦截了登录窗口，请允许弹窗后重试", { type: "warning" });
+  }
+};
+
 /** 使用公共函数，避免`removeEventListener`失效 */
 function onkeypress({ code }: KeyboardEvent) {
   if (["Enter", "NumpadEnter"].includes(code)) {
@@ -192,6 +278,8 @@ function onkeypress({ code }: KeyboardEvent) {
 
 onMounted(() => {
   window.document.addEventListener("keypress", onkeypress);
+  window.addEventListener("message", onOAuthMessage);
+  void loadOAuthProviders();
   if (isBrandPanel.value) {
     updateBrandScale();
     window.addEventListener("resize", updateBrandScale);
@@ -205,7 +293,9 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   window.document.removeEventListener("keypress", onkeypress);
+  window.removeEventListener("message", onOAuthMessage);
   window.removeEventListener("resize", updateBrandScale);
+  oauthPopup?.close();
 });
 </script>
 
@@ -351,6 +441,28 @@ onBeforeUnmount(() => {
                   </el-button>
                 </component>
               </el-form>
+              <div v-if="oauthProviders.length" class="oauth-login">
+                <div class="oauth-login__divider"><span>其他方式</span></div>
+                <div class="oauth-login__list">
+                  <button
+                    v-for="item in oauthProviders"
+                    :key="item.provider"
+                    type="button"
+                    class="oauth-login__btn"
+                    :class="'oauth-login__btn--' + item.provider"
+                    :title="item.name"
+                    :aria-label="item.name"
+                    :disabled="oauthLoading"
+                    @click="onOAuthLogin(item)"
+                  >
+                    <IconifyIconOffline
+                      v-if="oauthIcon(item.provider)"
+                      :icon="oauthIcon(item.provider)"
+                    />
+                    <span v-else>{{ item.name.slice(0, 1) }}</span>
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -514,5 +626,89 @@ onBeforeUnmount(() => {
     var(--login-accent-end, #22d3ee) 100%
   ) !important;
   opacity: 0.92;
+}
+
+.oauth-login {
+  margin-top: 28px;
+}
+
+.oauth-login__divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  color: #94a3b8;
+  font-size: 13px;
+  line-height: 1;
+}
+
+.oauth-login__divider::before,
+.oauth-login__divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: #e2e8f0;
+}
+
+.oauth-login__list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 16px;
+}
+
+.oauth-login__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.12);
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.oauth-login__btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(15, 23, 42, 0.16);
+}
+
+.oauth-login__btn:disabled {
+  cursor: wait;
+  opacity: 0.7;
+}
+
+.oauth-login__btn :deep(svg) {
+  width: 22px;
+  height: 22px;
+}
+
+.oauth-login__btn--github {
+  background: #24292f;
+}
+
+.oauth-login__btn--google {
+  color: #4285f4;
+  background: #fff;
+  box-shadow:
+    0 6px 16px rgba(15, 23, 42, 0.08),
+    0 0 0 1px #e2e8f0;
+}
+
+.oauth-login__btn--gitee {
+  background: #c71d23;
+}
+
+.oauth-login__btn--owl {
+  background: var(--el-color-primary);
 }
 </style>
