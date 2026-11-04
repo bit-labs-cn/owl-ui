@@ -2,6 +2,7 @@ import App from "./App.vue";
 import { setupStore } from "@bit-labs.cn/owl-ui/store";
 import { useI18n } from "@bit-labs.cn/owl-ui/plugins/i18n";
 import { getPlatformConfig, getConfig } from "./config";
+import { loadPublicSettings } from "./config/loadPublicSettings";
 import { setHttpTimeout } from "./utils/http";
 import { MotionPlugin } from "@vueuse/motion";
 import { createApp, type App as VueApp, type Directive } from "vue";
@@ -85,7 +86,8 @@ export async function createFlexAdmin(
   injectResponsiveStorage(app, config);
   app.use(MotionPlugin).use(useI18n).use(useElementPlus).use(Table);
 
-  // 7. 调用子系统 install 钩子。公开站点信息在这里读完，避免首屏先闪内置标志。
+  // 7. 读取公开配置，再调用子系统 install。公开配置读完再进首屏，避免先闪内置标志。
+  await loadPublicSettings();
   for (const sub of getSubsystems()) {
     await sub.install?.(app);
   }
