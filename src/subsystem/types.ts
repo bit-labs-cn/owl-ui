@@ -68,6 +68,6 @@ export interface SubsystemDefinition {
    * 子系统未填写的字段会回退到 owl-ui 内置默认素材。
    */
   login?: SubsystemLoginCustomization;
-  /** 安装钩子：可注册子系统专属的全局组件、指令、插件等 */
-  install?: (app: App) => void;
+  /** 安装钩子：可注册子系统专属的全局组件、指令、插件等。引导过程会等待返回的 Promise。 */
+  install?: (app: App) => void | Promise<void>;
 }

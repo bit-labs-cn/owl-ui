@@ -85,8 +85,10 @@ export async function createFlexAdmin(
   injectResponsiveStorage(app, config);
   app.use(MotionPlugin).use(useI18n).use(useElementPlus).use(Table);
 
-  // 7. 调用子系统 install 钩子
-  getSubsystems().forEach(sub => sub.install?.(app));
+  // 7. 调用子系统 install 钩子。公开站点信息在这里读完，避免首屏先闪内置标志。
+  for (const sub of getSubsystems()) {
+    await sub.install?.(app);
+  }
 
   return app;
 }

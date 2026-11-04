@@ -12,6 +12,7 @@ import { useUserStoreHook } from "@bit-labs.cn/owl-ui/store/modules/user";
 import { initRouter, getTopMenu } from "@bit-labs.cn/owl-ui/router/utils";
 import { defaultBg, defaultAvatar, defaultIllustration } from "./utils/static";
 import { getLoginCustomization } from "@bit-labs.cn/owl-ui/subsystem/registry";
+import { hasSiteName, siteTitle } from "@bit-labs.cn/owl-ui/config/siteBrand";
 import { useRenderIcon } from "@bit-labs.cn/owl-ui/components/ReIcon/src/hooks";
 import {
   ref,
@@ -66,7 +67,9 @@ const custom = loginCustom ?? {};
 /** 子系统声明了 `login.bg` 时启用全屏背景登录布局 */
 const isBrandPanel = computed(() => Boolean(loginCustom?.bg));
 const bg = custom.bg ?? defaultBg;
-const loginTitle = computed(() => custom.title ?? title.value);
+const loginTitle = computed(() =>
+  hasSiteName() ? siteTitle() : (custom.title ?? title.value)
+);
 const loginSubtitle = custom.subtitle ?? "";
 const loginPageClass = computed(() =>
   isBrandPanel.value ? "login-page login-page--brand-panel" : "login-page"

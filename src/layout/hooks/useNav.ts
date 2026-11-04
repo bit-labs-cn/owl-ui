@@ -1,5 +1,6 @@
 import { storeToRefs } from "pinia";
 import { getConfig } from "@bit-labs.cn/owl-ui/config";
+import { siteLogoURL, siteTitle } from "@bit-labs.cn/owl-ui/config/siteBrand";
 import { useRouter } from "vue-router";
 import { emitter } from "@bit-labs.cn/owl-ui/utils/mitt";
 import Avatar from "@bit-labs.cn/owl-ui/assets/user.jpg";
@@ -80,18 +81,16 @@ export function useNav() {
     return pureApp.getDevice;
   });
 
-  const { $storage, $config } = useGlobal<GlobalPropertiesApi>();
+  const { $storage } = useGlobal<GlobalPropertiesApi>();
   const layout = computed(() => {
     return $storage?.layout?.layout;
   });
 
-  const title = computed(() => {
-    return $config.Title;
-  });
+  const title = computed(() => siteTitle());
 
   /** 动态title */
   function changeTitle(meta: routeMetaType) {
-    const Title = getConfig().Title;
+    const Title = siteTitle();
     if (Title) document.title = `${transformI18n(meta.title)} | ${Title}`;
     else document.title = transformI18n(meta.title);
   }
@@ -138,10 +137,9 @@ export function useNav() {
     return remainingPaths.includes(path);
   }
 
-  /** 获取`logo`（由 owl-ui-builder 按项目注入 /logo.png） */
+  /** 侧栏标志。系统配置里的图片地址优先，否则用内置 /logo.png。 */
   function getLogo() {
-    const base = import.meta.env.BASE_URL || "/";
-    return `${base.replace(/\/?$/, "/")}logo.png`;
+    return siteLogoURL();
   }
 
   return {

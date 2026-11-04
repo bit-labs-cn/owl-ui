@@ -1,6 +1,6 @@
 // import "@bit-labs.cn/owl-ui/utils/sso";
 import Cookies from "js-cookie";
-import { getConfig } from "@bit-labs.cn/owl-ui/config";
+import { siteTitle } from "@bit-labs.cn/owl-ui/config/siteBrand";
 import NProgress from "@bit-labs.cn/owl-ui/utils/progress";
 import { transformI18n } from "@bit-labs.cn/owl-ui/plugins/i18n";
 import { buildHierarchyTree } from "@bit-labs.cn/owl-ui/utils/tree";
@@ -113,7 +113,7 @@ router.beforeEach(async (to: ToRouteType, _from, next) => {
   if (!externalLink) {
     to.matched.some(item => {
       if (!item.meta.title) return "";
-      const Title = getConfig().Title;
+      const Title = siteTitle();
       if (Title)
         document.title = `${transformI18n(item.meta.title)} | ${Title}`;
       else document.title = transformI18n(item.meta.title);
