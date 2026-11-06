@@ -8,7 +8,7 @@ export type {
 
 // ─── 应用引导 ───
 export { createFlexAdmin } from "./bootstrap";
-export type { FlexAdminOptions } from "./bootstrap";
+export type { FlexAdminOptions, SplitSubAppOptions } from "./bootstrap";
 
 // ─── 路由工具 ───
 export {
@@ -18,6 +18,8 @@ export {
   filterTree,
   initRouter,
   getTopMenu,
+  enterSubApp,
+  leaveSubApp,
   addPathMatch,
   isOneOfArray,
   getHistoryMode,
@@ -73,3 +75,9 @@ export type { Result, ResultList, ResultTable } from "./api/commonType";
 
 // ─── 配置 ───
 export { getConfig, getPlatformConfig, responsiveStorageNameSpace } from "./config";
+
+export type { SubAppEntry } from "./router/subAppPortal";
+export {
+  groupSubAppEntries,
+  isSubAppPortalEnabled
+} from "./router/subAppPortal";

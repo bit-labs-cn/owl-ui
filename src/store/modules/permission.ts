@@ -34,6 +34,19 @@ export const usePermissionStore = defineStore({
         this.constantMenus.concat(routes)
       );
     },
+    /** 门户模式下只展示当前子系统返回的菜单 */
+    handleSubAppMenus(routes: any[]) {
+      this.wholeMenus = filterNoPermissionTree(
+        filterTree(ascending(routes))
+      );
+      this.flatteningRoutes = formatFlatteningRoutes(routes);
+    },
+    /** 离开子系统时清掉侧边栏与扁平路由 */
+    clearDynamicMenus() {
+      this.wholeMenus = [];
+      this.flatteningRoutes = [];
+      this.cachePageList = [];
+    },
     cacheOperate({ mode, name }: cacheType) {
       const delIndex = this.cachePageList.findIndex(v => v === name);
       switch (mode) {

@@ -165,9 +165,14 @@ class UserAPI {
       data
     }, { silentMessage: true });
   };
-  /** 获取当前用户路由菜单（动态路由） */
-  getAsyncRoutes = () => {
-    return http.request<Result>("get", "/api/v1/users/me/menus", {}, { silentMessage: true });
+  /** 获取当前用户路由菜单。app 为逗号分隔的子系统名，如 user,sms；空则返回全部。 */
+  getAsyncRoutes = (app?: string) => {
+    return http.request<Result>(
+      "get",
+      "/api/v1/users/me/menus",
+      { params: app ? { app } : {} },
+      { silentMessage: true }
+    );
   };
   /** 获取当前用户权限（按钮级） */
   getMyPermissions = () => {

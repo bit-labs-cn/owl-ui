@@ -12,7 +12,8 @@
 ## 代码入口
 
 - 路由实例与静态结构：`src/router/index.ts`
-- 动态路由、菜单合并、组件解析：`src/router/utils.ts`（`initRouter`、`handleAsyncRoutes`、`mergeMenuContributionsByName`、`addAsyncRoutes`）
+- 动态路由、菜单合并、组件解析：`src/router/utils.ts`（`initRouter`、`handleAsyncRoutes`、`mergeMenuContributionsByName`、`addAsyncRoutes`、`enterSubApp`）
+- 子系统门户开关与分组：`src/router/subAppPortal.ts`
 - 路由与 meta 类型：`types/router.d.ts`
 
 ## 动态路由组件解析规则
@@ -20,6 +21,18 @@
 - `addAsyncRoutes` 使用 `getModulesRoutes()` 得到的键名集合（核心 `import.meta.glob("/src/views/**/*.{vue,tsx}")` + 子系统 viewModules 经 prefix 重写后的键）。
 - 对每条后端路由：若有 `meta.frameSrc` 则使用 iframe 组件；否则用后端返回的 `component` 字符串（或 `path`）在键名中做 **includes** 匹配，取第一个匹配的懒加载函数赋给 `route.component`。
 - **隐式约束**：后端菜单里的 `component`（或用于匹配的 path）必须与合并后的 viewModules 键名**能匹配上**（例如 `/system/notice/index` 对应子系统 prefix `/system` 下的 `./views/notice/index.vue`）。否则匹配失败，页面空白。
+
+## 子系统切换
+
+默认关闭。宿主这样打开：`createFlexAdmin({ splitSubApp: { enable: true, home: "/home-portal/index", customEntry } })`。`home` 是离开子系统、以及直接打开站点根路径时回去的页面，由宿主自己定，框架不规定必须是 `/apps`。没有携带 app 时不会加载全部菜单。入口可以有多层跳转。`customEntry` 由宿主挂到自己的路由上。进入某个子系统只需要携带 app 名称：`enterSubApp("sms")`，或地址栏 `?app=sms`。
+
+- 进入菜单调用 `enterSubApp`。参数可以是一个名称，或逗号分隔的多个名称：`enterSubApp("user,sms")`、`enterSubApp(["user", "sms"])`。
+- 新窗口打开业务页时，把同一组名称放在地址栏 `?app=user,sms`（在 hash 之前）。侧栏里新窗口打开的大屏也会带上当前 `app`。新页面会按这个参数加载菜单，而不是回到切换页。
+- 对应请求是 `GET /api/v1/users/me/menus?app=user,sms`。只注册这些子系统的根菜单，侧边栏同时显示它们。`app` 为空时仍返回全部菜单。
+- 进入后展开第一个目录，并打开该目录下的第一个普通菜单。无布局或新窗口打开的大屏会跳过，避免一进来就铺满、看不到其他菜单。当前的 `app` 记在 `sessionStorage` 的 `owl-current-sub-app`，刷新后按该参数重新拉取。
+- 再次进入另一组、顶栏「主页」或登出时，卸掉上次挂上的动态路由，并清空多标签。
+- 动态路由缓存键带上这次的 `app`（`async-routes:user,sms`），避免不同组合串缓存。
+- 未开启切换时，`getAsyncRoutes()` 不带参数，行为与原来一致。
 
 ## 菜单贡献（子系统）
 
@@ -34,4 +47,4 @@
 
 ## 完成定义
 
-- 读者能说清静态/动态/隐藏路由的来源，以及后端 `component` 与 viewModules 键的对应关系；知道菜单贡献按 name 挂载。
+- 读者能说清静态/动态/隐藏路由的来源，以及后端 `component` 与 viewModules 键的对应关系；知道菜单贡献按 name 挂载；知道门户开启后用 `subApp` 参数只取当前子系统菜单。

@@ -5,7 +5,12 @@ import { getPlatformConfig, getConfig } from "./config";
 import { loadPublicSettings } from "./config/loadPublicSettings";
 import { setHttpTimeout } from "./utils/http";
 import { MotionPlugin } from "@vueuse/motion";
-import { createApp, type App as VueApp, type Directive } from "vue";
+import {
+  createApp,
+  type App as VueApp,
+  type Component,
+  type Directive
+} from "vue";
 import { useElementPlus } from "@bit-labs.cn/owl-ui/plugins/elementPlus";
 import { useEcharts } from "@bit-labs.cn/owl-ui/plugins/echarts";
 import { injectResponsiveStorage } from "@bit-labs.cn/owl-ui/utils/responsive";
@@ -16,6 +21,10 @@ import {
   getSubsystems
 } from "@bit-labs.cn/owl-ui/subsystem/registry";
 import router, { applySubsystemRoutes } from "@bit-labs.cn/owl-ui/router";
+import {
+  setSplitSubAppHome,
+  setSubAppPortalEnabled
+} from "@bit-labs.cn/owl-ui/router/subAppPortal";
 import type { SubsystemDefinition } from "@bit-labs.cn/owl-ui/subsystem/types";
 
 import "./style/reset.scss";
@@ -33,8 +42,18 @@ import "tippy.js/themes/light.css";
   document.head.appendChild(el);
 }
 
+export interface SplitSubAppOptions {
+  /** 开启后，只有携带 app 名称时才加载对应子系统菜单 */
+  enable: boolean;
+  /** 离开子系统时回到的路径，由宿主决定 */
+  home?: string;
+  /** 宿主自己的入口页组件，由宿主挂到自己的路由上 */
+  customEntry?: Component;
+}
+
 export interface FlexAdminOptions {
   subsystems?: SubsystemDefinition[];
+  splitSubApp?: SplitSubAppOptions;
 }
 
 export async function createFlexAdmin(
@@ -42,6 +61,10 @@ export async function createFlexAdmin(
 ): Promise<VueApp> {
   // 1. 注册子系统（在 router 使用前将路由和视图模块写入 registry）
   registerSubsystems(options.subsystems ?? []);
+  if (options.splitSubApp?.enable) {
+    setSubAppPortalEnabled(true);
+    setSplitSubAppHome(options.splitSubApp.home ?? "/");
+  }
 
   const app = createApp(App);
 

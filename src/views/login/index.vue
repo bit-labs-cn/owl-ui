@@ -10,6 +10,11 @@ import { $t, transformI18n } from "@bit-labs.cn/owl-ui/plugins/i18n";
 import { useLayout } from "@bit-labs.cn/owl-ui/layout/hooks/useLayout";
 import { useUserStoreHook } from "@bit-labs.cn/owl-ui/store/modules/user";
 import { initRouter, getTopMenu } from "@bit-labs.cn/owl-ui/router/utils";
+import {
+  clearCurrentSubApp,
+  getSplitSubAppHome,
+  isSubAppPortalEnabled
+} from "@bit-labs.cn/owl-ui/router/subAppPortal";
 import { defaultBg, defaultAvatar, defaultIllustration } from "./utils/static";
 import { getLoginCustomization } from "@bit-labs.cn/owl-ui/subsystem/registry";
 import { hasSiteName, siteTitle } from "@bit-labs.cn/owl-ui/config/siteBrand";
@@ -135,6 +140,12 @@ const ruleForm = reactive({
 });
 
 const finishLogin = async () => {
+  if (isSubAppPortalEnabled()) {
+    clearCurrentSubApp();
+    await router.replace(getSplitSubAppHome());
+    message(t("login.pureLoginSuccess"), { type: "success" });
+    return;
+  }
   await initRouter();
   const topMenu = getTopMenu(true);
   if (!topMenu?.path) {

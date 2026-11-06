@@ -23,9 +23,18 @@ import {
   getHistoryMode,
   findRouteByPath,
   handleAliveRoute,
+  removeDynamicRoutes,
   formatTwoStageRoutes,
   formatFlatteningRoutes
 } from "./utils";
+import {
+  appFromLocationSearch,
+  clearCurrentSubApp,
+  getCurrentSubApp,
+  getSplitSubAppHome,
+  isSubAppPortalEnabled,
+  setCurrentSubApp
+} from "./subAppPortal";
 import {
   type Router,
   createRouter,
@@ -125,6 +134,32 @@ router.beforeEach(async (to: ToRouteType, _from, next) => {
   }
   if (Cookies.get(multipleTabsKey) && userInfo) {
     await useUserStoreHook().ensurePermissionsFresh();
+    if (isSubAppPortalEnabled()) {
+      const appFromUrl = appFromLocationSearch();
+      if (appFromUrl) setCurrentSubApp(appFromUrl);
+      const home = getSplitSubAppHome();
+      const currentApp = getCurrentSubApp();
+      if (!currentApp) {
+        if (to.path === home) return next();
+        const hasConcretePage = to.matched.some(
+          record =>
+            record.path !== "/" &&
+            record.name !== "pathMatch" &&
+            record.path !== "/:pathMatch(.*)"
+        );
+        if (!hasConcretePage || to.path === "/welcome") {
+          return next({ path: home, replace: true });
+        }
+        return next();
+      }
+      if (to.path === home) {
+        clearCurrentSubApp();
+        removeDynamicRoutes();
+        usePermissionStoreHook().clearDynamicMenus();
+        useMultiTagsStoreHook().handleTags("equal", []);
+        return next();
+      }
+    }
     // 无权限跳转403页面
     if (to.meta?.roles && !isOneOfArray(to.meta?.roles, userInfo?.roles)) {
       next({ path: "/error/403" });
@@ -148,7 +183,9 @@ router.beforeEach(async (to: ToRouteType, _from, next) => {
         to.path !== "/login"
       ) {
         try {
-          await initRouter();
+          await initRouter(
+            isSubAppPortalEnabled() ? getCurrentSubApp() : undefined
+          );
         } catch (error: any) {
           if (error?.response?.status === 401) {
             removeToken();
@@ -215,6 +252,25 @@ router.afterEach(() => {
 
 // ─── 子系统路由注入 ───
 import { getSubsystemRoutes } from "@bit-labs.cn/owl-ui/subsystem/registry";
+
+/** 注册子系统切换页。component 缺省时使用提示页。 */
+export function installSubAppPortalRoute(component?: RouteComponent) {
+  if (router.hasRoute("SubAppPortal")) {
+    router.removeRoute("SubAppPortal");
+  }
+  router.addRoute({
+    path: "/apps",
+    name: "SubAppPortal",
+    component:
+      component ??
+      (() => import("@bit-labs.cn/owl-ui/views/portal/index.vue")),
+    meta: {
+      title: "子系统",
+      showLink: false,
+      noLayout: true
+    }
+  });
+}
 
 /**
  * 将已注册子系统的静态路由注入到 router 实例和菜单数据中。

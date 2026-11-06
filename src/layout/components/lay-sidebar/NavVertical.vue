@@ -4,7 +4,10 @@ import { emitter } from "@bit-labs.cn/owl-ui/utils/mitt";
 import { useNav } from "@bit-labs.cn/owl-ui/layout/hooks/useNav";
 import { responsiveStorageNameSpace } from "@bit-labs.cn/owl-ui/config";
 import { storageLocal, isAllEmpty } from "@pureadmin/utils";
-import { findRouteByPath, getParentPaths } from "@bit-labs.cn/owl-ui/router/utils";
+import {
+  findRouteByPath,
+  getParentPaths
+} from "@bit-labs.cn/owl-ui/router/utils";
 import { usePermissionStoreHook } from "@bit-labs.cn/owl-ui/store/modules/permission";
 import { ref, computed, watch, onMounted, onBeforeUnmount } from "vue";
 import LaySidebarLogo from "../lay-sidebar/components/SidebarLogo.vue";
@@ -41,6 +44,32 @@ const loading = computed(() =>
 
 const defaultActive = computed(() =>
   !isAllEmpty(route.meta?.activePath) ? route.meta.activePath : route.path
+);
+
+/** 与 SidebarItem 一致：多子项，或子项要求显示父级时，渲染成可展开目录。 */
+function rendersAsSubMenu(item: any) {
+  const children = item?.children ?? [];
+  if (!children.length) return false;
+  if (children[0]?.meta?.showParent) return true;
+  return children.length > 1;
+}
+
+function firstSubMenuPath(menus: any[]) {
+  const first = (menus ?? []).find(rendersAsSubMenu);
+  return first?.path ? String(first.path) : "";
+}
+
+/** 当前页在某个目录下时展开该目录；否则展开第一个目录。 */
+const defaultOpeneds = computed(() => {
+  const current = String(defaultActive.value || "");
+  const parents = current ? getParentPaths(current, menuData.value) : [];
+  if (parents.length) return parents;
+  const first = firstSubMenuPath(menuData.value);
+  return first ? [first] : [];
+});
+
+const menuKey = computed(() =>
+  (menuData.value ?? []).map((item: any) => item?.path ?? "").join("|")
 );
 
 function getSubMenuData() {
@@ -95,6 +124,7 @@ onBeforeUnmount(() => {
       :class="[device === 'mobile' ? 'mobile' : 'pc']"
     >
       <el-menu
+        :key="menuKey"
         unique-opened
         mode="vertical"
         popper-class="pure-scrollbar"
@@ -103,6 +133,7 @@ onBeforeUnmount(() => {
         :collapse-transition="false"
         :popper-effect="tooltipEffect"
         :default-active="defaultActive"
+        :default-openeds="defaultOpeneds"
       >
         <LaySidebarItem
           v-for="routes in menuData"

@@ -17,6 +17,7 @@ import AccountSettingsIcon from "@iconify-icons/ri/user-settings-line";
 import LogoutCircleRLine from "@iconify-icons/ri/logout-circle-r-line";
 import Setting from "@iconify-icons/ri/settings-3-line";
 import Check from "@iconify-icons/ep/check";
+import SubAppSwitch from "../lay-navbar/SubAppSwitch.vue";
 
 const menuRef = ref();
 const defaultActive = ref(null);
@@ -99,13 +100,14 @@ watch(
       </el-menu-item>
     </el-menu>
     <div class="horizontal-header-right">
+      <SubAppSwitch />
       <!-- 菜单搜索 -->
       <LaySearch id="header-search" />
       <!-- 国际化 -->
       <el-dropdown id="header-translation" trigger="click">
-        <GlobalizationIcon
-          class="navbar-bg-hover w-[40px] h-(--owl-header-height) px-[11px] py-[19px] cursor-pointer outline-none"
-        />
+        <span class="header-translation globalization navbar-bg-hover">
+          <GlobalizationIcon />
+        </span>
         <template #dropdown>
           <el-dropdown-menu class="translation">
             <el-dropdown-item

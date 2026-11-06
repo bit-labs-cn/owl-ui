@@ -26,6 +26,14 @@ import { type menuType, routerArrays } from "@bit-labs.cn/owl-ui/layout/types";
 import { useMultiTagsStoreHook } from "@bit-labs.cn/owl-ui/store/modules/multiTags";
 import { usePermissionStoreHook } from "@bit-labs.cn/owl-ui/store/modules/permission";
 import type { SubsystemMenuContribution } from "@bit-labs.cn/owl-ui/subsystem/types";
+import {
+  asyncRoutesCacheKey,
+  clearCurrentSubApp,
+  getSplitSubAppHome,
+  isSubAppPortalEnabled,
+  normalizeAppParam,
+  setCurrentSubApp
+} from "./subAppPortal";
 const IFrame = () => import("@bit-labs.cn/owl-ui/layout/frame.vue");
 // https://cn.vitejs.dev/guide/features.html#glob-import
 const coreViewModules = import.meta.glob("/src/views/**/*.{vue,tsx}");
@@ -242,8 +250,51 @@ function mergeMenuContributionsByName(
   return mergedMenus;
 }
 
+type DynamicRouteMark = { name: string; path: string };
+
+const dynamicRouteMarks: DynamicRouteMark[] = [];
+
+function rememberDynamicRoute(route: RouteRecordRaw) {
+  dynamicRouteMarks.push({
+    name: route.name ? String(route.name) : "",
+    path: route.path ?? ""
+  });
+}
+
+/** 卸掉上一次按子系统挂上的动态路由。 */
+export function removeDynamicRoutes() {
+  const marks = dynamicRouteMarks.splice(0, dynamicRouteMarks.length);
+  if (!marks.length) return;
+  const names = new Set(marks.map(mark => mark.name).filter(Boolean));
+  const paths = new Set(marks.map(mark => mark.path).filter(Boolean));
+  names.forEach(name => {
+    if (router.hasRoute(name)) router.removeRoute(name);
+  });
+  const rootRoute = router.options.routes.find(route => route.path === "/");
+  if (rootRoute?.children?.length) {
+    const kept = rootRoute.children.filter(child => {
+      const name = child.name ? String(child.name) : "";
+      if (name && names.has(name)) return false;
+      if (child.path && paths.has(child.path)) return false;
+      return true;
+    });
+    // 原地删，保留与 matcher 共用的 children 数组
+    rootRoute.children.splice(0, rootRoute.children.length, ...kept);
+  }
+}
+
+function publishMenus(routes: any[], menusOnly: boolean) {
+  if (menusOnly) {
+    usePermissionStoreHook().handleSubAppMenus(routes);
+    return;
+  }
+  usePermissionStoreHook().handleWholeMenus(routes);
+}
+
 /** 处理动态路由（后端返回的路由） */
-function handleAsyncRoutes(routeList) {
+function handleAsyncRoutes(routeList, options?: { menusOnly?: boolean }) {
+  const menusOnly = options?.menusOnly === true;
+  if (menusOnly) removeDynamicRoutes();
   // 若后端返回扁平列表（含 parentId、无 children），先转为树再合并
   let baseForMerge = routeList ?? [];
   const looksFlat =
@@ -267,7 +318,7 @@ function handleAsyncRoutes(routeList) {
   );
 
   if (mergedRouteList.length === 0) {
-    usePermissionStoreHook().handleWholeMenus(mergedRouteList);
+    publishMenus(mergedRouteList, menusOnly);
   } else {
     const removeRouteFromChildrenTree = (
       routes: RouteRecordRaw[] = [],
@@ -315,6 +366,7 @@ function handleAsyncRoutes(routeList) {
             );
           }
           router.addRoute(v);
+          if (menusOnly) rememberDynamicRoute(v);
           return;
         }
 
@@ -328,17 +380,24 @@ function handleAsyncRoutes(routeList) {
           router.removeRoute(v.name);
         }
         rootChildren.push(v);
+        if (menusOnly) {
+          rememberDynamicRoute(v);
+          // 当前窗口里 getRoutes() 拿到的是另一份 children，再 addRoute 整页布局会把刚加的页面冲掉
+          if (router.hasRoute("Home")) router.addRoute("Home", v);
+        }
       }
     );
 
     if (rootRoute) {
       ascending(rootChildren);
-      const layoutRoute = router.getRoutes().find(n => n.path === "/");
-      if (layoutRoute) router.addRoute(layoutRoute);
+      if (!menusOnly) {
+        const layoutRoute = router.getRoutes().find(n => n.path === "/");
+        if (layoutRoute) router.addRoute(layoutRoute);
+      }
     }
-    usePermissionStoreHook().handleWholeMenus(mergedRouteList);
+    publishMenus(mergedRouteList, menusOnly);
   }
-  if (!useMultiTagsStoreHook().getMultiTagsCache) {
+  if (!menusOnly && !useMultiTagsStoreHook().getMultiTagsCache) {
     useMultiTagsStoreHook().handleTags("equal", [
       ...routerArrays,
       ...usePermissionStoreHook().flatteningRoutes.filter(
@@ -350,22 +409,27 @@ function handleAsyncRoutes(routeList) {
 }
 
 /** 初始化路由（`new Promise` 写法防止在异步请求中造成无限循环）*/
-function initRouter() {
-  const key = "async-routes";
+function initRouter(subApp?: string) {
+  const app = isSubAppPortalEnabled() && subApp ? subApp : undefined;
+  const menusOnly = Boolean(app);
+  const key = asyncRoutesCacheKey(app);
+  const apply = (data: unknown) => {
+    handleAsyncRoutes(cloneDeep(data), { menusOnly });
+  };
   if (getConfig()?.CachingAsyncRoutes) {
     // 开启动态路由缓存本地localStorage
     const asyncRouteList = storageLocal().getItem(key) as any;
     if (asyncRouteList && asyncRouteList?.length > 0) {
       return new Promise(resolve => {
-        handleAsyncRoutes(asyncRouteList);
+        apply(asyncRouteList);
         resolve(router);
       });
     } else {
       return new Promise((resolve, reject) => {
         userAPI
-          .getAsyncRoutes()
+          .getAsyncRoutes(app)
           .then(({ data }) => {
-            handleAsyncRoutes(cloneDeep(data));
+            apply(data);
             storageLocal().setItem(key, data);
             resolve(router);
           })
@@ -377,14 +441,99 @@ function initRouter() {
     storageLocal().removeItem(key);
     return new Promise((resolve, reject) => {
       userAPI
-        .getAsyncRoutes()
+        .getAsyncRoutes(app)
         .then(({ data }) => {
-          handleAsyncRoutes(cloneDeep(data));
+          apply(data);
           resolve(router);
         })
         .catch(reject);
     });
   }
+}
+
+function visibleChildren(route: any) {
+  return (route?.children ?? []).filter(
+    (child: any) => child && child.meta?.showLink !== false
+  );
+}
+
+/** 与侧边栏一致：多子项，或子项要求显示父级时，这一项是可展开目录。 */
+function rendersAsSubMenu(route: any) {
+  const children = visibleChildren(route);
+  if (!children.length) return false;
+  if (children[0]?.meta?.showParent) return true;
+  return children.length > 1;
+}
+
+function isFullScreenMenu(route: any) {
+  return route?.meta?.noLayout === true || route?.meta?.target === "_blank";
+}
+
+function firstLeafMenu(route: any, skipFullScreen = false): any {
+  if (!route || route.meta?.showLink === false) return undefined;
+  const children = visibleChildren(route);
+  if (children.length) {
+    for (const child of children) {
+      const leaf = firstLeafMenu(child, skipFullScreen);
+      if (leaf?.path) return leaf;
+    }
+    return undefined;
+  }
+  if (skipFullScreen && isFullScreenMenu(route)) return undefined;
+  return route.path ? route : undefined;
+}
+
+/** 优先取第一个目录下的第一个普通菜单。大屏（无布局或新窗口）跳过，避免一进来就铺满。 */
+function firstEnteredMenu(menus: any[]) {
+  const list = menus ?? [];
+  const firstSubMenu = list.find(rendersAsSubMenu);
+  const ordered = firstSubMenu
+    ? [firstSubMenu, ...list.filter(menu => menu !== firstSubMenu)]
+    : list;
+  for (const menu of ordered) {
+    const leaf = firstLeafMenu(menu, true);
+    if (leaf?.path) return leaf;
+  }
+  for (const menu of ordered) {
+    const leaf = firstLeafMenu(menu, false);
+    if (leaf?.path) return leaf;
+  }
+  return undefined;
+}
+
+/** 进入一个或多个子系统。app 例："user,sms" 或 ["user", "sms"]。 */
+export async function enterSubApp(app: string | string[]) {
+  const name = normalizeAppParam(app);
+  if (!name) return;
+  setCurrentSubApp(name);
+  useMultiTagsStoreHook().handleTags("equal", []);
+  await initRouter(name);
+  const topMenu = firstEnteredMenu(usePermissionStoreHook().wholeMenus ?? []);
+  if (!topMenu?.path) {
+    await router.replace("/unauthorized");
+    return;
+  }
+  useMultiTagsStoreHook().handleTags("equal", [
+    {
+      path: topMenu.path,
+      name: topMenu.name,
+      meta: topMenu.meta
+    }
+  ]);
+  if (topMenu.name && router.hasRoute(topMenu.name)) {
+    await router.push({ name: topMenu.name });
+    return;
+  }
+  await router.push(topMenu.path);
+}
+
+/** 回到门户，卸掉当前子系统的动态路由和标签。 */
+export async function leaveSubApp() {
+  clearCurrentSubApp();
+  removeDynamicRoutes();
+  usePermissionStoreHook().clearDynamicMenus();
+  useMultiTagsStoreHook().handleTags("equal", []);
+  await router.replace(getSplitSubAppHome());
 }
 
 /**

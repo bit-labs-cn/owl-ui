@@ -469,6 +469,19 @@
         outline: none;
       }
 
+      .header-translation.globalization {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+
+        svg {
+          width: 18px;
+          height: 18px;
+          padding: 0;
+        }
+      }
+
       .el-dropdown-link {
         display: flex;
         align-items: center;
