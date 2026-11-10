@@ -52,10 +52,12 @@
 
   .el-dialog__header {
     flex-shrink: 0;
+    /* 给右上角「全屏 + 关闭」两个图标预留固定位置，标题不会钻到图标下面 */
+    padding-right: 48px;
   }
 
   .el-dialog__header.show-close {
-    padding-right: 16px;
+    padding-right: 48px;
   }
 
   .el-dialog__headerbtn {
@@ -63,6 +65,19 @@
     right: 12px;
     width: 24px;
     height: 24px;
+  }
+
+  /* 全屏图标和关闭按钮并排：都用 24×24、同一个 top，贴在关闭按钮左侧 */
+  .pure-dialog-fullscreen {
+    position: absolute;
+    top: 16px;
+    right: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    margin: 0;
   }
 
   .el-dialog__body {
