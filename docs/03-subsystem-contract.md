@@ -10,8 +10,8 @@
 
 ## 代码入口
 
-- 类型定义：`src/subsystem/types.ts`
-- 注册与读取：`src/subsystem/registry.ts`
+- 类型定义：`src-core/subsystem/types.ts`
+- 注册与读取：`src-core/subsystem/registry.ts`
 - 对外 API：`src/index.ts` 导出 `defineSubsystem`、`SubsystemDefinition`、`SubsystemMenuContribution`
 
 ## SubsystemDefinition 字段

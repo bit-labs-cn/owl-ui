@@ -11,9 +11,11 @@
 
 ## 代码入口
 
-- 配置加载：`src/config/index.ts`（`getPlatformConfig`、`getConfig`、`responsiveStorageNameSpace`）
+- 配置加载：`src-core/config/index.ts`（`getPlatformConfig`、`getConfig`、`responsiveStorageNameSpace`）
 - 布局：`src/layout/index.vue`、`src/layout/hooks/useLayout.ts`、`src/layout/components/lay-content/`
-- 主题与响应式：`src/store/modules/epTheme.ts`、`src/utils/responsive.ts`、`src/layout/hooks/useDataThemeChange.ts`
+- 布局常量与类型：`src-core/layout/constants.ts`、`src-core/layout/types.ts`
+- 主题样式：`src-theme/`（`index.scss` 汇总 tokens / reset / element-plus / sidebar / dark）
+- 主题与响应式：`src-core/store/modules/epTheme.ts`、`src-core/utils/responsive.ts`、`src/layout/hooks/useDataThemeChange.ts`
 
 ## 注意事项
 

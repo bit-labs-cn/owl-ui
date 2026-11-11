@@ -98,8 +98,8 @@ export function transformI18n(message: any = "") {
   }
 }
 
-/** 此函数只是配合i18n Ally插件来进行国际化智能提示，并无实际意义（只对提示起作用），如果不需要国际化可删除 */
-export const $t = (key: string) => key;
+/** 此函数只是配合i18n Ally插件来进行国际化智能提示，并无实际意义（只对提示起作用）；实现位于核心层，供路由复用 */
+export { $t } from "@bit-labs.cn/owl-ui/core/utils/i18nKey";
 
 export const i18n: I18n = createI18n({
   legacy: false,

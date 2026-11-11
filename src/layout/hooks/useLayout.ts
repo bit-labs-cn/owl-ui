@@ -1,12 +1,12 @@
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";
-import { routerArrays } from "../types";
+import { routerArrays } from "@bit-labs.cn/owl-ui/core/layout/types";
 import { useGlobal } from "@pureadmin/utils";
 import { useMultiTagsStore } from "@bit-labs.cn/owl-ui/store/modules/multiTags";
 import {
   createDefaultLayoutStorage,
   normalizeLayoutStorage
-} from "../utils/resolveLayoutTheme";
+} from "@bit-labs.cn/owl-ui/core/layout/utils/resolveLayoutTheme";
 
 export function useLayout() {
   const { $storage, $config } = useGlobal<GlobalPropertiesApi>();

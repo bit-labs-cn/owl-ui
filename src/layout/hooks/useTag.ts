@@ -7,7 +7,7 @@ import {
   type CSSProperties,
   getCurrentInstance
 } from "vue";
-import type { tagsViewsType } from "../types";
+import type { tagsViewsType } from "@bit-labs.cn/owl-ui/core/layout/types";
 import { useRoute, useRouter } from "vue-router";
 import { transformI18n, $t } from "@bit-labs.cn/owl-ui/plugins/i18n";
 import { responsiveStorageNameSpace } from "@bit-labs.cn/owl-ui/config";

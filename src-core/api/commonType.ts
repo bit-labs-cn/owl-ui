@@ -6,14 +6,14 @@
  ... more
  */
 
-type Result = {
+export type Result = {
   success: boolean;
   msg?: string;
   code?: number;
   data?: Array<any>;
 };
 
-type ResultList = {
+export type ResultList = {
   success: boolean;
   msg?: string;
   code?: number;
@@ -23,7 +23,7 @@ type ResultList = {
   };
 };
 
-type ResultTable = {
+export type ResultTable = {
   success: boolean;
   msg?: string;
   code?: number;

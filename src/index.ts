@@ -1,10 +1,10 @@
 // ─── 子系统注册 ───
-export { defineSubsystem } from "./subsystem";
+export { defineSubsystem } from "@bit-labs.cn/owl-ui/core/subsystem";
 export type {
   SubsystemDefinition,
   SubsystemMenuContribution,
   SubsystemLoginCustomization
-} from "./subsystem";
+} from "@bit-labs.cn/owl-ui/core/subsystem";
 
 // ─── 应用引导 ───
 export { createFlexAdmin } from "./bootstrap";
@@ -30,27 +30,35 @@ export {
   formatTwoStageRoutes,
   formatFlatteningRoutes,
   filterNoPermissionTree
-} from "./router/utils";
+} from "@bit-labs.cn/owl-ui/core/router/utils";
 
 // ─── Store Hooks ───
-export { useUserStoreHook } from "./store/modules/user";
-export { usePermissionStoreHook } from "./store/modules/permission";
-export { useAppStoreHook } from "./store/modules/app";
-export { useMultiTagsStoreHook } from "./store/modules/multiTags";
-export { useEpThemeStoreHook } from "./store/modules/epTheme";
-export { useSettingStoreHook } from "./store/modules/settings";
+export { useUserStoreHook } from "@bit-labs.cn/owl-ui/core/store/modules/user";
+export { usePermissionStoreHook } from "@bit-labs.cn/owl-ui/core/store/modules/permission";
+export { useAppStoreHook } from "@bit-labs.cn/owl-ui/core/store/modules/app";
+export { useMultiTagsStoreHook } from "@bit-labs.cn/owl-ui/core/store/modules/multiTags";
+export { useEpThemeStoreHook } from "@bit-labs.cn/owl-ui/core/store/modules/epTheme";
+export { useSettingStoreHook } from "@bit-labs.cn/owl-ui/core/store/modules/settings";
 
 // ─── 工具函数 ───
-export { http, setHttpTimeout } from "./utils/http";
+export { http, setHttpTimeout } from "@bit-labs.cn/owl-ui/core/utils/http";
 export {
   setToken,
   removeToken,
   getToken,
   formatToken,
   hasPerms
-} from "./utils/auth";
-export type { DataInfo } from "./utils/auth";
-export { message } from "./utils/message";
+} from "@bit-labs.cn/owl-ui/core/utils/auth";
+export type { DataInfo } from "@bit-labs.cn/owl-ui/core/utils/auth";
+export {
+  message,
+  closeAllMessage,
+  registerMessageAdapter
+} from "@bit-labs.cn/owl-ui/core/utils/message";
+export type {
+  MessageAdapter,
+  MessageParams
+} from "@bit-labs.cn/owl-ui/core/utils/message";
 export {
   handleTree,
   extractPathList,
@@ -58,7 +66,7 @@ export {
   buildHierarchyTree,
   getNodeByUniqueId,
   appendFieldByUniqueId
-} from "./utils/tree";
+} from "@bit-labs.cn/owl-ui/core/utils/tree";
 
 // ─── 共享组件 ───
 export { Auth } from "./components/ReAuth";
@@ -71,14 +79,30 @@ export {
   FontIcon
 } from "./components/ReIcon";
 
+// ─── 核心层 UI 适配 ───
+export {
+  registerUiKit,
+  getUiKit,
+  isUiKitRegistered
+} from "@bit-labs.cn/owl-ui/core/ui-kit";
+export type { OwlUiKit, OwlCoreViews } from "@bit-labs.cn/owl-ui/core/ui-kit";
+
 // ─── API 通用类型 ───
-export type { Result, ResultList, ResultTable } from "./api/commonType";
+export type {
+  Result,
+  ResultList,
+  ResultTable
+} from "@bit-labs.cn/owl-ui/core/api/commonType";
 
 // ─── 配置 ───
-export { getConfig, getPlatformConfig, responsiveStorageNameSpace } from "./config";
+export {
+  getConfig,
+  getPlatformConfig,
+  responsiveStorageNameSpace
+} from "@bit-labs.cn/owl-ui/core/config";
 
-export type { SubAppEntry } from "./router/subAppPortal";
+export type { SubAppEntry } from "@bit-labs.cn/owl-ui/core/router/subAppPortal";
 export {
   groupSubAppEntries,
   isSubAppPortalEnabled
-} from "./router/subAppPortal";
+} from "@bit-labs.cn/owl-ui/core/router/subAppPortal";

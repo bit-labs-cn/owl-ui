@@ -4,12 +4,12 @@ import { useLayout } from "./useLayout";
 import { removeToken } from "@bit-labs.cn/owl-ui/utils/auth";
 import { routerArrays } from "@bit-labs.cn/owl-ui/layout/types";
 import { router, resetRouter } from "@bit-labs.cn/owl-ui/router";
-import type { themeColorsType } from "../types";
+import type { themeColorsType } from "@bit-labs.cn/owl-ui/core/layout/types";
 import { useAppStoreHook } from "@bit-labs.cn/owl-ui/store/modules/app";
 import { useEpThemeStoreHook } from "@bit-labs.cn/owl-ui/store/modules/epTheme";
 import { useMultiTagsStoreHook } from "@bit-labs.cn/owl-ui/store/modules/multiTags";
 import { darken, lighten, useGlobal, storageLocal } from "@pureadmin/utils";
-import { resolveLayoutTheme } from "../utils/resolveLayoutTheme";
+import { resolveLayoutTheme } from "@bit-labs.cn/owl-ui/core/layout/utils/resolveLayoutTheme";
 
 export function useDataThemeChange() {
   const { layoutTheme, layout } = useLayout();

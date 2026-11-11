@@ -1,4 +1,5 @@
-import { $t } from "@bit-labs.cn/owl-ui/plugins/i18n";
+import { $t } from "@bit-labs.cn/owl-ui/core/utils/i18nKey";
+import { routeComponent } from "@bit-labs.cn/owl-ui/core/ui-kit";
 
 export default {
   path: "/error",
@@ -13,7 +14,7 @@ export default {
     {
       path: "/error/403",
       name: "403",
-      component: () => import("@bit-labs.cn/owl-ui/views/error/403.vue"),
+      component: routeComponent("error403"),
       meta: {
         title: $t("menus.pureFourZeroOne")
       }
@@ -21,7 +22,7 @@ export default {
     {
       path: "/error/404",
       name: "404",
-      component: () => import("@bit-labs.cn/owl-ui/views/error/404.vue"),
+      component: routeComponent("error404"),
       meta: {
         title: $t("menus.pureFourZeroFour")
       }
@@ -29,7 +30,7 @@ export default {
     {
       path: "/error/500",
       name: "500",
-      component: () => import("@bit-labs.cn/owl-ui/views/error/500.vue"),
+      component: routeComponent("error500"),
       meta: {
         title: $t("menus.pureFive")
       }

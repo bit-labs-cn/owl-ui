@@ -1,0 +1,64 @@
+{
+  "name": "flex-dev-workspace",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "gen": "node scripts/gen-package.mjs",
+    "dev:edge": "vite --open /edge.html",
+    "build:staging": "rimraf dist && vite build --mode staging",
+    "preview": "vite preview"
+  },
+  "engines": {
+    "node": "^18.18.0 || ^20.9.0 || >=22.0.0",
+    "pnpm": ">=9"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@parcel/watcher",
+      "core-js-pure",
+      "es5-ext",
+      "esbuild",
+      "vue-demi",
+      "@vue-office/excel"
+    ],
+    "allowedDeprecatedVersions": {
+      "are-we-there-yet": "*",
+      "sourcemap-codec": "*",
+      "domexception": "*",
+      "w3c-hr-time": "*",
+      "inflight": "*",
+      "npmlog": "*",
+      "rimraf": "*",
+      "stable": "*",
+      "gauge": "*",
+      "abab": "*",
+      "glob": "*"
+    },
+    "peerDependencyRules": {
+      "allowedVersions": {
+        "eslint": "9"
+      }
+    }
+  },
+  "devDependencies": {
+    "@intlify/unplugin-vue-i18n": "^6.0.1",
+    "@types/node": "^20.17.9",
+    "@vitejs/plugin-vue": "^5.2.1",
+    "@vitejs/plugin-vue-jsx": "^4.1.1",
+    "autoprefixer": "^10.4.20",
+    "dayjs": "^1.11.13",
+    "postcss": "^8.4.49",
+    "postcss-import": "^16.1.0",
+    "rimraf": "^6.0.1",
+    "sortablejs": "^1.15.6",
+    "tailwindcss": "^3.4.16",
+    "typescript": "5.6.3",
+    "vite": "^6.0.3",
+    "vite-plugin-remove-console": "^2.2.0",
+    "vite-plugin-router-warn": "^1.0.0",
+    "vite-svg-loader": "^5.1.0",
+    "vue": "^3.5.13",
+    "vue-router": "^4.6.4",
+    "yaml": "^2.7.0"
+  }
+}

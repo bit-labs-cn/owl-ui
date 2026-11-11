@@ -1,11 +1,16 @@
-import { $t } from "@bit-labs.cn/owl-ui/plugins/i18n";
-const Layout = () => import("@bit-labs.cn/owl-ui/layout/index.vue");
+import { $t } from "@bit-labs.cn/owl-ui/core/utils/i18nKey";
+import {
+  layoutComponent,
+  routeComponent
+} from "@bit-labs.cn/owl-ui/core/ui-kit";
+
+const Layout = layoutComponent();
 
 export default [
   {
     path: "/login",
     name: "Login",
-    component: () => import("@bit-labs.cn/owl-ui/views/login/index.vue"),
+    component: routeComponent("login"),
     meta: {
       title: $t("menus.pureLogin"),
       showLink: false,
@@ -15,7 +20,7 @@ export default [
   {
     path: "/unauthorized",
     name: "Unauthorized",
-    component: () => import("@bit-labs.cn/owl-ui/views/error/unauthorized.vue"),
+    component: routeComponent("unauthorized"),
     meta: {
       title: "系统未授权",
       showLink: false,
@@ -34,7 +39,7 @@ export default [
       {
         path: "/redirect/:path(.*)",
         name: "Redirect",
-        component: () => import("@bit-labs.cn/owl-ui/layout/redirect.vue")
+        component: routeComponent("redirect")
       }
     ]
   }

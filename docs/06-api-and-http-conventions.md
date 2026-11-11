@@ -4,17 +4,17 @@
 
 ## 概念说明
 
-- **HTTP 封装**：基于 axios，在 `src/utils/http/index.ts` 中实现请求/响应拦截、Authorization 头、token 过期刷新与请求队列、统一错误提示（可配置 silentMessage 等）。
-- **API 层**：按领域在 `src/api/` 下建模块（如 user.ts），内部使用封装的 `http.request()`，返回 Promise；登录、刷新、菜单等接口通常由框架包或宿主提供。
+- **HTTP 封装**：基于 axios，在 `src-core/utils/http/index.ts` 中实现请求/响应拦截、Authorization 头、token 过期刷新与请求队列、统一错误提示（可配置 silentMessage 等）。
+- **API 层**：按领域在 `src-core/api/` 下建模块（如 user.ts），内部使用封装的 `http.request()`，返回 Promise；登录、刷新、菜单等接口通常由框架包或宿主提供。
 
 ## 代码入口
 
-- HTTP 实例与拦截器：`src/utils/http/index.ts`
-- 示例 API 模块：`src/api/user.ts`（getAsyncRoutes、login、getUserInfo 等）
+- HTTP 实例与拦截器：`src-core/utils/http/index.ts`
+- 示例 API 模块：`src-core/api/user.ts`（getAsyncRoutes、login、getUserInfo 等）
 
 ## 标准步骤（新增 API）
 
-1. 在 `src/api/` 下新增或扩展模块，从 `@bit-labs.cn/owl-ui/utils/http` 引入 `http`。
+1. 在 `src-core/api/` 下新增或扩展模块，从 `@bit-labs.cn/owl-ui/utils/http` 引入 `http`。
 2. 使用 `http.request<T>(method, url, params?, config?)`，需要静默失败时在 config 中设置 `silentMessage` 等。
 3. 类型定义与后端约定一致，可放在同文件或 `api/commonType.ts`。
 

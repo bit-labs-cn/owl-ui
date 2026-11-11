@@ -2,13 +2,13 @@
 import "animate.css";
 // 引入 src/components/ReIcon/src/offlineIcon.ts 文件中所有使用addIcon添加过的本地图标
 import "@bit-labs.cn/owl-ui/components/ReIcon/src/offlineIcon";
-import { setType } from "./types";
+import { setType } from "@bit-labs.cn/owl-ui/core/layout/types";
 import { useI18n } from "vue-i18n";
 import { useLayout } from "./hooks/useLayout";
 import {
   DEFAULT_HEADER_HEIGHT,
   EXPANDED_HEADER_HEIGHT
-} from "./constants";
+} from "@bit-labs.cn/owl-ui/core/layout/constants";
 import { useAppStoreHook } from "@bit-labs.cn/owl-ui/store/modules/app";
 import { useSettingStoreHook } from "@bit-labs.cn/owl-ui/store/modules/settings";
 import { useDataThemeChange } from "@bit-labs.cn/owl-ui/layout/hooks/useDataThemeChange";

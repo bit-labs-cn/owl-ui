@@ -34,7 +34,9 @@ import {
   normalizeAppParam,
   setCurrentSubApp
 } from "./subAppPortal";
-const IFrame = () => import("@bit-labs.cn/owl-ui/layout/frame.vue");
+import { routeComponent } from "@bit-labs.cn/owl-ui/core/ui-kit";
+
+const IFrame = routeComponent("frame");
 // https://cn.vitejs.dev/guide/features.html#glob-import
 const coreViewModules = import.meta.glob("/src/views/**/*.{vue,tsx}");
 

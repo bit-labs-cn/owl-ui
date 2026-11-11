@@ -2,7 +2,10 @@
 import Cookies from "js-cookie";
 import { siteTitle } from "@bit-labs.cn/owl-ui/config/siteBrand";
 import NProgress from "@bit-labs.cn/owl-ui/utils/progress";
-import { transformI18n } from "@bit-labs.cn/owl-ui/plugins/i18n";
+import {
+  routeComponent,
+  translate
+} from "@bit-labs.cn/owl-ui/core/ui-kit";
 import { buildHierarchyTree } from "@bit-labs.cn/owl-ui/utils/tree";
 import remainingRouter from "./modules/remaining";
 import { useMultiTagsStoreHook } from "@bit-labs.cn/owl-ui/store/modules/multiTags";
@@ -126,9 +129,8 @@ router.beforeEach(async (to: ToRouteType, _from, next) => {
     to.matched.some(item => {
       if (!item.meta.title) return "";
       const Title = siteTitle();
-      if (Title)
-        document.title = `${transformI18n(item.meta.title)} | ${Title}`;
-      else document.title = transformI18n(item.meta.title);
+      if (Title) document.title = `${translate(item.meta.title)} | ${Title}`;
+      else document.title = translate(item.meta.title);
     });
   }
   /** 如果已经登录并存在登录信息后不能跳转到路由白名单，而是继续保持在当前页面 */
@@ -289,9 +291,7 @@ export function installSubAppPortalRoute(component?: RouteComponent) {
   router.addRoute({
     path: "/apps",
     name: "SubAppPortal",
-    component:
-      component ??
-      (() => import("@bit-labs.cn/owl-ui/views/portal/index.vue")),
+    component: component ?? routeComponent("portal"),
     meta: {
       title: "子系统",
       showLink: false,

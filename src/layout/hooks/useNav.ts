@@ -6,7 +6,7 @@ import { emitter } from "@bit-labs.cn/owl-ui/utils/mitt";
 import Avatar from "@bit-labs.cn/owl-ui/assets/user.jpg";
 import { getTopMenu } from "@bit-labs.cn/owl-ui/router/utils";
 import { useFullscreen } from "@vueuse/core";
-import type { routeMetaType } from "../types";
+import type { routeMetaType } from "@bit-labs.cn/owl-ui/core/layout/types";
 import { transformI18n } from "@bit-labs.cn/owl-ui/plugins/i18n";
 import { router, remainingPaths } from "@bit-labs.cn/owl-ui/router";
 import { computed, type CSSProperties } from "vue";

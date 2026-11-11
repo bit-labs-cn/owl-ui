@@ -27,33 +27,28 @@
 ## 目录结构
 
 ```
-src/
-├── index.ts                 # 主入口，统一导出
-├── bootstrap.ts             # createFlexAdmin 引导函数
-├── App.vue                  # 根组件
-├── api/                     # 接口层（登录、Token 刷新、动态路由等）
-├── assets/                  # 静态资源（图标、插图、SVG）
-├── components/              # 通用组件
-│   ├── ReAuth/              #   权限指令组件
-│   ├── ReDialog/            #   弹窗管理
-│   ├── ReIcon/              #   图标（离线 / 在线 / iconfont）
-│   ├── ReCountTo/           #   数字动画
-│   ├── ReSegmented/         #   分段选择器
-│   ├── ReCol/               #   响应式栅格
-│   ├── RePureTableBar/      #   表格工具栏
-│   └── ...
-├── config/                  # 平台配置（读取 platform-config.json）
-├── directives/              # 自定义指令（权限、复制、长按、水波纹等）
-├── layout/                  # 布局系统
-│   ├── components/          #   导航栏、侧边栏、标签页、设置面板等
-│   └── hooks/               #   主题、布局、标签、导航等 composable
-├── plugins/                 # 插件注册（i18n、Element Plus、ECharts）
-├── router/                  # 路由（静态路由 + 动态路由注入）
-├── store/                   # Pinia 状态（user、permission、app、multiTags、epTheme、settings）
-├── style/                   # 全局样式（重置、主题、暗色、过渡动画）
-├── subsystem/               # 子系统机制（defineSubsystem、注册表）
-├── utils/                   # 工具函数（auth、http、tree、progress 等）
-└── views/                   # 页面（login、welcome、error、placeholder）
+builder/                     # 共享 Vite 工具链（原 owl-ui-builder）
+src-core/                    # Core 核心层：纯 TS 逻辑，不含组件与样式
+├── bootstrap.ts             #   createFlexAdminCore 核心启动
+├── ui-kit.ts                #   布局 / 视图 / 消息适配器注册
+├── api/                     #   接口层（登录、Token 刷新、动态路由等）
+├── config/                  #   平台配置（读取 platform-config.json）
+├── router/                  #   路由（静态路由 + 动态路由注入）
+├── store/                   #   Pinia 状态（user、permission、app、multiTags 等）
+├── subsystem/               #   子系统机制（defineSubsystem、注册表）
+├── utils/                   #   工具函数（auth、http、message、tree 等）
+└── layout/                  #   布局类型、常量与主题解析
+src-theme/                   # Theme 主题层：全局样式与 CSS 变量
+src/                         # UI 组件层：布局、页面、共享组件与默认皮肤
+├── index.ts                 #   主入口，统一导出
+├── bootstrap.ts             #   createFlexAdmin（注册默认 UI 套件）
+├── App.vue                  #   根组件
+├── assets/                  #   静态资源（图标、插图、SVG）
+├── components/              #   通用组件（ReAuth / ReDialog / ReIcon / ReTableBar 等）
+├── directives/              #   自定义指令（权限、复制、长按、水波纹等）
+├── layout/                  #   布局系统（组件与 hooks）
+├── plugins/                 #   插件注册（i18n、Element Plus、ECharts、消息实现）
+└── views/                   #   页面（login、welcome、error、placeholder）
 ```
 
 ## 核心特性
@@ -73,7 +68,7 @@ src/
 
 ```ts
 // main.ts
-import { createFlexAdmin } from "@bit-labs.cn/ow-ui/bootstrap";
+import { createFlexAdmin } from "@bit-labs.cn/owl-ui/bootstrap";
 import adminSubsystem from "@bit-labs.cn/subsystem-admin";
 
 createFlexAdmin({
@@ -150,7 +145,7 @@ export default defineSubsystem({
 
 **覆盖优先级**：宿主应用 `createFlexAdmin({ subsystems: [...] })` 中，数组里**靠后**的子系统按字段覆盖靠前的（浅合并）。未声明的字段回退到 owl-ui 内置默认素材；`title` 未提供时使用平台配置中的标题（`useNav().title`）。
 
-**与 owl-ui-builder 的关系**：业务项目 `frontend/admin/builder.projects.yaml` 中的 `title` 影响浏览器标签页标题；logo 默认按**启动项目名**自动查找对应子系统包的 `src/assets/logo.png`（如在 `xinren-water/frontend/admin` 执行 `pnpm dev` → `@bit-labs.cn/xinren-water-ui`），一般无需单独配置 `logo`。`login` 配置仍只影响登录页，不替代侧边栏 logo。
+**与 owl-ui/builder 的关系**：业务项目 `frontend/admin/builder.projects.yaml` 中的 `title` 影响浏览器标签页标题；logo 默认按**启动项目名**自动查找对应子系统包的 `src/assets/logo.png`（如在 `xinren-water/frontend/admin` 执行 `pnpm dev` → `@bit-labs.cn/xinren-water-ui`），一般无需单独配置 `logo`。`login` 配置仍只影响登录页，不替代侧边栏 logo。
 
 **类型导出**：`SubsystemLoginCustomization` 可从 `@bit-labs.cn/owl-ui` 引入。
 

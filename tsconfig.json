@@ -22,6 +22,57 @@
       "DOM"
     ],
     "paths": {
+      "@bit-labs.cn/owl-ui/core": [
+        "src-core/index.ts"
+      ],
+      "@bit-labs.cn/owl-ui/core/*": [
+        "src-core/*"
+      ],
+      "@bit-labs.cn/owl-ui/theme": [
+        "src-theme/index.scss"
+      ],
+      "@bit-labs.cn/owl-ui/theme/*": [
+        "src-theme/*"
+      ],
+      "@bit-labs.cn/owl-ui/api/*": [
+        "src-core/api/*"
+      ],
+      "@bit-labs.cn/owl-ui/config": [
+        "src-core/config/index.ts"
+      ],
+      "@bit-labs.cn/owl-ui/config/*": [
+        "src-core/config/*"
+      ],
+      "@bit-labs.cn/owl-ui/store": [
+        "src-core/store/index.ts"
+      ],
+      "@bit-labs.cn/owl-ui/store/*": [
+        "src-core/store/*"
+      ],
+      "@bit-labs.cn/owl-ui/router": [
+        "src-core/router/index.ts"
+      ],
+      "@bit-labs.cn/owl-ui/router/*": [
+        "src-core/router/*"
+      ],
+      "@bit-labs.cn/owl-ui/subsystem": [
+        "src-core/subsystem/index.ts"
+      ],
+      "@bit-labs.cn/owl-ui/subsystem/*": [
+        "src-core/subsystem/*"
+      ],
+      "@bit-labs.cn/owl-ui/utils/*": [
+        "src-core/utils/*"
+      ],
+      "@bit-labs.cn/owl-ui/layout/types": [
+        "src-core/layout/types.ts"
+      ],
+      "@bit-labs.cn/owl-ui/layout/constants": [
+        "src-core/layout/constants.ts"
+      ],
+      "@bit-labs.cn/owl-ui/layout/utils/*": [
+        "src-core/layout/utils/*"
+      ],
       "@bit-labs.cn/owl-ui/*": [
         "src/*"
       ]

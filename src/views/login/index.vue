@@ -526,7 +526,7 @@ onBeforeUnmount(() => {
 </template>
 
 <style lang="scss">
-@import url("@bit-labs.cn/owl-ui/style/login.css");
+@import url("@bit-labs.cn/owl-ui/theme/login.css");
 </style>
 
 <style lang="scss" scoped>

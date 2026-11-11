@@ -1,91 +1,50 @@
+import type { App as VueApp } from "vue";
 import App from "./App.vue";
-import { setupStore } from "@bit-labs.cn/owl-ui/store";
-import { useI18n } from "@bit-labs.cn/owl-ui/plugins/i18n";
-import { getPlatformConfig, getConfig } from "./config";
-import { loadPublicSettings } from "./config/loadPublicSettings";
-import { setHttpTimeout } from "./utils/http";
 import { MotionPlugin } from "@vueuse/motion";
-import {
-  createApp,
-  type App as VueApp,
-  type Component,
-  type Directive
-} from "vue";
-import { useElementPlus } from "@bit-labs.cn/owl-ui/plugins/elementPlus";
-import { useEcharts } from "@bit-labs.cn/owl-ui/plugins/echarts";
-import { injectResponsiveStorage } from "@bit-labs.cn/owl-ui/utils/responsive";
 import Table from "@pureadmin/table";
-
 import {
-  registerSubsystems,
-  getSubsystems
-} from "@bit-labs.cn/owl-ui/subsystem/registry";
-import router, { applySubsystemRoutes } from "@bit-labs.cn/owl-ui/router";
+  createFlexAdminCore,
+  type FlexAdminOptions,
+  type SplitSubAppOptions
+} from "@bit-labs.cn/owl-ui/core/bootstrap";
+import { registerUiKit } from "@bit-labs.cn/owl-ui/core/ui-kit";
+import { registerMessageAdapter } from "@bit-labs.cn/owl-ui/core/utils/message";
 import {
-  setSplitSubAppHome,
-  setSubAppPortalEnabled
-} from "@bit-labs.cn/owl-ui/router/subAppPortal";
-import type { SubsystemDefinition } from "@bit-labs.cn/owl-ui/subsystem/types";
-
-import "./style/reset.scss";
-import "./style/index.scss";
-import "./style/tailwind.css";
-import "element-plus/dist/index.css";
+  closeAllElementMessage,
+  elementMessageAdapter
+} from "./plugins/message";
+import { transformI18n, useI18n } from "./plugins/i18n";
+import { useElementPlus } from "./plugins/elementPlus";
+import { useEcharts } from "./plugins/echarts";
 import iconfontScript from "./assets/iconfont/iconfont.js?raw";
+
+import "@bit-labs.cn/owl-ui/theme/index.scss";
+import "@bit-labs.cn/owl-ui/theme/tailwind.css";
+import "element-plus/dist/index.css";
 import "./assets/iconfont/iconfont.css";
 import "tippy.js/dist/tippy.css";
 import "tippy.js/themes/light.css";
 
-{
+export type { FlexAdminOptions, SplitSubAppOptions };
+
+/** 将字体图标写入 head（只需执行一次） */
+function installIconfont(): void {
+  if (document.getElementById("owl-ui-iconfont")) return;
   const el = document.createElement("script");
+  el.id = "owl-ui-iconfont";
   el.textContent = iconfontScript;
   document.head.appendChild(el);
 }
 
-export interface SplitSubAppOptions {
-  /** 开启后，只有携带 app 名称时才加载对应子系统菜单 */
-  enable: boolean;
-  /** 离开子系统时回到的路径，由宿主决定 */
-  home?: string;
-  /** 宿主自己的入口页组件，由宿主挂到自己的路由上 */
-  customEntry?: Component;
-}
-
-export interface FlexAdminOptions {
-  subsystems?: SubsystemDefinition[];
-  splitSubApp?: SplitSubAppOptions;
-}
-
-type OwlSplashController = {
-  set: (percent: number, text?: string, phase?: string) => void;
-  done: () => void;
-};
-
-function owlSplash(): OwlSplashController | undefined {
-  return (window as Window & { __owlSplash?: OwlSplashController }).__owlSplash;
-}
-
-export async function createFlexAdmin(
-  options: FlexAdminOptions = {}
-): Promise<VueApp> {
-  // 1. 注册子系统（在 router 使用前将路由和视图模块写入 registry）
-  registerSubsystems(options.subsystems ?? []);
-  if (options.splitSubApp?.enable) {
-    setSubAppPortalEnabled(true);
-    setSplitSubAppHome(options.splitSubApp.home ?? "/");
-  }
-
-  const app = createApp(App);
-
-  // 2. 注册自定义指令
+/** 注册指令、全局组件与 tippy */
+async function installApp(app: VueApp): Promise<void> {
   const directives = await import("@bit-labs.cn/owl-ui/directives");
   Object.keys(directives).forEach(key => {
-    app.directive(key, (directives as { [key: string]: Directive })[key]);
+    app.directive(key, directives[key]);
   });
 
-  // 3. 注册全局组件
   const { IconifyIconOffline, IconifyIconOnline, FontIcon } = await import(
-    "./components/ReIcon"
+    "@bit-labs.cn/owl-ui/components/ReIcon"
   );
   app.component("IconifyIconOffline", IconifyIconOffline);
   app.component("IconifyIconOnline", IconifyIconOnline);
@@ -96,44 +55,44 @@ export async function createFlexAdmin(
   app.component("Auth", Auth);
   app.component("Perms", Perms);
 
-  // 4. 注册 vue-tippy
   const VueTippy = (await import("vue-tippy")).default;
   app.use(VueTippy);
 
-  // 5. 加载平台配置 → 初始化 store / router / 插件
-  const config = await getPlatformConfig(app);
-  owlSplash()?.set(80, "正在准备运行环境", "环境");
-  const httpTimeout = getConfig()?.HttpTimeout;
-  if (httpTimeout != null) {
-    setHttpTimeout(httpTimeout);
-  }
-  setupStore(app);
-  useEcharts(app);
+  installIconfont();
+}
 
-  // 6. 先注入子系统静态路由，再安装 router。
-  // app.use(router) 会立刻按地址栏做第一次匹配。装完再注入时，
-  // 刷新门户首页（如 /apps/index）这次匹配是空的，放行后界面空白。
-  applySubsystemRoutes();
-  app.use(router);
+/** 注册默认 UI 套件：核心层只认这些注册项，不直接引用任何 .vue 或组件库 */
+function registerDefaultUiKit(): void {
+  registerMessageAdapter(elementMessageAdapter, closeAllElementMessage);
+  registerUiKit({
+    root: App,
+    layout: () => import("./layout/index.vue"),
+    views: {
+      login: () => import("./views/login/index.vue"),
+      unauthorized: () => import("./views/error/unauthorized.vue"),
+      welcome: () => import("./views/welcome/index.vue"),
+      portal: () => import("./views/portal/index.vue"),
+      redirect: () => import("./layout/redirect.vue"),
+      frame: () => import("./layout/frame.vue"),
+      error403: () => import("./views/error/403.vue"),
+      error404: () => import("./views/error/404.vue"),
+      error500: () => import("./views/error/500.vue")
+    },
+    translate: transformI18n,
+    installApp,
+    installPlugins: (app, config) => {
+      useEcharts(app);
+      app.use(MotionPlugin).use(useI18n).use(useElementPlus).use(Table);
+      void config;
+    }
+  });
+}
 
-  await router.isReady();
-  owlSplash()?.set(90, "正在读取基础数据", "数据");
-  injectResponsiveStorage(app, config);
-  app.use(MotionPlugin).use(useI18n).use(useElementPlus).use(Table);
-
-  // 7. 读取公开配置，再调用子系统 install。公开配置读完再进首屏，避免先闪内置标志。
-  await loadPublicSettings();
-  for (const sub of getSubsystems()) {
-    await sub.install?.(app);
-  }
-  owlSplash()?.set(96, "马上进入系统", "进入");
-
-  const mount = app.mount.bind(app);
-  app.mount = ((...args: Parameters<VueApp["mount"]>) => {
-    const mounted = mount(...args);
-    owlSplash()?.done();
-    return mounted;
-  }) as VueApp["mount"];
-
-  return app;
+/**
+ * 默认 UI 套件入口。宿主照旧调用 `createFlexAdmin(options)`；
+ * 换皮肤时只需另写一份同样形状的 bootstrap，复用 `createFlexAdminCore`。
+ */
+export async function createFlexAdmin(options: FlexAdminOptions = {}) {
+  registerDefaultUiKit();
+  return createFlexAdminCore(options);
 }

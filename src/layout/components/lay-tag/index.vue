@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { $t } from "@bit-labs.cn/owl-ui/plugins/i18n";
 import { emitter } from "@bit-labs.cn/owl-ui/utils/mitt";
-import { RouteConfigs } from "../../types";
+import { RouteConfigs } from "@bit-labs.cn/owl-ui/core/layout/types";
 import { useTags } from "../../hooks/useTag";
 import { routerArrays } from "@bit-labs.cn/owl-ui/layout/types";
 import { onClickOutside } from "@vueuse/core";

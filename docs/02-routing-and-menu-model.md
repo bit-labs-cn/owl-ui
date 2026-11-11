@@ -4,16 +4,16 @@
 
 ## 概念说明
 
-- **静态路由**：来自 `src/router/modules/*.ts` 与各子系统的 `SubsystemDefinition.routes`，在 `applySubsystemRoutes()` 时注入。
+- **静态路由**：来自 `src-core/router/modules/*.ts` 与各子系统的 `SubsystemDefinition.routes`，在 `applySubsystemRoutes()` 时注入。
 - **隐藏路由**：不显示在菜单中，如 404、重定向，放在 `remaining.ts` 等，通过 `meta.showLink === false` 控制。
 - **动态路由**：登录后通过 `userAPI.getAsyncRoutes()` 获取，后端返回菜单树（或带 `parentId` 的扁平列表），经 `handleAsyncRoutes` 与子系统 `menuContributions` 合并后，再通过 `addAsyncRoutes` 解析组件并挂到根路由的 children 下。
 - **菜单与路由形状**：后端菜单可为树形或扁平（parentId）；框架会先转树再合并贡献，最终**扁平化为两级**（根 + children），以适配 keep-alive 等。
 
 ## 代码入口
 
-- 路由实例与静态结构：`src/router/index.ts`
-- 动态路由、菜单合并、组件解析：`src/router/utils.ts`（`initRouter`、`handleAsyncRoutes`、`mergeMenuContributionsByName`、`addAsyncRoutes`、`enterSubApp`）
-- 子系统门户开关与分组：`src/router/subAppPortal.ts`
+- 路由实例与静态结构：`src-core/router/index.ts`
+- 动态路由、菜单合并、组件解析：`src-core/router/utils.ts`（`initRouter`、`handleAsyncRoutes`、`mergeMenuContributionsByName`、`addAsyncRoutes`、`enterSubApp`）
+- 子系统门户开关与分组：`src-core/router/subAppPortal.ts`
 - 路由与 meta 类型：`types/router.d.ts`
 
 ## 动态路由组件解析规则
