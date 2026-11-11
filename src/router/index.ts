@@ -106,6 +106,9 @@ export function resetRouter() {
 /** 路由白名单 */
 const whiteList = ["/login"];
 
+/** 门户首页这次导航尚未匹配到已注册路由时，记住所在地址，避免反复重进。 */
+let pendingPortalHomeFullPath = "";
+
 const { VITE_HIDE_HOME } = import.meta.env;
 
 router.beforeEach(async (to: ToRouteType, _from, next) => {
@@ -139,8 +142,33 @@ router.beforeEach(async (to: ToRouteType, _from, next) => {
       if (appFromUrl) setCurrentSubApp(appFromUrl);
       const home = getSplitSubAppHome();
       const currentApp = getCurrentSubApp();
+      // 登录后的跳转发生在路由注入之后，能直接匹配。
+      // 刷新时若这次匹配还没带上首页，直接 next() 会停在空匹配上，界面空白。
+      const enterPortalHome = () => {
+        const matchedHome = to.matched.some(record => record.path === home);
+        if (matchedHome) {
+          pendingPortalHomeFullPath = "";
+          next();
+          return;
+        }
+        const registered = router
+          .getRoutes()
+          .some(record => record.path === home);
+        if (registered && pendingPortalHomeFullPath !== to.fullPath) {
+          pendingPortalHomeFullPath = to.fullPath;
+          next({
+            path: home,
+            query: to.query,
+            hash: to.hash,
+            replace: true
+          });
+          return;
+        }
+        pendingPortalHomeFullPath = "";
+        next();
+      };
       if (!currentApp) {
-        if (to.path === home) return next();
+        if (to.path === home) return enterPortalHome();
         const hasConcretePage = to.matched.some(
           record =>
             record.path !== "/" &&
@@ -157,7 +185,7 @@ router.beforeEach(async (to: ToRouteType, _from, next) => {
         removeDynamicRoutes();
         usePermissionStoreHook().clearDynamicMenus();
         useMultiTagsStoreHook().handleTags("equal", []);
-        return next();
+        return enterPortalHome();
       }
     }
     // 无权限跳转403页面

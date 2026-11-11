@@ -100,10 +100,11 @@ export async function createFlexAdmin(
   setupStore(app);
   useEcharts(app);
 
-  app.use(router);
-
-  // 6. 将子系统路由注入到已创建的 router 实例
+  // 6. 先注入子系统静态路由，再安装 router。
+  // app.use(router) 会立刻按地址栏做第一次匹配。装完再注入时，
+  // 刷新门户首页（如 /apps/index）这次匹配是空的，放行后界面空白。
   applySubsystemRoutes();
+  app.use(router);
 
   await router.isReady();
   injectResponsiveStorage(app, config);

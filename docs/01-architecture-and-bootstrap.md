@@ -19,9 +19,9 @@
 2. **创建 Vue 应用**：`createApp(App)`。
 3. **注册指令与全局组件**：如 `v-auth`、`Auth`、`Perms`、图标等。
 4. **加载平台配置**：`getPlatformConfig(app)` 请求 `platform-config.json`，失败则抛错。
-5. **初始化 Store、Router、插件**：`setupStore(app)`、`app.use(router)`、echarts/i18n/element-plus 等。
-6. **注入子系统路由**：`applySubsystemRoutes()` 将子系统静态路由加入 router。
-7. **router.isReady()** 后注入响应式存储、Motion、i18n、Element Plus、Table。
+5. **初始化 Store**：`setupStore(app)`，以及 echarts。
+6. **注入子系统路由**：`applySubsystemRoutes()` 在 `app.use(router)` 之前执行。安装 router 会立刻按地址栏做第一次匹配；装完再注入的话，刷新门户首页时匹配为空，页面空白。
+7. **安装 Router**：`app.use(router)`，`router.isReady()` 后注入响应式存储、Motion、i18n、Element Plus、Table。
 8. **子系统 install 钩子**：`getSubsystems().forEach(sub => sub.install?.(app))`。
 
 ## 宿主职责
