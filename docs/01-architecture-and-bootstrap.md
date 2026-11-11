@@ -22,7 +22,9 @@
 5. **初始化 Store**：`setupStore(app)`，以及 echarts。
 6. **注入子系统路由**：`applySubsystemRoutes()` 在 `app.use(router)` 之前执行。安装 router 会立刻按地址栏做第一次匹配；装完再注入的话，刷新门户首页时匹配为空，页面空白。
 7. **安装 Router**：`app.use(router)`，`router.isReady()` 后注入响应式存储、Motion、i18n、Element Plus、Table。
-8. **子系统 install 钩子**：`getSubsystems().forEach(sub => sub.install?.(app))`。
+8. **子系统 install 钩子**：依次 `await sub.install?.(app)`。公开配置和 install 完成后，首屏进度收到 96。
+
+首屏加载页由 owl-ui-builder 的 `index.html` 挂上，样式在 `splash.css`，进度在 `splash.js`，不依赖框架包，页面一打开就显示。入口脚本没有字节级进度，这段只按时间缓缓靠近 70%。`createFlexAdmin` 在平台配置、路由就绪、公开配置这几步把进度推到 80、90、96，并换上对应文案，`app.mount` 之后收到 100% 并收起。不等路由懒加载和图片。进系统之后若要再盖一层同样的加载页，用 `OwlLoading` 组件，传入 `percent`。
 
 ## 宿主职责
 

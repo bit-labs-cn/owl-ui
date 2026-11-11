@@ -62,6 +62,7 @@ export {
 
 // ─── 共享组件 ───
 export { Auth } from "./components/ReAuth";
+export { OwlLoading } from "./components/OwlLoading";
 export { Perms } from "./components/RePerms";
 export { ReDialog, addDialog, closeDialog, updateDialog } from "./components/ReDialog";
 export {

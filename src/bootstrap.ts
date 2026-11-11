@@ -56,6 +56,15 @@ export interface FlexAdminOptions {
   splitSubApp?: SplitSubAppOptions;
 }
 
+type OwlSplashController = {
+  set: (percent: number, text?: string, phase?: string) => void;
+  done: () => void;
+};
+
+function owlSplash(): OwlSplashController | undefined {
+  return (window as Window & { __owlSplash?: OwlSplashController }).__owlSplash;
+}
+
 export async function createFlexAdmin(
   options: FlexAdminOptions = {}
 ): Promise<VueApp> {
@@ -93,6 +102,7 @@ export async function createFlexAdmin(
 
   // 5. 加载平台配置 → 初始化 store / router / 插件
   const config = await getPlatformConfig(app);
+  owlSplash()?.set(80, "正在准备运行环境", "环境");
   const httpTimeout = getConfig()?.HttpTimeout;
   if (httpTimeout != null) {
     setHttpTimeout(httpTimeout);
@@ -107,6 +117,7 @@ export async function createFlexAdmin(
   app.use(router);
 
   await router.isReady();
+  owlSplash()?.set(90, "正在读取基础数据", "数据");
   injectResponsiveStorage(app, config);
   app.use(MotionPlugin).use(useI18n).use(useElementPlus).use(Table);
 
@@ -115,6 +126,14 @@ export async function createFlexAdmin(
   for (const sub of getSubsystems()) {
     await sub.install?.(app);
   }
+  owlSplash()?.set(96, "马上进入系统", "进入");
+
+  const mount = app.mount.bind(app);
+  app.mount = ((...args: Parameters<VueApp["mount"]>) => {
+    const mounted = mount(...args);
+    owlSplash()?.done();
+    return mounted;
+  }) as VueApp["mount"];
 
   return app;
 }
