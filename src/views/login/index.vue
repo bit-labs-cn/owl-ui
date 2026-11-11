@@ -80,22 +80,46 @@ const loginPageClass = computed(() =>
   isBrandPanel.value ? "login-page login-page--brand-panel" : "login-page"
 );
 
-/** brand 登录页与大屏一致：1920×1080 设计稿整体缩放，避免 4K 上表单过小 */
-const DESIGN_WIDTH = 1920;
-const DESIGN_HEIGHT = 1080;
-const scaleX = ref(1);
-const scaleY = ref(1);
+/**
+ * 背景图按原始比例完整铺进窗口（contain），多出来的区域用图片右缘颜色补上。
+ * 表单不参与缩放，避免窗口比例不是 16:9 时被压扁。
+ */
+const brandBgRef = ref<HTMLImageElement>();
+const bgFallback = ref("#f5f7fa");
 
-const brandCanvasStyle = computed(() => ({
-  transform: `scale(${scaleX.value}, ${scaleY.value})`,
-  width: `${DESIGN_WIDTH}px`,
-  height: `${DESIGN_HEIGHT}px`
-}));
+function paintBrandBgFallback(img: HTMLImageElement) {
+  if (!isBrandPanel.value || !img.naturalWidth || !img.naturalHeight) return;
+  try {
+    const stops = 8;
+    const canvas = document.createElement("canvas");
+    canvas.width = 1;
+    canvas.height = stops;
+    const context = canvas.getContext("2d");
+    if (!context) return;
+    const x = img.naturalWidth - 1;
+    const lastY = img.naturalHeight - 1;
+    for (let i = 0; i < stops; i++) {
+      const y = Math.round((lastY * i) / (stops - 1));
+      context.drawImage(img, x, y, 1, 1, 0, i, 1, 1);
+    }
+    const pixels = context.getImageData(0, 0, 1, stops).data;
+    const parts: string[] = [];
+    for (let i = 0; i < stops; i++) {
+      const offset = i * 4;
+      const percent = Math.round((i / (stops - 1)) * 100);
+      parts.push(
+        `rgb(${pixels[offset]}, ${pixels[offset + 1]}, ${pixels[offset + 2]}) ${percent}%`
+      );
+    }
+    bgFallback.value = `linear-gradient(to bottom, ${parts.join(", ")})`;
+  } catch {
+    /* 读不到像素时保留默认底色 */
+  }
+}
 
-function updateBrandScale() {
-  if (!isBrandPanel.value) return;
-  scaleX.value = window.innerWidth / DESIGN_WIDTH;
-  scaleY.value = window.innerHeight / DESIGN_HEIGHT;
+function onBrandBgLoad(event: Event) {
+  const img = event.target;
+  if (img instanceof HTMLImageElement) paintBrandBgFallback(img);
 }
 
 const loginRootStyle = computed(() => {
@@ -106,6 +130,9 @@ const loginRootStyle = computed(() => {
   }
   if (isBrandPanel.value && custom.loginFormWidth) {
     style["--login-form-width"] = custom.loginFormWidth;
+  }
+  if (isBrandPanel.value) {
+    style["--login-bg-fallback"] = bgFallback.value;
   }
   return Object.keys(style).length ? style : undefined;
 });
@@ -300,8 +327,7 @@ onMounted(() => {
   window.addEventListener("message", onOAuthMessage);
   void loadOAuthProviders();
   if (isBrandPanel.value) {
-    updateBrandScale();
-    window.addEventListener("resize", updateBrandScale);
+    if (brandBgRef.value?.complete) paintBrandBgFallback(brandBgRef.value);
     const saved = localStorage.getItem(REMEMBER_USERNAME_KEY);
     if (saved) {
       ruleForm.username = saved;
@@ -313,7 +339,6 @@ onMounted(() => {
 onBeforeUnmount(() => {
   window.document.removeEventListener("keypress", onkeypress);
   window.removeEventListener("message", onOAuthMessage);
-  window.removeEventListener("resize", updateBrandScale);
   oauthPopup?.close();
 });
 </script>
@@ -323,11 +348,15 @@ onBeforeUnmount(() => {
     <div
       :class="{ 'login-scale-viewport': isBrandPanel }"
     >
-      <div
-        :class="{ 'login-scale-canvas': isBrandPanel }"
-        :style="isBrandPanel ? brandCanvasStyle : undefined"
-      >
-        <img :src="bg" class="wave" decoding="async" fetchpriority="high" />
+      <div :class="{ 'login-scale-canvas': isBrandPanel }">
+        <img
+          ref="brandBgRef"
+          :src="bg"
+          class="wave"
+          decoding="async"
+          fetchpriority="high"
+          @load="onBrandBgLoad"
+        />
         <div class="flex-c absolute right-5 top-3">
           <!-- 主题 -->
           <el-switch

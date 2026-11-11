@@ -108,14 +108,12 @@
   position: fixed;
   inset: 0;
   overflow: hidden;
-  background: #f5f7fa;
+  background: var(--login-bg-fallback, #f5f7fa);
 }
 
 .login-page--brand-panel .login-scale-canvas {
   position: absolute;
-  top: 0;
-  left: 0;
-  transform-origin: top left;
+  inset: 0;
   overflow: hidden;
 }
 
@@ -128,8 +126,8 @@
   inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  object-position: center;
+  object-fit: contain;
+  object-position: left center;
 }
 
 
@@ -137,13 +135,12 @@
   position: relative;
   z-index: 1;
   display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  width: 1920px;
-  height: 1080px;
+  width: 100%;
+  height: 100%;
   max-width: none;
   margin: 0;
-  padding: 80px 96px;
+  padding: 48px clamp(32px, 6vw, 96px);
+  overflow: auto;
   grid-gap: 0;
   grid-template-columns: 1fr;
   box-sizing: border-box;
@@ -152,8 +149,14 @@
 .login-page--brand-panel .login-box {
   width: auto;
   max-width: 100%;
+  min-width: 0;
+  height: auto;
   min-height: auto;
-  flex-shrink: 0;
+  flex-shrink: 1;
+  margin-top: auto;
+  margin-bottom: auto;
+  margin-left: auto;
+  overflow: visible;
   background: transparent;
   justify-content: flex-end;
   padding: 0;
@@ -162,7 +165,7 @@
 
 .login-page--brand-panel .login-form {
   box-sizing: border-box;
-  flex-shrink: 0;
+  flex-shrink: 1;
   width: var(--login-form-width, 480px);
   max-width: 100%;
   padding: 52px 48px 44px;
@@ -204,4 +207,4 @@
     sans-serif;
 }
 
-/* brand 登录页使用 1920×1080 画布缩放，小屏由 scale < 1 适配，不再单独改布局 */
+/* 背景按图片比例完整显示；表单保持设计尺寸，不随窗口非等比缩放 */
