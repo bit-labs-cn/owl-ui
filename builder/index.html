@@ -8,9 +8,9 @@
       name="viewport"
       content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=0"
     />
+    <meta name="theme-color" content="#f5f7fb" />
     <title>%VITE_APP_TITLE%</title>
     <link rel="icon" href="/favicon.ico" />
-    <link rel="stylesheet" href="./splash.css" />
     <script>
       window.process = {};
     </script>
@@ -26,18 +26,89 @@
       aria-busy="true"
       aria-label="正在加载"
     >
-      <div class="ambient"></div>
-      <main class="content">
-        <div class="dial">
-          <div class="dial-face">
-            <span class="percent">0%</span>
-            <p class="subtitle">正在建立安全连接</p>
+      <div class="ambient" aria-hidden="true">
+        <div class="orb one"></div>
+        <div class="orb two"></div>
+      </div>
+      <main class="shell" aria-live="polite">
+        <div class="brand">
+          <div class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path
+                d="M7 17.5 12 6l5 11.5M9 13h6M5 20h14"
+                stroke="white"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
           </div>
+          <span class="brand-name">%VITE_APP_TITLE%</span>
+          <span class="brand-caption">· 正在启动</span>
         </div>
-        <h1>%VITE_APP_TITLE%</h1>
+
+        <div class="visual" aria-hidden="true">
+          <div class="halo"></div>
+          <div class="orbit"><i></i></div>
+          <div class="core">
+            <svg class="site" viewBox="0 0 64 64" aria-hidden="true">
+              <path class="mast" d="M16 50V16" />
+              <g class="arm">
+                <path d="M16 16H46" />
+                <g class="drop">
+                  <path class="cable" d="M40 16v14" />
+                  <path class="hook" d="M37 30h6M40 30v3.5" />
+                </g>
+              </g>
+              <circle class="beacon" cx="16" cy="12.5" r="2.2" />
+              <rect class="floor f1" x="34" y="42" width="16" height="8" rx="1.2" />
+              <rect class="floor f2" x="34" y="34" width="16" height="8" rx="1.2" />
+              <rect class="floor f3" x="34" y="26" width="16" height="8" rx="1.2" />
+              <path class="ground" d="M8 50h48" />
+              <path class="stripes" d="M10 55h44" />
+            </svg>
+          </div>
+          <i class="spark a"></i>
+          <i class="spark b"></i>
+        </div>
+
+        <h1>正在为你准备工作空间</h1>
+        <p class="subline">
+          首次加载需要一点时间，我们正在整理资源。<br />请稍候，马上就好。
+        </p>
+
+        <section class="progress-wrap" aria-label="加载状态">
+          <div class="progress-meta">
+            <span class="subtitle">正在建立安全连接</span>
+            <span class="percent">0%</span>
+          </div>
+          <div class="track"><div class="bar"></div></div>
+          <div class="steps">
+            <div class="step active current" data-at="0">
+              <i class="dot"></i>建立连接
+            </div>
+            <div class="step" data-at="12"><i class="dot"></i>加载资源</div>
+            <div class="step" data-at="80"><i class="dot"></i>准备界面</div>
+          </div>
+          <span class="phase" aria-hidden="true">连接</span>
+        </section>
+
+        <aside class="tip">
+          <div class="tip-icon" aria-hidden="true">✦</div>
+          <div>
+            <div class="tip-label">等待时刻</div>
+            <div class="tip-text">
+              正在加载的内容比较多，保持页面打开即可，无需重复刷新。
+            </div>
+          </div>
+        </aside>
+        <div class="footer">
+          <i class="pulse"></i><span class="footer-text">连接正常 · 页面正在努力加载</span
+          ><span class="elapsed"> · 已等待 0 秒</span>
+        </div>
       </main>
     </div>
-    <script type="module" src="/src/main.ts"></script>
-    <script src="./splash.js"></script>
+    <script type="module" src="./splash.js"></script>
+    <script type="module" data-owl-app src="/src/main.ts"></script>
   </body>
 </html>
