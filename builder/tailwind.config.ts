@@ -1,15 +1,15 @@
 import type { Config } from "tailwindcss";
 import path from "node:path";
 import { existsSync } from "node:fs";
-import { getWorkspacePackages, pathResolve } from "@bit-labs.cn/owl-ui/build-preset";
+import { PnpmWorkspace, pathResolve } from "@bit-labs.cn/owl-ui/build-preset";
 
 const toPosixPath = (p: string) => p.split(path.sep).join("/");
 const UI_SOURCE_DIRS = ["src", "core", "theme", "src-core", "src-theme"];
 
-const workspacePackages = getWorkspacePackages({
+const workspacePackages = PnpmWorkspace.load({
   workspaceFilePath: pathResolve("./pnpm-workspace.yaml", import.meta.url),
   onlyExternal: true
-});
+}).list();
 
 
 const workspaceSrcGlobs = Array.from(

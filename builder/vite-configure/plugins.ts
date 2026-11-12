@@ -9,17 +9,18 @@ import path from "node:path";
 
 import {
     resolvePackagePath,
-    getWorkspacePackages,
     pathResolve,
-    configCompressPlugin
+    PnpmWorkspace,
+    CompressionPlan,
+    type ViteCompression
   } from "@bit-labs.cn/owl-ui/build-preset";
 
 const toPosixPath = (p: string) => p.split(path.sep).join("/");
 
-const workspacePackages = getWorkspacePackages({
+const workspacePackages = PnpmWorkspace.load({
   workspaceFilePath: pathResolve("../pnpm-workspace.yaml", import.meta.url),
   onlyExternal: true
-});
+}).list();
 
 const workspaceLocalesGlobs = Array.from(
   new Set(
@@ -28,7 +29,7 @@ const workspaceLocalesGlobs = Array.from(
     )
   )
 );
-export const plugins = (VITE_COMPRESSION: string) : PluginOption[] => {
+export const plugins = (compression: ViteCompression): PluginOption[] => {
   return [
     vue(),
     vueJsx(),
@@ -39,7 +40,7 @@ export const plugins = (VITE_COMPRESSION: string) : PluginOption[] => {
     }),
     removeNoMatch(),
     svgLoader(),
-    configCompressPlugin(String(VITE_COMPRESSION) as any) as unknown as PluginOption,
+    ...(new CompressionPlan(compression).plugins ?? []),
     removeConsole({ external: ["src/assets/iconfont/iconfont.js"] })
   ]
 }

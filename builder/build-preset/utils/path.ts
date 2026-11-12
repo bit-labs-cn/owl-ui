@@ -5,10 +5,14 @@ import { existsSync } from "node:fs";
 
 const _require = createRequire(import.meta.url);
 
+/** 默认相对 build-preset 目录解析，不随这个文件挪进 utils 而改变。 */
+const presetAnchor = new URL("../index.ts", import.meta.url).href;
+
 /**
- * 根据可选路径片段生成绝对路径
+ * 根据可选路径片段生成绝对路径。
+ * 调用方应传入自己的 import.meta.url，路径就相对那个文件。
  */
-export function pathResolve(dir = ".", metaUrl = import.meta.url): string {
+export function pathResolve(dir = ".", metaUrl = presetAnchor): string {
   const currentFileDir = dirname(fileURLToPath(metaUrl));
   const buildDir = resolve(currentFileDir, "build");
   const resolvedPath = resolve(currentFileDir, dir);

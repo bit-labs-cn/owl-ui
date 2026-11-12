@@ -1,55 +1,60 @@
-import { isArray } from "@pureadmin/utils";
 import compressPlugin from "vite-plugin-compression";
 import type { Plugin } from "vite";
 import type { ViteCompression } from "./types.ts";
 
-export const configCompressPlugin = (
-  compress: ViteCompression
-): Plugin | Plugin[] | null => {
-  if (compress === "none") return null;
+interface CompressProfile {
+  ext: string;
+  threshold: number;
+  filter: () => boolean;
+  deleteOriginFile: boolean;
+  algorithm?: "brotliCompress";
+}
 
-  const gz = {
-    ext: ".gz",
-    threshold: 0,
-    filter: () => true,
-    deleteOriginFile: false
-  };
-  const br = {
-    ext: ".br",
-    algorithm: "brotliCompress" as const,
-    threshold: 0,
-    filter: () => true,
-    deleteOriginFile: false
-  };
+interface CompressChoice {
+  key: string;
+  profiles: CompressProfile[];
+}
 
-  const codeList = [
-    { key: "gzip", value: gz },
-    { key: "brotli", value: br },
-    { key: "both", value: [gz, br] }
-  ];
+/** 按压缩模式组装 vite-plugin-compression。每次构造都用新的配置，避免改到上一次的结果。 */
+export class CompressionPlan {
+  readonly plugins: Plugin[] | null;
 
-  const plugins: Plugin[] = [];
-
-  codeList.forEach(item => {
-    if (!compress.includes(item.key)) return;
-    const clear = compress.includes("clear");
-
-    if (isArray(item.value)) {
-      item.value.forEach(valueItem => {
-        plugins.push(
-          compressPlugin(
-            clear ? Object.assign(valueItem, { deleteOriginFile: true }) : valueItem
-          ) as unknown as Plugin
-        );
-      });
-    } else {
-      plugins.push(
-        compressPlugin(
-          clear ? Object.assign(item.value, { deleteOriginFile: true }) : item.value
-        ) as unknown as Plugin
-      );
+  constructor(mode: ViteCompression) {
+    if (mode === "none") {
+      this.plugins = null;
+      return;
     }
-  });
 
-  return plugins;
-};
+    const clear = mode.includes("clear");
+    const plugins: Plugin[] = [];
+    for (const choice of CompressionPlan.choices()) {
+      if (!mode.includes(choice.key)) continue;
+      for (const profile of choice.profiles) {
+        const options = clear ? { ...profile, deleteOriginFile: true } : profile;
+        plugins.push(compressPlugin(options) as unknown as Plugin);
+      }
+    }
+    this.plugins = plugins;
+  }
+
+  private static choices(): CompressChoice[] {
+    const gzip = (): CompressProfile => ({
+      ext: ".gz",
+      threshold: 0,
+      filter: () => true,
+      deleteOriginFile: false
+    });
+    const brotli = (): CompressProfile => ({
+      ext: ".br",
+      algorithm: "brotliCompress",
+      threshold: 0,
+      filter: () => true,
+      deleteOriginFile: false
+    });
+    return [
+      { key: "gzip", profiles: [gzip()] },
+      { key: "brotli", profiles: [brotli()] },
+      { key: "both", profiles: [gzip(), brotli()] }
+    ];
+  }
+}

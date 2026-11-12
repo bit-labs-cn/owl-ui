@@ -1,7 +1,6 @@
 import {
     pathResolve,
-    getWorkspacePackages,
-    createWorkspaceAlias,
+    PnpmWorkspace,
   } from "@bit-labs.cn/owl-ui/build-preset";
 import { resolve } from "node:path";
 
@@ -13,11 +12,12 @@ const projectRoot = process.env.VITE_APP_PROJECT_ROOT
   ? resolve(process.env.VITE_APP_PROJECT_ROOT)
   : root;
 
-const workspacePackages = getWorkspacePackages({
+const workspace = PnpmWorkspace.load({
   workspaceFilePath: pathResolve("../pnpm-workspace.yaml", import.meta.url),
   onlyExternal: true
 });
-const alias = createWorkspaceAlias(workspacePackages);
+const workspacePackages = workspace.list();
+const alias = workspace.aliases();
 
 const fsAllow = [
   root,
