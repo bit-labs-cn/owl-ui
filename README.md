@@ -6,7 +6,7 @@
 
 ## 简介
 
-`@bit-labs.cn/owl-ui` 是一个基于 [vue-pure-admin](https://github.com/pure-admin/vue-pure-admin) 二次开发的 **Vue 3 企业级后台框架库**。它不是独立运行的应用，而是作为可复用的核心包，为宿主应用提供完整的后台管理能力——包括认证、动态路由、多布局、主题切换、国际化以及子系统扩展机制。
+`@bit-labs.cn/owl-ui` 是基于 [vue-pure-admin](https://github.com/pure-admin/vue-pure-admin) 二次开发的 **Vue 3 企业级后台框架库**。它不是独立运行的应用，而是给宿主应用提供认证、动态路由、国际化和子系统扩展。界面与业务逻辑分层：`theme/default` 是默认后台皮肤，`core` 是不含界面代码的核心层。
 
 ## 技术栈
 
@@ -21,74 +21,65 @@
 | 图表 | ECharts | ^5.5 |
 | 工具 | @vueuse/core | ^12.0 |
 | 类型 | TypeScript | 5.6 |
+| 构建 | Vite | ^6.0 |
 
-> Node 要求：`^18.18.0 || ^20.9.0 || >=22.0.0`，包管理器：pnpm >= 9
+> Node：`^18.18.0 || ^20.9.0 || >=22.0.0`。包管理器：pnpm >= 9。
 
 ## 目录结构
 
 ```
-builder/                     # 共享 Vite 工具链（原 owl-ui-builder）
-├── build-preset/            #   Vite 构建预设（压缩、别名、体积分析等）
-├── scripts/                 #   工程启动与构建脚本
-└── vite-configure/          #   Vite 基础配置分块
-core/                        # Core 核心层：纯 TS 逻辑，不含组件与样式
-├── bootstrap.ts             #   createFlexAdminCore 核心启动
-├── ui-kit.ts                #   UI Kit 契约标准（布局 / 视图 / 消息适配器注册）
-├── api/                     #   接口层（登录、Token 刷新、动态路由等）
-├── config/                  #   平台配置（读取 platform-config.json）
-├── router/                  #   路由（静态路由 + 动态路由注入）
-├── store/                   #   Pinia 状态（user、permission、app、multiTags 等）
-├── subsystem/               #   子系统机制（defineSubsystem、注册表）
-├── utils/                   #   工具函数（auth、http、message、tree 等）
-└── layout/                  #   布局类型、常量与主题解析
-theme/                       # Theme 主题风格层：多风格布局与皮肤套件
-├── default/                 #   默认风格（原有经典后台布局）
-│   ├── layout/              #     完整后台布局组件（Sidebar/Navbar/TagsNav/Content）
-│   ├── views/               #     默认视图（login、welcome、portal、error）
-│   ├── style/               #     默认全局 SCSS/CSS 样式与变量
-│   ├── App.vue              #     根组件
-│   ├── bootstrap.ts         #     注册 default 风格并启动
-│   └── index.ts             #     默认风格导出
-├── shared/                  #   跨风格通用 UI 资产
-│   ├── components/          #     通用组件（ReAuth / ReDialog / ReIcon / PureTableBar / OwlLoading 等）
-│   ├── directives/          #     自定义指令（权限、复制、长按、水波纹等）
-│   ├── plugins/             #     插件注册（i18n、Element Plus、ECharts、消息实现）
-│   └── assets/              #     静态资源（字体图标、插图、SVG）
-└── <新风格名称>/            #   新风格扩展（按需增加新风格，实现专用 layout 与样式即可）
-src/                         # 顶层入口与向下兼容层
-├── index.ts                 #   主入口，统一导出核心与默认风格
-└── bootstrap.ts             #   createFlexAdmin（默认使用 theme/default 启动）
+src/
+└── index.ts                 # 包公开入口：重新导出 core，以及共享组件和默认布局
+builder/                     # 共享 Vite 工具链
+├── build-preset/            #   构建预设（别名、压缩等）
+├── scripts/                 #   宿主的 dev / build 脚本
+└── vite-configure/          #   Vite 配置分块
+core/                        # 纯 TypeScript。不引用 .vue 和样式
+├── bootstrap.ts             #   createFlexAdminCore
+├── ui-kit.ts                #   皮肤向核心注册布局和页面
+├── api/                     #   登录、刷新 Token、动态路由
+├── config/                  #   platform-config.json
+├── router/                  #   静态路由和动态路由
+├── store/                   #   Pinia
+├── subsystem/               #   defineSubsystem
+├── utils/                   #   auth、http、message、tree
+└── layout/                  #   布局类型和常量
+theme/
+├── default/                 # 默认后台：顶栏、侧栏、标签页、设置面板
+│   ├── bootstrap.ts         #   createFlexAdmin，包导出 ./bootstrap 指向这里
+│   ├── layout/
+│   ├── views/               #   登录、欢迎、门户、错误页
+│   └── style/
+└── shared/                  # 界面层共用资产
+    ├── components/          #   ReDialog、ReIcon、PureTableBar、OwlLoading 等
+    ├── directives/
+    ├── plugins/             #   i18n、Element Plus、ECharts
+    └── assets/
 ```
 
-## 核心特性
+`core` 不引用 `.vue`。皮肤通过 `ui-kit` 把布局和登录、欢迎、错误页注册进去。业务页面放在子系统包里，不放进这个仓库。
 
-- **子系统架构** — 通过 `defineSubsystem` 注册独立业务模块，每个子系统可携带路由、国际化、视图和安装钩子
-- **认证与授权** — 登录、Token 无感刷新、角色 / 权限控制（指令 + 组件双模式）
-- **动态路由** — 支持后端返回菜单，前端自动注入路由并生成导航
-- **多布局** — 垂直（vertical）、水平（horizontal）、混合（mix）三种布局可切换
-- **主题系统** — 浅色 / 深色 / 跟随系统，可自定义主题色，支持灰色与色弱模式
-- **多标签页** — 标签缓存、KeepAlive、右键菜单
-- **国际化** — 内置中 / 英双语，基于 vue-i18n + YAML 翻译文件
-- **响应式适配** — 移动端自动折叠侧边栏，断点响应式 storage
+## 布局与界面
+
+皮肤通过 `ui-kit` 把布局和登录、欢迎、错误页注册进去，`core` 只负责路由、权限、菜单和 HTTP。默认皮肤提供垂直、水平、混合三种布局，支持多色主题、明暗切换、标签栏和菜单搜索。
+
+`@bit-labs.cn/owl-ui` 这个包名本身不启动应用，它导出的是公开 API。
 
 ## 快速开始
 
-### 在宿主应用中使用
-
 ```ts
-// main.ts
+// frontend/admin/main.ts
 import { createFlexAdmin } from "@bit-labs.cn/owl-ui/bootstrap";
-import adminSubsystem from "@bit-labs.cn/subsystem-admin";
+import adminSubsystem from "@bit-labs.cn/owl-admin-ui";
 
 createFlexAdmin({
   subsystems: [adminSubsystem]
 }).then(app => app.mount("#app"));
 ```
 
-### 子系统菜单贡献（跨系统挂载）
+### 子系统菜单贡献
 
-子系统可通过 `menuContributions` 将菜单挂载到其他子系统的菜单节点。  
-挂载点通过目标菜单的路由 `name` 定位（例如挂到 `admin` 的某个目录下）。
+子系统用 `menuContributions` 把菜单挂到已有菜单节点上。挂载点是目标菜单的路由 `name`。
 
 ```ts
 import { defineSubsystem } from "@bit-labs.cn/owl-ui";
@@ -99,7 +90,6 @@ export default defineSubsystem({
   viewModules: import.meta.glob("./views/**/*.{vue,tsx}"),
   menuContributions: [
     {
-      // 目标菜单 name（来自后端返回菜单）
       targetMenuName: "SystemManage",
       menus: [
         {
@@ -119,19 +109,17 @@ export default defineSubsystem({
 });
 ```
 
-说明：
-
-- `menus` 会在动态路由装配阶段与后端菜单树合并后再统一渲染和注入。
-- 若 `targetMenuName` 未命中，框架会跳过该贡献并输出告警，不影响其他菜单。
-- 同一父节点下按 `name + path` 去重，避免重复注入。
+- `menus` 在动态路由装配时并进后端菜单树，再一起渲染。
+- `targetMenuName` 对不上时，这条贡献会被跳过并留下告警，其他菜单不受影响。
+- 同一父节点下按 `name + path` 去重。
 
 ### 登录页定制
 
-每个子系统可在 `defineSubsystem` 中声明 `login` 字段。声明 `bg` 后自动启用**全屏背景 + 右侧表单**布局；未声明时回退 owl-ui 默认登录页。登录路由与表单逻辑仍由 owl-ui 提供。
+子系统可以在 `defineSubsystem` 里声明 `login`。登录请求仍由 owl-ui 处理。
 
-**素材约定（推荐）**：将整屏背景图放在子系统包 `src/assets/login/bg.png`。
+default 皮肤在声明了 `bg` 之后使用全屏背景加右侧表单。没声明时用内置登录页。`title` 和 `subtitle` 用来覆盖登录页上的品牌文案。
 
-**示例**：
+背景图建议放在子系统包的 `src/assets/login/bg.png`。
 
 ```ts
 import { defineSubsystem } from "@bit-labs.cn/owl-ui";
@@ -150,74 +138,65 @@ export default defineSubsystem({
 });
 ```
 
-`bg.png` 建议使用**整屏**设计稿，右侧留出表单叠加区。
+多个子系统声明同一字段时，`subsystems` 数组里靠后的覆盖靠前的。`title` 没写时用平台配置里的站点名。`SubsystemLoginCustomization` 从 `@bit-labs.cn/owl-ui` 导出。
 
-**覆盖优先级**：宿主应用 `createFlexAdmin({ subsystems: [...] })` 中，数组里**靠后**的子系统按字段覆盖靠前的（浅合并）。未声明的字段回退到 owl-ui 内置默认素材；`title` 未提供时使用平台配置中的标题（`useNav().title`）。
-
-**与 owl-ui/builder 的关系**：业务项目 `frontend/admin/builder.projects.yaml` 中的 `title` 影响浏览器标签页标题；logo 默认按**启动项目名**自动查找对应子系统包的 `src/assets/logo.png`（如在 `xinren-water/frontend/admin` 执行 `pnpm dev` → `@bit-labs.cn/xinren-water-ui`），一般无需单独配置 `logo`。`login` 配置仍只影响登录页，不替代侧边栏 logo。
-
-**类型导出**：`SubsystemLoginCustomization` 可从 `@bit-labs.cn/owl-ui` 引入。
+宿主 `frontend/admin` 里，浏览器标题来自项目的构建配置。侧栏标志默认找当前子系统包的 `src/assets/logo.png`。`login` 只影响登录页。
 
 ### 开发与构建
 
-框架本身不独立运行，需通过宿主应用（如 `new/app`）启动：
+在宿主的 `frontend/admin` 里启动，不在本仓库根目录启动：
 
 ```bash
-# 安装依赖
 pnpm install
-
-# 启动开发服务
 pnpm dev
-
-# 生产构建
 pnpm build
-
-# 预发布构建
-pnpm build:staging
-
-# 代码检查
-pnpm lint
 ```
 
-### 环境变量（宿主应用）
+`dev` / `build` 会调用 `owl-ui/builder/scripts/run-project.mjs`。
+
+### 环境变量（宿主）
 
 | 变量 | 说明 |
 |------|------|
 | `VITE_PUBLIC_PATH` | 公共基础路径 |
-| `VITE_ROUTER_HISTORY` | 路由模式（`hash` / `history`） |
+| `VITE_ROUTER_HISTORY` | `hash` 或 `history` |
 | `VITE_HIDE_HOME` | 是否隐藏首页 |
-| `VITE_HTTP_TIMEOUT` | 接口请求超时（毫秒），缺省 `60000`（60 秒）；`0` 表示不超时 |
+| `VITE_HTTP_TIMEOUT` | 请求超时（毫秒）。缺省 `60000`，`0` 表示不超时 |
+| `VITE_BASE_URL` | 接口根地址 |
+| `VITE_PORT` | 开发服务端口 |
 
 ### 平台配置
 
-运行时通过 `public/platform-config.json` 配置：
+宿主在 `public/platform-config.json` 里提供运行时配置：
 
 ```jsonc
 {
-  "Title": "LiftVision",         // 网站标题
-  "FixedHeader": true,            // 固定顶栏
-  "Layout": "vertical",           // 布局模式
-  "Theme": "light",               // 主题
-  "Locale": "zh",                 // 语言
-  "EpThemeColor": "#409EFF",      // Element Plus 主题色
-  "HttpTimeout": 60000            // 接口超时（毫秒），可省略，默认 60 秒
+  "Title": "后台管理",
+  "FixedHeader": true,
+  "Layout": "vertical",
+  "Theme": "clean",
+  "Locale": "zh",
+  "EpThemeColor": "#409EFF",
+  "HttpTimeout": 60000
 }
 ```
+
+`Layout` 的 `horizontal` 和 `mix` 决定默认皮肤用水平还是混合布局。`Theme` 和 `EpThemeColor` 驱动多色主题，明暗状态记在 `layout.darkMode`。
 
 ## 状态管理
 
 | Store | 职责 |
 |-------|------|
 | `user` | 用户信息、登录 / 登出、Token 刷新 |
-| `permission` | 菜单树、路由扁平化、页面缓存列表 |
-| `app` | 布局模式、侧边栏状态、设备与视口 |
-| `multiTags` | 多标签页管理与持久化 |
-| `epTheme` | Element Plus 主题色与模式 |
-| `settings` | 标题、固定头部、隐藏侧边栏 |
+| `permission` | 菜单树、路由扁平化、页面缓存 |
+| `app` | 布局模式、侧栏、设备和视口 |
+| `multiTags` | 已打开页面 |
+| `epTheme` | Element Plus 主题色 |
+| `settings` | 标题、固定顶栏、隐藏侧栏 |
 
 ## 致谢
 
-本项目基于 [vue-pure-admin](https://github.com/pure-admin/vue-pure-admin) 构建，感谢原作者 [xiaoxian521](https://github.com/xiaoxian521) 及社区贡献者。
+本项目基于 [vue-pure-admin](https://github.com/pure-admin/vue-pure-admin)，感谢原作者 [xiaoxian521](https://github.com/xiaoxian521) 和社区贡献者。
 
 ## 许可证
 

@@ -1,4 +1,4 @@
-<h1>SubBase</h1>
+<h1>OwlUI</h1>
 
 [![license](https://img.shields.io/github/license/pure-admin/vue-pure-admin.svg)](LICENSE)
 
@@ -6,7 +6,7 @@
 
 ## Introduction
 
-`@bit-labs.cn/owl-admin` is an enterprise-grade **Vue 3 admin framework library** built on top of [vue-pure-admin](https://github.com/pure-admin/vue-pure-admin). Rather than a standalone application, it serves as a reusable core package that provides host applications with a full set of admin capabilities — authentication, dynamic routing, multiple layouts, theming, i18n, and a subsystem extension mechanism.
+`@bit-labs.cn/owl-ui` is a **Vue 3 admin framework** based on [vue-pure-admin](https://github.com/pure-admin/vue-pure-admin). It is not a standalone app. Host applications use it for authentication, dynamic routes, i18n, and subsystems. The UI and business logic are separated: `theme/default` is the default admin skin, and `core` is the layer without any UI code.
 
 ## Tech Stack
 
@@ -21,126 +21,182 @@
 | Charts | ECharts | ^5.5 |
 | Utilities | @vueuse/core | ^12.0 |
 | Types | TypeScript | 5.6 |
+| Build | Vite | ^6.0 |
 
-> Node requirement: `^18.18.0 || ^20.9.0 || >=22.0.0` — Package manager: pnpm >= 9
+> Node: `^18.18.0 || ^20.9.0 || >=22.0.0`. Package manager: pnpm >= 9.
 
 ## Directory Structure
 
 ```
 src/
-├── index.ts                 # Main entry, unified exports
-├── bootstrap.ts             # createFlexAdmin bootstrap
-├── App.vue                  # Root component
-├── api/                     # API layer (login, token refresh, dynamic routes, etc.)
-├── assets/                  # Static resources (icons, illustrations, SVGs)
-├── components/              # Reusable components
-│   ├── ReAuth/              #   Permission directive component
-│   ├── ReDialog/            #   Dialog manager
-│   ├── ReIcon/              #   Icons (offline / online / iconfont)
-│   ├── ReCountTo/           #   Number animation
-│   ├── ReSegmented/         #   Segmented control
-│   ├── ReCol/               #   Responsive grid
-│   ├── RePureTableBar/      #   Table toolbar
-│   └── ...
-├── config/                  # Platform config (reads platform-config.json)
-├── directives/              # Custom directives (auth, copy, longpress, ripple, etc.)
-├── layout/                  # Layout system
-│   ├── components/          #   Navbar, sidebar, tags, settings panel, etc.
-│   └── hooks/               #   Theme, layout, tags, nav composables
-├── plugins/                 # Plugin registration (i18n, Element Plus, ECharts)
-├── router/                  # Routing (static + dynamic route injection)
-├── store/                   # Pinia stores (user, permission, app, multiTags, epTheme, settings)
-├── style/                   # Global styles (reset, theme, dark mode, transitions)
-├── subsystem/               # Subsystem mechanism (defineSubsystem, registry)
-├── utils/                   # Utilities (auth, http, tree, progress, etc.)
-└── views/                   # Pages (login, welcome, error, placeholder)
+└── index.ts                 # Public entry: re-exports core, shared components, and the default layout
+builder/                     # Shared Vite toolchain
+├── build-preset/            #   Build preset (aliases, compression)
+├── scripts/                 #   Host dev / build scripts
+└── vite-configure/          #   Vite config pieces
+core/                        # TypeScript only. No .vue files or styles
+├── bootstrap.ts             #   createFlexAdminCore
+├── ui-kit.ts                #   Skins register layout and pages here
+├── api/                     #   Login, token refresh, dynamic routes
+├── config/                  #   platform-config.json
+├── router/
+├── store/
+├── subsystem/               #   defineSubsystem
+├── utils/                   #   auth, http, message, tree
+└── layout/                  #   Layout types and constants
+theme/
+├── default/                 # Default admin: header, sidebar, tags, settings
+│   ├── bootstrap.ts         #   createFlexAdmin; the ./bootstrap export points here
+│   ├── layout/
+│   ├── views/               #   Login, welcome, portal, errors
+│   └── style/
+└── shared/                  # Shared UI assets
+    ├── components/          #   ReDialog, ReIcon, PureTableBar, OwlLoading, ...
+    ├── directives/
+    ├── plugins/             #   i18n, Element Plus, ECharts
+    └── assets/
 ```
 
-## Key Features
+`core` does not import `.vue` files. A skin registers its layout and the login, welcome, and error pages through `ui-kit`. Business pages live in subsystem packages, not in this repo.
 
-- **Subsystem Architecture** — Register independent business modules via `defineSubsystem`, each carrying its own routes, i18n, views, and install hooks
-- **Auth & Authorization** — Login, silent token refresh, role/permission control (directive + component dual mode)
-- **Dynamic Routing** — Backend-driven menu with automatic frontend route injection and navigation generation
-- **Multiple Layouts** — Switch between vertical, horizontal, and mix layouts
-- **Theming** — Light / dark / system-follow modes with customizable primary color, greyscale, and color-weak support
-- **Multi-tab** — Tab caching, KeepAlive, context menu
-- **Internationalization** — Built-in Chinese / English, powered by vue-i18n + YAML translation files
-- **Responsive** — Auto-collapse sidebar on mobile, breakpoint-aware responsive storage
+## Layout and UI
+
+A skin registers its layout plus the login, welcome, and error pages through `ui-kit`; `core` handles routes, permissions, menus, and HTTP. The default skin offers vertical, horizontal, and mixed layouts, several theme colors, light/dark mode, a tab bar, and menu search.
+
+The package name `@bit-labs.cn/owl-ui` exports the public API; it does not boot the app.
 
 ## Getting Started
 
-### Usage in a Host Application
-
 ```ts
-// main.ts
-import { createFlexAdmin } from "@bit-labs.cn/owl-admin/bootstrap";
-import adminSubsystem from "@bit-labs.cn/subsystem-admin";
+// frontend/admin/main.ts
+import { createFlexAdmin } from "@bit-labs.cn/owl-ui/bootstrap";
+import adminSubsystem from "@bit-labs.cn/owl-admin-ui";
 
 createFlexAdmin({
   subsystems: [adminSubsystem]
 }).then(app => app.mount("#app"));
 ```
 
-### Development & Build
+### Menu contributions
 
-The framework does not run standalone — start it via a host application (e.g. `new/app`):
+A subsystem can attach menus to an existing node. The mount point is that route's `name`.
 
-```bash
-# Install dependencies
-pnpm install
+```ts
+import { defineSubsystem } from "@bit-labs.cn/owl-ui";
 
-# Start dev server
-pnpm dev
-
-# Production build
-pnpm build
-
-# Staging build
-pnpm build:staging
-
-# Lint
-pnpm lint
+export default defineSubsystem({
+  name: "liftvision",
+  viewModulesPathPrefix: "/lift-vision",
+  viewModules: import.meta.glob("./views/**/*.{vue,tsx}"),
+  menuContributions: [
+    {
+      targetMenuName: "SystemManage",
+      menus: [
+        {
+          path: "/lift-vision/device",
+          name: "LiftVisionDevice",
+          component: "/lift-vision/device/index",
+          meta: {
+            title: "设备管理",
+            icon: "ep:monitor",
+            rank: 20,
+            roles: ["admin"]
+          }
+        }
+      ]
+    }
+  ]
+});
 ```
 
-### Environment Variables (Host Application)
+- `menus` are merged into the backend menu tree while dynamic routes are built.
+- A missing `targetMenuName` skips that contribution and logs a warning.
+- Siblings are deduped by `name + path`.
+
+### Login customization
+
+A subsystem may set `login` on `defineSubsystem`. The login request still goes through owl-ui.
+
+On the default skin, setting `bg` turns on the full-bleed background with the form on the right. Without `bg`, the built-in login page is used. `title` and `subtitle` override the brand copy on the login page.
+
+Put the artwork at `src/assets/login/bg.png` in the subsystem package.
+
+```ts
+import { defineSubsystem } from "@bit-labs.cn/owl-ui";
+import loginBg from "./assets/login/bg.png";
+
+export default defineSubsystem({
+  name: "myapp",
+  viewModules: import.meta.glob("./views/**/*.{vue,tsx}"),
+  login: {
+    bg: loginBg,
+    title: "欢迎回来",
+    subtitle: "请输入您的账号信息以登录系统",
+    primaryColor: "#06b6d4",
+    loginFormWidth: "480px"
+  }
+});
+```
+
+When several subsystems set the same field, the later entry in `subsystems` wins. If `title` is omitted, the site name from platform config is used. `SubsystemLoginCustomization` is exported from `@bit-labs.cn/owl-ui`.
+
+The browser title comes from the host build config. The sidebar mark defaults to `src/assets/logo.png` in the active subsystem package. `login` only affects the login page.
+
+### Develop and build
+
+Start from the host `frontend/admin`, not from this repo root:
+
+```bash
+pnpm install
+pnpm dev
+pnpm build
+```
+
+Those scripts call `owl-ui/builder/scripts/run-project.mjs`.
+
+### Environment variables (host)
 
 | Variable | Description |
 |----------|-------------|
 | `VITE_PUBLIC_PATH` | Public base path |
-| `VITE_ROUTER_HISTORY` | Router mode (`hash` / `history`) |
-| `VITE_HIDE_HOME` | Whether to hide the home page |
-| `VITE_HTTP_TIMEOUT` | HTTP timeout in milliseconds, default `60000` (60s); `0` disables timeout |
+| `VITE_ROUTER_HISTORY` | `hash` or `history` |
+| `VITE_HIDE_HOME` | Hide the home page |
+| `VITE_HTTP_TIMEOUT` | Request timeout in milliseconds. Default `60000`. `0` means no timeout |
+| `VITE_BASE_URL` | API base URL |
+| `VITE_PORT` | Dev server port |
 
-### Platform Configuration
+### Platform configuration
 
-Runtime configuration via `public/platform-config.json`:
+The host serves `public/platform-config.json`:
 
 ```jsonc
 {
-  "Title": "LiftVision",         // Site title
-  "FixedHeader": true,            // Fixed header
-  "Layout": "vertical",           // Layout mode
-  "Theme": "light",               // Theme
-  "Locale": "zh",                 // Locale
-  "EpThemeColor": "#409EFF",      // Element Plus theme color
-  "HttpTimeout": 60000            // HTTP timeout (ms), optional, default 60s
+  "Title": "后台管理",
+  "FixedHeader": true,
+  "Layout": "vertical",
+  "Theme": "clean",
+  "Locale": "zh",
+  "EpThemeColor": "#409EFF",
+  "HttpTimeout": 60000
 }
 ```
 
-## State Management
+`Layout` values `horizontal` and `mix` choose between a horizontal and a mixed layout. `Theme` and `EpThemeColor` drive the multi-color theme, while light/dark is stored in `layout.darkMode`.
+
+## State
 
 | Store | Responsibility |
 |-------|---------------|
-| `user` | User info, login/logout, token refresh |
-| `permission` | Menu tree, flattened routes, cached page list |
-| `app` | Layout mode, sidebar state, device & viewport |
-| `multiTags` | Multi-tab management & persistence |
-| `epTheme` | Element Plus theme color & mode |
+| `user` | Profile, login / logout, token refresh |
+| `permission` | Menu tree, flattened routes, cached pages |
+| `app` | Layout mode, sidebar, device and viewport |
+| `multiTags` | Open pages |
+| `epTheme` | Element Plus theme color |
 | `settings` | Title, fixed header, hidden sidebar |
 
 ## Acknowledgments
 
-This project is built upon [vue-pure-admin](https://github.com/pure-admin/vue-pure-admin). Thanks to the original author [xiaoxian521](https://github.com/xiaoxian521) and all community contributors.
+This project is built on [vue-pure-admin](https://github.com/pure-admin/vue-pure-admin). Thanks to [xiaoxian521](https://github.com/xiaoxian521) and the community.
 
 ## License
 
