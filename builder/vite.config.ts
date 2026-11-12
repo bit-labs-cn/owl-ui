@@ -29,9 +29,7 @@ export default async ({ mode }: ConfigEnv): Promise<UserConfigExport> => {
     publicDir: join(projectRoot, "public"),
     resolve: {
       dedupe: ["vue", "vue-router"],
-      alias: {
-        ...alias,
-      }
+      alias
     },
 
     plugins: [
