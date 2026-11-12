@@ -72,6 +72,7 @@ export type menuType = {
     title?: string;
     rank?: number;
     showParent?: boolean;
+    showLink?: boolean;
     extraIcon?: string;
     noLayout?: boolean;
     target?: "_blank" | "_self" | "_parent" | "_top";
