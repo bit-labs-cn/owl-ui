@@ -7,7 +7,7 @@ import {
   type FlexAdminOptions,
   type SplitSubAppOptions
 } from "@bit-labs.cn/owl-ui/core/bootstrap";
-import { registerUiKit } from "@bit-labs.cn/owl-ui/core/ui-kit";
+import { uiKitRegistry } from "@bit-labs.cn/owl-ui/core/ui-kit";
 import { registerMessageAdapter } from "@bit-labs.cn/owl-ui/core/utils/message";
 import {
   closeAllElementMessage,
@@ -64,7 +64,7 @@ async function installApp(app: VueApp): Promise<void> {
 /** 注册默认 UI 套件：核心层只认这些注册项，不直接引用任何 .vue 或组件库 */
 export function registerDefaultUiKit(): void {
   registerMessageAdapter(elementMessageAdapter, closeAllElementMessage);
-  registerUiKit({
+  uiKitRegistry.register({
     root: App,
     layout: () => import("./layout/index.vue"),
     views: {

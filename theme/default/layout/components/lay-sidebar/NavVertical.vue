@@ -2,7 +2,7 @@
 import { useRoute } from "vue-router";
 import { emitter } from "@bit-labs.cn/owl-ui/utils/mitt";
 import { useNav } from "@bit-labs.cn/owl-ui/layout/hooks/useNav";
-import { responsiveStorageNameSpace } from "@bit-labs.cn/owl-ui/config";
+import { platformConfig } from "@bit-labs.cn/owl-ui/config";
 import { storageLocal, isAllEmpty } from "@pureadmin/utils";
 import {
   findRouteByPath,
@@ -17,7 +17,7 @@ import LaySidebarLeftCollapse from "../lay-sidebar/components/SidebarLeftCollaps
 const route = useRoute();
 const showLogo = ref(
   storageLocal().getItem<StorageConfigs>(
-    `${responsiveStorageNameSpace()}configure`
+    `${platformConfig.storageNamespace()}configure`
   )?.showLogo ?? true
 );
 

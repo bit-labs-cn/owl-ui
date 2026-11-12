@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { isSubAppPortalEnabled } from "@bit-labs.cn/owl-ui/router/subAppPortal";
+import { subAppPortal } from "@bit-labs.cn/owl-ui/router/subAppPortal";
 import { leaveSubApp } from "@bit-labs.cn/owl-ui/router/utils";
 import HomeFilled from "@iconify-icons/ep/home-filled";
 
-const enabled = isSubAppPortalEnabled();
+const enabled = subAppPortal.isEnabled();
 
 function backToPortal() {
   void leaveSubApp();

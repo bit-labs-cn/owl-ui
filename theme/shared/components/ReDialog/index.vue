@@ -3,8 +3,7 @@ import {
   type EventType,
   type ButtonProps,
   type DialogOptions,
-  closeDialog,
-  dialogStore
+  dialogService
 } from "./index";
 import { ref, computed } from "vue";
 import { isFunction } from "@pureadmin/utils";
@@ -29,7 +28,7 @@ const footerButtons = computed(() => {
             bg: true,
             btnClick: ({ dialog: { options, index } }) => {
               const done = () =>
-                closeDialog(options, index, { command: "cancel" });
+                dialogService.close(options, index, { command: "cancel" });
               if (options?.beforeCancel && isFunction(options?.beforeCancel)) {
                 options.beforeCancel(done, { options, index });
               } else {
@@ -60,7 +59,7 @@ const footerButtons = computed(() => {
               };
               const done = () => {
                 closeLoading();
-                closeDialog(options, index, { command: "sure" });
+                dialogService.close(options, index, { command: "sure" });
               };
               if (options?.beforeSure && isFunction(options?.beforeSure)) {
                 options.beforeSure(done, { options, index, closeLoading });
@@ -94,14 +93,14 @@ function handleClose(
   index: number,
   args = { command: "close" }
 ) {
-  closeDialog(options, index, args);
+  dialogService.close(options, index, args);
   eventsCallBack("close", options, index);
 }
 </script>
 
 <template>
   <el-dialog
-    v-for="(options, index) in dialogStore"
+    v-for="(options, index) in dialogService.dialogs.value"
     :key="index"
     v-bind="options"
     v-model="options.visible"

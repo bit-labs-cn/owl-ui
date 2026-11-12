@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { useBoolean } from "../../hooks/useBoolean";
+import { BooleanFlag } from "../../hooks/boolean-flag";
 import SearchModal from "./components/SearchModal.vue";
 
-const { bool: show, toggle } = useBoolean();
+const searchVisible = new BooleanFlag();
+const show = searchVisible.value;
 function handleSearch() {
-  toggle();
+  searchVisible.toggle();
 }
 </script>
 

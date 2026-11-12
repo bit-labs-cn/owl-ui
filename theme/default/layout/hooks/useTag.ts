@@ -10,7 +10,7 @@ import {
 import type { tagsViewsType } from "@bit-labs.cn/owl-ui/core/layout/types";
 import { useRoute, useRouter } from "vue-router";
 import { transformI18n, $t } from "@bit-labs.cn/owl-ui/plugins/i18n";
-import { responsiveStorageNameSpace } from "@bit-labs.cn/owl-ui/config";
+import { platformConfig } from "@bit-labs.cn/owl-ui/config";
 import { useSettingStoreHook } from "@bit-labs.cn/owl-ui/store/modules/settings";
 import { useMultiTagsStoreHook } from "@bit-labs.cn/owl-ui/store/modules/multiTags";
 import {
@@ -47,14 +47,14 @@ export function useTags() {
   /** 显示模式，默认灵动模式 */
   const showModel = ref(
     storageLocal().getItem<StorageConfigs>(
-      `${responsiveStorageNameSpace()}configure`
+      `${platformConfig.storageNamespace()}configure`
     )?.showModel || "smart"
   );
   /** 是否隐藏标签页，默认显示 */
   const showTags =
     ref(
       storageLocal().getItem<StorageConfigs>(
-        `${responsiveStorageNameSpace()}configure`
+        `${platformConfig.storageNamespace()}configure`
       ).hideTabs
     ) ?? ref("false");
   const multiTags: any = computed(() => {
@@ -196,11 +196,11 @@ export function useTags() {
   onMounted(() => {
     if (!showModel.value) {
       const configure = storageLocal().getItem<StorageConfigs>(
-        `${responsiveStorageNameSpace()}configure`
+        `${platformConfig.storageNamespace()}configure`
       );
       configure.showModel = "card";
       storageLocal().setItem(
-        `${responsiveStorageNameSpace()}configure`,
+        `${platformConfig.storageNamespace()}configure`,
         configure
       );
     }

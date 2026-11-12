@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { getConfig } from "@bit-labs.cn/owl-ui/config";
-import { useMultiFrame } from "@bit-labs.cn/owl-ui/layout/hooks/useMultiFrame";
+import { platformConfig } from "@bit-labs.cn/owl-ui/config";
+import { frameRegistry } from "@bit-labs.cn/owl-ui/layout/hooks/frame-registry";
 import { useMultiTagsStoreHook } from "@bit-labs.cn/owl-ui/store/modules/multiTags";
 import { type Component, shallowRef, watch, computed } from "vue";
 import { type RouteRecordRaw, RouteLocationNormalizedLoaded } from "vue-router";
@@ -11,11 +11,10 @@ const props = defineProps<{
 }>();
 
 const compList = shallowRef([]);
-const { setMap, getMap, MAP, delMap } = useMultiFrame();
 
 const keep = computed(() => {
   return (
-    getConfig().KeepAlive &&
+    platformConfig.get().KeepAlive &&
     props.currRoute.meta?.keepAlive &&
     !!props.currRoute.meta?.frameSrc
   );
@@ -29,11 +28,11 @@ watch(useMultiTagsStoreHook().multiTags, (tags: any) => {
   }
   const iframeTags = tags.filter(i => i.meta?.frameSrc);
   // tags必须是小于MAP，才是做了关闭动作，因为MAP插入的顺序在tags变化后发生
-  if (iframeTags.length < MAP.size) {
-    for (const i of MAP.keys()) {
+  if (iframeTags.length < frameRegistry.frames.size) {
+    for (const i of frameRegistry.frames.keys()) {
       if (!tags.some(s => s.path === i)) {
-        delMap(i);
-        compList.value = getMap();
+        frameRegistry.forget(i);
+        compList.value = frameRegistry.list();
       }
     }
   }
@@ -45,17 +44,17 @@ watch(
     const multiTags = useMultiTagsStoreHook().multiTags as RouteRecordRaw[];
     const iframeTags = multiTags.filter(i => i.meta?.frameSrc);
     if (keep.value) {
-      if (iframeTags.length !== MAP.size) {
-        const sameKey = [...MAP.keys()].find(i => path === i);
+      if (iframeTags.length !== frameRegistry.frames.size) {
+        const sameKey = [...frameRegistry.frames.keys()].find(i => path === i);
         if (!sameKey) {
           // 添加缓存
-          setMap(path, props.currComp);
+          frameRegistry.remember(path, props.currComp);
         }
       }
     }
 
-    if (MAP.size > 0) {
-      compList.value = getMap();
+    if (frameRegistry.frames.size > 0) {
+      compList.value = frameRegistry.list();
     }
   },
   {

@@ -2,7 +2,7 @@
 export { Auth } from "./components/ReAuth";
 export { Perms } from "./components/RePerms";
 export { OwlLoading } from "./components/OwlLoading";
-export { ReDialog, addDialog, closeDialog, updateDialog } from "./components/ReDialog";
+export { ReDialog, dialogService } from "./components/ReDialog";
 export {
   IconifyIconOffline,
   IconifyIconOnline,

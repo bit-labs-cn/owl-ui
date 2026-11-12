@@ -3,7 +3,7 @@ import { emitter } from "@bit-labs.cn/owl-ui/utils/mitt";
 import { useNav } from "@bit-labs.cn/owl-ui/layout/hooks/useNav";
 import LaySearch from "../lay-search/index.vue";
 import LayNotice from "../lay-notice/index.vue";
-import { responsiveStorageNameSpace } from "@bit-labs.cn/owl-ui/config";
+import { platformConfig } from "@bit-labs.cn/owl-ui/config";
 import { ref, nextTick, computed, onMounted } from "vue";
 import { storageLocal, isAllEmpty } from "@pureadmin/utils";
 import { useTranslationLang } from "../../hooks/useTranslationLang";
@@ -21,7 +21,7 @@ import SubAppSwitch from "../lay-navbar/SubAppSwitch.vue";
 const menuRef = ref();
 const showLogo = ref(
   storageLocal().getItem<StorageConfigs>(
-    `${responsiveStorageNameSpace()}configure`
+    `${platformConfig.storageNamespace()}configure`
   )?.showLogo ?? true
 );
 

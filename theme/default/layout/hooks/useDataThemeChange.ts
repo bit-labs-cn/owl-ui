@@ -1,5 +1,5 @@
 import { ref } from "vue";
-import { getConfig } from "@bit-labs.cn/owl-ui/config";
+import { platformConfig } from "@bit-labs.cn/owl-ui/config";
 import { useLayout } from "./useLayout";
 import { removeToken } from "@bit-labs.cn/owl-ui/utils/auth";
 import { routerArrays } from "@bit-labs.cn/owl-ui/layout/types";
@@ -42,7 +42,7 @@ export function useDataThemeChange() {
 
   /** 设置导航主题色 */
   function setLayoutThemeColor(
-    theme = resolveLayoutTheme(getConfig().Theme ?? "clean"),
+    theme = resolveLayoutTheme(platformConfig.get().Theme ?? "clean"),
     isClick = true
   ) {
     const resolvedTheme = resolveLayoutTheme(theme);
@@ -61,13 +61,13 @@ export function useDataThemeChange() {
     };
 
     if (resolvedTheme === "clean") {
-      setEpThemeColor(getConfig().EpThemeColor);
+      setEpThemeColor(platformConfig.get().EpThemeColor);
     } else {
       const colors = themeColors.value.find(v => v.themeColor === resolvedTheme);
       if (colors) {
         setEpThemeColor(colors.color);
       } else {
-        setEpThemeColor(getConfig().EpThemeColor);
+        setEpThemeColor(platformConfig.get().EpThemeColor);
       }
     }
   }
@@ -115,7 +115,7 @@ export function useDataThemeChange() {
   function onReset() {
     removeToken();
     storageLocal().clear();
-    const { Grey, Weak, MultiTagsCache, EpThemeColor, Layout } = getConfig();
+    const { Grey, Weak, MultiTagsCache, EpThemeColor, Layout } = platformConfig.get();
     useAppStoreHook().setLayout(Layout);
     setEpThemeColor(EpThemeColor);
     useMultiTagsStoreHook().multiTagsCacheChange(MultiTagsCache);

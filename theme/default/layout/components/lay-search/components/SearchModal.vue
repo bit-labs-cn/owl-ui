@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { match } from "pinyin-pro";
 import { useI18n } from "vue-i18n";
-import { getConfig } from "@bit-labs.cn/owl-ui/config";
+import { platformConfig } from "@bit-labs.cn/owl-ui/config";
 import { useRouter } from "vue-router";
 import SearchResult from "./SearchResult.vue";
 import SearchFooter from "./SearchFooter.vue";
@@ -45,7 +45,7 @@ const historyPath = ref("");
 const resultOptions = shallowRef([]);
 const historyOptions = shallowRef([]);
 const handleSearch = useDebounceFn(search, 300);
-const historyNum = getConfig().MenuSearchHistory;
+const historyNum = platformConfig.get().MenuSearchHistory;
 const inputRef = ref<HTMLInputElement | null>(null);
 
 /** 菜单树形结构 */

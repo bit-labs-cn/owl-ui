@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { getConfig } from "@bit-labs.cn/owl-ui/config";
+import { platformConfig } from "@bit-labs.cn/owl-ui/config";
 import { posix } from "path-browserify";
 import { menuType } from "@bit-labs.cn/owl-ui/layout/types";
 import { ReText } from "@bit-labs.cn/owl-ui/components/ReText";
@@ -62,7 +62,7 @@ const getSubMenuIconStyle = computed((): CSSProperties => {
 });
 
 const expandCloseIcon = computed(() => {
-  if (!getConfig()?.MenuArrowIconNoTransition) return "";
+  if (!platformConfig.get()?.MenuArrowIconNoTransition) return "";
   return {
     "expand-close-icon": useRenderIcon(EpArrowDown),
     "expand-open-icon": useRenderIcon(ArrowUp),

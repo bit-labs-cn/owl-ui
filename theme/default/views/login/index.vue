@@ -10,13 +10,9 @@ import { $t, transformI18n } from "@bit-labs.cn/owl-ui/plugins/i18n";
 import { useLayout } from "@bit-labs.cn/owl-ui/layout/hooks/useLayout";
 import { useUserStoreHook } from "@bit-labs.cn/owl-ui/store/modules/user";
 import { initRouter, getTopMenu } from "@bit-labs.cn/owl-ui/router/utils";
-import {
-  clearCurrentSubApp,
-  getSplitSubAppHome,
-  isSubAppPortalEnabled
-} from "@bit-labs.cn/owl-ui/router/subAppPortal";
+import { subAppPortal } from "@bit-labs.cn/owl-ui/router/subAppPortal";
 import { defaultBg, defaultAvatar, defaultIllustration } from "./utils/static";
-import { getLoginCustomization } from "@bit-labs.cn/owl-ui/subsystem/registry";
+import { subsystemRegistry } from "@bit-labs.cn/owl-ui/subsystem/registry";
 import { hasSiteName, siteTitle } from "@bit-labs.cn/owl-ui/config/siteBrand";
 import { useRenderIcon } from "@bit-labs.cn/owl-ui/components/ReIcon/src/hooks";
 import {
@@ -67,7 +63,7 @@ dataThemeChange(overallStyle.value);
 const { title, getDropdownItemStyle, getDropdownItemClass } = useNav();
 const { locale, translationCh, translationEn } = useTranslationLang();
 
-const loginCustom = getLoginCustomization();
+const loginCustom = subsystemRegistry.login();
 const custom = loginCustom ?? {};
 /** 子系统声明了 `login.bg` 时启用全屏背景登录布局 */
 const isBrandPanel = computed(() => Boolean(loginCustom?.bg));
@@ -167,9 +163,9 @@ const ruleForm = reactive({
 });
 
 const finishLogin = async () => {
-  if (isSubAppPortalEnabled()) {
-    clearCurrentSubApp();
-    await router.replace(getSplitSubAppHome());
+  if (subAppPortal.isEnabled()) {
+    subAppPortal.clear();
+    await router.replace(subAppPortal.home());
     message(t("login.pureLoginSuccess"), { type: "success" });
     return;
   }

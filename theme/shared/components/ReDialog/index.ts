@@ -1,69 +1,43 @@
-import { ref } from "vue";
+import { ref, type Ref } from "vue";
 import reDialog from "./index.vue";
 import { useTimeoutFn } from "@vueuse/core";
 import { withInstall } from "@pureadmin/utils";
-import type {
-  EventType,
-  ArgsType,
-  DialogProps,
-  ButtonProps,
-  DialogOptions
-} from "./type";
+import type { DialogOptions } from "./type";
 
-const dialogStore = ref<Array<DialogOptions>>([]);
+export type { EventType, ArgsType, DialogProps, ButtonProps, DialogOptions } from "./type";
 
-/** 打开弹框 */
-const addDialog = (options: DialogOptions) => {
-  const open = () =>
-    dialogStore.value.push(Object.assign(options, { visible: true }));
-  if (options?.openDelay) {
-    useTimeoutFn(() => {
-      open();
-    }, options.openDelay);
-  } else {
-    open();
+/** 全局弹窗列表。打开、关闭和改标题都在这一个对象上。 */
+export class DialogService {
+  readonly dialogs: Ref<DialogOptions[]> = ref([]);
+
+  open(options: DialogOptions): void {
+    const show = () => {
+      this.dialogs.value.push(Object.assign(options, { visible: true }));
+    };
+    if (options?.openDelay) {
+      useTimeoutFn(show, options.openDelay);
+      return;
+    }
+    show();
   }
-};
 
-/** 关闭弹框 */
-const closeDialog = (options: DialogOptions, index: number, args?: any) => {
-  dialogStore.value[index].visible = false;
-  options.closeCallBack && options.closeCallBack({ options, index, args });
+  close(options: DialogOptions, index: number, args?: any): void {
+    this.dialogs.value[index].visible = false;
+    options.closeCallBack && options.closeCallBack({ options, index, args });
+    const closeDelay = options?.closeDelay ?? 200;
+    useTimeoutFn(() => {
+      this.dialogs.value.splice(index, 1);
+    }, closeDelay);
+  }
 
-  const closeDelay = options?.closeDelay ?? 200;
-  useTimeoutFn(() => {
-    dialogStore.value.splice(index, 1);
-  }, closeDelay);
-};
+  update(value: any, key = "title", index = 0): void {
+    this.dialogs.value[index][key] = value;
+  }
 
-/**
- * @description 更改弹框自身属性值
- * @param value 属性值
- * @param key 属性，默认`title`
- * @param index 弹框索引（默认`0`，代表只有一个弹框，对于嵌套弹框要改哪个弹框的属性值就把该弹框索引赋给`index`）
- */
-const updateDialog = (value: any, key = "title", index = 0) => {
-  dialogStore.value[index][key] = value;
-};
+  closeAll(): void {
+    this.dialogs.value = [];
+  }
+}
 
-/** 关闭所有弹框 */
-const closeAllDialog = () => {
-  dialogStore.value = [];
-};
-
-/** 千万别忘了在下面这三处引入并注册下，放心注册，不使用`addDialog`调用就不会被挂载
- * https://github.com/pure-admin/vue-pure-admin/blob/main/src/App.vue#L4
- * https://github.com/pure-admin/vue-pure-admin/blob/main/src/App.vue#L12
- * https://github.com/pure-admin/vue-pure-admin/blob/main/src/App.vue#L22
- */
-const ReDialog = withInstall(reDialog);
-
-export type { EventType, ArgsType, DialogProps, ButtonProps, DialogOptions };
-export {
-  ReDialog,
-  dialogStore,
-  addDialog,
-  closeDialog,
-  updateDialog,
-  closeAllDialog
-};
+export const dialogService = new DialogService();
+export const ReDialog = withInstall(reDialog);

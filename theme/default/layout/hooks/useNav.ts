@@ -1,5 +1,5 @@
 import { storeToRefs } from "pinia";
-import { getConfig } from "@bit-labs.cn/owl-ui/config";
+import { platformConfig } from "@bit-labs.cn/owl-ui/config";
 import { siteLogoURL, siteTitle } from "@bit-labs.cn/owl-ui/config/siteBrand";
 import { useRouter } from "vue-router";
 import { emitter } from "@bit-labs.cn/owl-ui/utils/mitt";
@@ -27,7 +27,7 @@ export function useNav() {
   const { isFullscreen, toggle } = useFullscreen();
   const { wholeMenus } = storeToRefs(usePermissionStoreHook());
   /** 平台`layout`中所有`el-tooltip`的`effect`配置，默认`light` */
-  const tooltipEffect = getConfig()?.TooltipEffect ?? "light";
+  const tooltipEffect = platformConfig.get()?.TooltipEffect ?? "light";
 
   const getDivStyle = computed((): CSSProperties => {
     return {
