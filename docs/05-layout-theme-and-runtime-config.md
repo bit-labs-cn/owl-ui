@@ -31,6 +31,8 @@
 
 文案目录在包根，插件的 `import.meta.glob` 相对自身位置指回包根。改插件路径时同步改 glob，否则界面上会直接显示 `login.pureLogin` 这类 key。
 
+`transformI18n` 判断词条用 vue-i18n 的 `te`，不要自己遍历消息对象拼 key：开发下编译后的节点是 `{type, body, static}`，生产构建会压成 `{t, b, i, s}`，自行展开在生产里判不到 key，界面会退回显示原始 key。
+
 ## 注意事项
 
 - 框架不包含 `platform-config.json` 内容，宿主必须提供；否则 `platformConfig.load()` 会抛错。

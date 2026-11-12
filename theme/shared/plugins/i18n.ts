@@ -2,7 +2,7 @@
 import { type I18n, createI18n } from "vue-i18n";
 import type { App, WritableComputedRef } from "vue";
 import { platformConfig } from "@bit-labs.cn/owl-ui/config";
-import { storageLocal, isObject } from "@pureadmin/utils";
+import { storageLocal } from "@pureadmin/utils";
 
 // element-plus国际化
 import enLocale from "element-plus/es/locale/lang/en";
@@ -34,58 +34,12 @@ export const localesConfigs = {
   }
 };
 
-/** vue-i18n 编译后的词条节点。它是对象，但已经是叶子，不能再往下拆。 */
-function isCompiledMessage(value) {
-  return (
-    isObject(value) &&
-    typeof value.type === "number" &&
-    ("static" in value || "body" in value || "items" in value)
-  );
-}
-
-/** 获取对象中所有嵌套对象的key键，并将它们用点号分割组成字符串 */
-function getObjectKeys(obj) {
-  const keys: Set<string> = new Set();
-  if (!obj || !isObject(obj)) return keys;
-
-  const stack = [{ obj, key: "" }];
-
-  while (stack.length > 0) {
-    const { obj, key } = stack.pop();
-    if (!obj || !isObject(obj)) continue;
-
-    for (const k in obj) {
-      const newKey = key ? `${key}.${k}` : k;
-      const child = obj[k];
-
-      if (child && isObject(child) && !isCompiledMessage(child)) {
-        stack.push({ obj: child, key: newKey });
-      } else {
-        keys.add(newKey);
-      }
-    }
-  }
-
-  return keys;
-}
-
-/** 将展开的key缓存 */
-const keysCache: Map<string, Set<string>> = new Map();
-const flatI18n = (prefix = "zh-CN") => {
-  let cache = keysCache.get(prefix);
-  if (!cache) {
-    cache = getObjectKeys(siphonI18n(prefix));
-    keysCache.set(prefix, cache);
-  }
-  return cache;
-};
-
 /**
  * 国际化转换工具函数（自动读取根目录locales文件夹下文件进行国际化匹配）
  * @param message message
  * @returns 转化后的message
  */
-export function transformI18n(message: any = "") {
+export function transformI18n(message: any = ""): string {
   if (!message) {
     return "";
   }
@@ -94,20 +48,14 @@ export function transformI18n(message: any = "") {
   if (typeof message === "object") {
     const locale: string | WritableComputedRef<string> | any =
       i18n.global.locale;
-    return message[locale?.value];
+    return message[locale?.value] ?? "";
   }
 
-  const key = message.match(/(\S*)\./)?.input;
-  const catalog = siphonI18n("zh-CN");
-
-  if (key && flatI18n("zh-CN").has(key)) {
-    return i18n.global.t.call(i18n.global.locale, message);
-  } else if (!key && Object.hasOwn(catalog, message)) {
-    // 兼容非嵌套形式的国际化写法
-    return i18n.global.t.call(i18n.global.locale, message);
-  } else {
-    return message;
-  }
+  // 交给 vue-i18n 判断词条是否存在：编译后的消息节点在开发/构建下结构不同，
+  // 自行展开 key 会在生产构建里判错，导致界面显示原始 key。
+  return i18n.global.te(message as string)
+    ? i18n.global.t(message as string)
+    : message;
 }
 
 /** 此函数只是配合i18n Ally插件来进行国际化智能提示，并无实际意义（只对提示起作用）；实现位于核心层，供路由复用 */
