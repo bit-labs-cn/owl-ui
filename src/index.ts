@@ -1,3 +1,7 @@
+/**
+ * 包的公开入口。核心能力来自 core，组件和默认布局来自 theme。
+ * 不能放进 core：这里会导出 .vue。
+ */
 // ─── 子系统注册 ───
 export { defineSubsystem } from "@bit-labs.cn/owl-ui/core/subsystem";
 export type {
@@ -5,10 +9,6 @@ export type {
   SubsystemMenuContribution,
   SubsystemLoginCustomization
 } from "@bit-labs.cn/owl-ui/core/subsystem";
-
-// ─── 应用引导 (默认 theme/default 风格) ───
-export { createFlexAdmin } from "./bootstrap";
-export type { FlexAdminOptions, SplitSubAppOptions } from "./bootstrap";
 
 // ─── 路由工具 ───
 export {

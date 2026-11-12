@@ -34,7 +34,13 @@
         "core/*"
       ],
       "@bit-labs.cn/owl-ui/theme": [
-        "theme/index.scss"
+        "theme/default/style/index.scss"
+      ],
+      "@bit-labs.cn/owl-ui/theme/login.css": [
+        "theme/default/style/login.css"
+      ],
+      "@bit-labs.cn/owl-ui/theme/tailwind.css": [
+        "theme/default/style/tailwind.css"
       ],
       "@bit-labs.cn/owl-ui/theme/default": [
         "theme/default/index.ts"
