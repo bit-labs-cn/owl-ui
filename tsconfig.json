@@ -79,7 +79,7 @@
         "theme/default/bootstrap.ts"
       ],
       "@bit-labs.cn/owl-ui/build-preset": [
-        "src/build-preset/index.ts"
+        "builder/build-preset/index.ts"
       ],
       "@bit-labs.cn/owl-ui/api/*": [
         "core/api/*"
@@ -137,6 +137,7 @@
     "theme/**/*.ts",
     "theme/**/*.tsx",
     "theme/**/*.vue",
+    "builder/build-preset/**/*.ts",
     "src/**/*.ts",
     "src/**/*.tsx",
     "src/**/*.vue",

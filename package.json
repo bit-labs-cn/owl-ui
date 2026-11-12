@@ -23,7 +23,7 @@
     "./layout/*": "./theme/default/layout/*",
     "./views/*": "./theme/default/views/*",
     "./bootstrap": "./theme/default/bootstrap.ts",
-    "./build-preset": "./src/build-preset/index.ts",
+    "./build-preset": "./builder/build-preset/index.ts",
     "./api/*": "./core/api/*",
     "./config": "./core/config/index.ts",
     "./config/*": "./core/config/*",

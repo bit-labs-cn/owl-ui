@@ -28,6 +28,9 @@
 
 ```
 builder/                     # 共享 Vite 工具链（原 owl-ui-builder）
+├── build-preset/            #   Vite 构建预设（压缩、别名、体积分析等）
+├── scripts/                 #   工程启动与构建脚本
+└── vite-configure/          #   Vite 基础配置分块
 core/                        # Core 核心层：纯 TS 逻辑，不含组件与样式
 ├── bootstrap.ts             #   createFlexAdminCore 核心启动
 ├── ui-kit.ts                #   UI Kit 契约标准（布局 / 视图 / 消息适配器注册）
@@ -54,8 +57,7 @@ theme/                       # Theme 主题风格层：多风格布局与皮肤�
 └── <新风格名称>/            #   新风格扩展（按需增加新风格，实现专用 layout 与样式即可）
 src/                         # 顶层入口与向下兼容层
 ├── index.ts                 #   主入口，统一导出核心与默认风格
-├── bootstrap.ts             #   createFlexAdmin（默认使用 theme/default 启动）
-└── build-preset/            #   Vite 构建预设
+└── bootstrap.ts             #   createFlexAdmin（默认使用 theme/default 启动）
 ```
 
 ## 核心特性
