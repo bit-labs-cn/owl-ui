@@ -1,7 +1,7 @@
 // 多组件库的国际化和本地项目国际化兼容
 import { type I18n, createI18n } from "vue-i18n";
 import type { App, WritableComputedRef } from "vue";
-import { responsiveStorageNameSpace } from "@bit-labs.cn/owl-ui/config";
+import { platformConfig } from "@bit-labs.cn/owl-ui/config";
 import { storageLocal, isObject } from "@pureadmin/utils";
 
 // element-plus国际化
@@ -9,17 +9,17 @@ import enLocale from "element-plus/es/locale/lang/en";
 import zhLocale from "element-plus/es/locale/lang/zh-cn";
 
 const siphonI18n = (function () {
-  // 仅初始化一次国际化配置
+  // 仅初始化一次国际化配置。插件在 theme/shared/plugins，文案在包根 locales。
   let cache = Object.fromEntries(
     Object.entries(
-      import.meta.glob("../../locales/*.y(a)?ml", { eager: true })
+      import.meta.glob("../../../locales/*.y(a)?ml", { eager: true })
     ).map(([key, value]: any) => {
       const matched = key.match(/([A-Za-z0-9-_]+)\./i)[1];
       return [matched, value.default];
     })
   );
   return (prefix = "zh-CN") => {
-    return cache[prefix];
+    return cache[prefix] ?? {};
   };
 })();
 
@@ -34,23 +34,34 @@ export const localesConfigs = {
   }
 };
 
+/** vue-i18n 编译后的词条节点。它是对象，但已经是叶子，不能再往下拆。 */
+function isCompiledMessage(value) {
+  return (
+    isObject(value) &&
+    typeof value.type === "number" &&
+    ("static" in value || "body" in value || "items" in value)
+  );
+}
+
 /** 获取对象中所有嵌套对象的key键，并将它们用点号分割组成字符串 */
 function getObjectKeys(obj) {
-  const stack = [];
   const keys: Set<string> = new Set();
+  if (!obj || !isObject(obj)) return keys;
 
-  stack.push({ obj, key: "" });
+  const stack = [{ obj, key: "" }];
 
   while (stack.length > 0) {
     const { obj, key } = stack.pop();
+    if (!obj || !isObject(obj)) continue;
 
     for (const k in obj) {
       const newKey = key ? `${key}.${k}` : k;
+      const child = obj[k];
 
-      if (obj[k] && isObject(obj[k])) {
-        stack.push({ obj: obj[k], key: newKey });
+      if (child && isObject(child) && !isCompiledMessage(child)) {
+        stack.push({ obj: child, key: newKey });
       } else {
-        keys.add(key);
+        keys.add(newKey);
       }
     }
   }
@@ -87,10 +98,11 @@ export function transformI18n(message: any = "") {
   }
 
   const key = message.match(/(\S*)\./)?.input;
+  const catalog = siphonI18n("zh-CN");
 
   if (key && flatI18n("zh-CN").has(key)) {
     return i18n.global.t.call(i18n.global.locale, message);
-  } else if (!key && Object.hasOwn(siphonI18n("zh-CN"), message)) {
+  } else if (!key && Object.hasOwn(catalog, message)) {
     // 兼容非嵌套形式的国际化写法
     return i18n.global.t.call(i18n.global.locale, message);
   } else {
@@ -105,7 +117,7 @@ export const i18n: I18n = createI18n({
   legacy: false,
   locale:
     storageLocal().getItem<StorageConfigs>(
-      `${responsiveStorageNameSpace()}locale`
+      `${platformConfig.storageNamespace()}locale`
     )?.locale ?? "zh",
   fallbackLocale: "en",
   messages: localesConfigs
