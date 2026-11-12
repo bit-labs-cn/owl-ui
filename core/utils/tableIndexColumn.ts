@@ -1,4 +1,4 @@
-import type { TableColumnList } from "@pureadmin/table";
+import type { TableColumns } from "@pureadmin/table";
 
 /** 列表分页参数（支持 currentPage 或 page） */
 export type TablePaginationInput = {
@@ -24,7 +24,7 @@ export function paginatedRowIndex(
 export function tableIndexColumn(
   pagination?: TablePaginationInput,
   width = 60
-): TableColumnList[number] {
+): TableColumns {
   return {
     label: "序号",
     width,

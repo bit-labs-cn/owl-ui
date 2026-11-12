@@ -15,6 +15,8 @@
     "forceConsistentCasingInFileNames": true,
     "sourceMap": true,
     "baseUrl": ".",
+    "noEmit": true,
+    "allowImportingTsExtensions": true,
     "allowJs": false,
     "resolveJsonModule": true,
     "lib": [
@@ -22,56 +24,101 @@
       "DOM"
     ],
     "paths": {
+      "@bit-labs.cn/owl-ui": [
+        "src/index.ts"
+      ],
       "@bit-labs.cn/owl-ui/core": [
-        "src-core/index.ts"
+        "core/index.ts"
       ],
       "@bit-labs.cn/owl-ui/core/*": [
-        "src-core/*"
+        "core/*"
       ],
       "@bit-labs.cn/owl-ui/theme": [
-        "src-theme/index.scss"
+        "theme/index.scss"
+      ],
+      "@bit-labs.cn/owl-ui/theme/default": [
+        "theme/default/index.ts"
+      ],
+      "@bit-labs.cn/owl-ui/theme/default/*": [
+        "theme/default/*"
+      ],
+      "@bit-labs.cn/owl-ui/theme/shared/*": [
+        "theme/shared/*"
       ],
       "@bit-labs.cn/owl-ui/theme/*": [
-        "src-theme/*"
+        "theme/*"
+      ],
+      "@bit-labs.cn/owl-ui/shared/*": [
+        "theme/shared/*"
+      ],
+      "@bit-labs.cn/owl-ui/components/*": [
+        "theme/shared/components/*"
+      ],
+      "@bit-labs.cn/owl-ui/directives": [
+        "theme/shared/directives/index.ts"
+      ],
+      "@bit-labs.cn/owl-ui/directives/*": [
+        "theme/shared/directives/*"
+      ],
+      "@bit-labs.cn/owl-ui/plugins/*": [
+        "theme/shared/plugins/*"
+      ],
+      "@bit-labs.cn/owl-ui/assets/*": [
+        "theme/shared/assets/*"
+      ],
+      "@bit-labs.cn/owl-ui/layout": [
+        "theme/default/layout/index.vue"
+      ],
+      "@bit-labs.cn/owl-ui/layout/*": [
+        "theme/default/layout/*"
+      ],
+      "@bit-labs.cn/owl-ui/views/*": [
+        "theme/default/views/*"
+      ],
+      "@bit-labs.cn/owl-ui/bootstrap": [
+        "theme/default/bootstrap.ts"
+      ],
+      "@bit-labs.cn/owl-ui/build-preset": [
+        "src/build-preset/index.ts"
       ],
       "@bit-labs.cn/owl-ui/api/*": [
-        "src-core/api/*"
+        "core/api/*"
       ],
       "@bit-labs.cn/owl-ui/config": [
-        "src-core/config/index.ts"
+        "core/config/index.ts"
       ],
       "@bit-labs.cn/owl-ui/config/*": [
-        "src-core/config/*"
+        "core/config/*"
       ],
       "@bit-labs.cn/owl-ui/store": [
-        "src-core/store/index.ts"
+        "core/store/index.ts"
       ],
       "@bit-labs.cn/owl-ui/store/*": [
-        "src-core/store/*"
+        "core/store/*"
       ],
       "@bit-labs.cn/owl-ui/router": [
-        "src-core/router/index.ts"
+        "core/router/index.ts"
       ],
       "@bit-labs.cn/owl-ui/router/*": [
-        "src-core/router/*"
+        "core/router/*"
       ],
       "@bit-labs.cn/owl-ui/subsystem": [
-        "src-core/subsystem/index.ts"
+        "core/subsystem/index.ts"
       ],
       "@bit-labs.cn/owl-ui/subsystem/*": [
-        "src-core/subsystem/*"
+        "core/subsystem/*"
       ],
       "@bit-labs.cn/owl-ui/utils/*": [
-        "src-core/utils/*"
+        "core/utils/*"
       ],
       "@bit-labs.cn/owl-ui/layout/types": [
-        "src-core/layout/types.ts"
+        "core/layout/types.ts"
       ],
       "@bit-labs.cn/owl-ui/layout/constants": [
-        "src-core/layout/constants.ts"
+        "core/layout/constants.ts"
       ],
       "@bit-labs.cn/owl-ui/layout/utils/*": [
-        "src-core/layout/utils/*"
+        "core/layout/utils/*"
       ],
       "@bit-labs.cn/owl-ui/*": [
         "src/*"
@@ -86,6 +133,10 @@
     ]
   },
   "include": [
+    "core/**/*.ts",
+    "theme/**/*.ts",
+    "theme/**/*.tsx",
+    "theme/**/*.vue",
     "src/**/*.ts",
     "src/**/*.tsx",
     "src/**/*.vue",

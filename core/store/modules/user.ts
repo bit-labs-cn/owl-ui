@@ -189,7 +189,7 @@ export const useUserStore = defineStore({
               return;
             }
             if (data?.success && data.data?.accessToken) {
-              setToken(data.data);
+              setToken(data.data as any);
               localStorage.setItem(ACCESS_TOKEN_KEY, data.data.accessToken);
               await this.fetchAndCachePermissions();
               await this.fetchAndCacheUserInfo();

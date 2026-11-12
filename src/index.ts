@@ -6,7 +6,7 @@ export type {
   SubsystemLoginCustomization
 } from "@bit-labs.cn/owl-ui/core/subsystem";
 
-// ─── 应用引导 ───
+// ─── 应用引导 (默认 theme/default 风格) ───
 export { createFlexAdmin } from "./bootstrap";
 export type { FlexAdminOptions, SplitSubAppOptions } from "./bootstrap";
 
@@ -69,15 +69,19 @@ export {
 } from "@bit-labs.cn/owl-ui/core/utils/tree";
 
 // ─── 共享组件 ───
-export { Auth } from "./components/ReAuth";
-export { OwlLoading } from "./components/OwlLoading";
-export { Perms } from "./components/RePerms";
-export { ReDialog, addDialog, closeDialog, updateDialog } from "./components/ReDialog";
+export { Auth } from "../theme/shared/components/ReAuth";
+export { OwlLoading } from "../theme/shared/components/OwlLoading";
+export { Perms } from "../theme/shared/components/RePerms";
+export { ReDialog, addDialog, closeDialog, updateDialog } from "../theme/shared/components/ReDialog";
 export {
   IconifyIconOffline,
   IconifyIconOnline,
   FontIcon
-} from "./components/ReIcon";
+} from "../theme/shared/components/ReIcon";
+export { PureTableBar } from "../theme/shared/components/RePureTableBar";
+
+// ─── 默认布局 ───
+export { default as Layout } from "../theme/default/layout/index.vue";
 
 // ─── 核心层 UI 适配 ───
 export {

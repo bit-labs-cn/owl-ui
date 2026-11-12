@@ -4,7 +4,7 @@ import { existsSync } from "node:fs";
 import { getWorkspacePackages, pathResolve } from "@bit-labs.cn/owl-ui/build-preset";
 
 const toPosixPath = (p: string) => p.split(path.sep).join("/");
-const UI_SOURCE_DIRS = ["src", "src-core", "src-theme"];
+const UI_SOURCE_DIRS = ["src", "core", "theme", "src-core", "src-theme"];
 
 const workspacePackages = getWorkspacePackages({
   workspaceFilePath: pathResolve("./pnpm-workspace.yaml", import.meta.url),

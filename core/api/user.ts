@@ -1,4 +1,5 @@
 import { http } from "@bit-labs.cn/owl-ui/utils/http";
+import type { Result, ResultTable } from "./commonType";
 
 export type LoginCaptchaAnswer = {
   captchaId: string;

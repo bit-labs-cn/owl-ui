@@ -28,9 +28,9 @@
 
 ```
 builder/                     # 共享 Vite 工具链（原 owl-ui-builder）
-src-core/                    # Core 核心层：纯 TS 逻辑，不含组件与样式
+core/                        # Core 核心层：纯 TS 逻辑，不含组件与样式
 ├── bootstrap.ts             #   createFlexAdminCore 核心启动
-├── ui-kit.ts                #   布局 / 视图 / 消息适配器注册
+├── ui-kit.ts                #   UI Kit 契约标准（布局 / 视图 / 消息适配器注册）
 ├── api/                     #   接口层（登录、Token 刷新、动态路由等）
 ├── config/                  #   平台配置（读取 platform-config.json）
 ├── router/                  #   路由（静态路由 + 动态路由注入）
@@ -38,17 +38,24 @@ src-core/                    # Core 核心层：纯 TS 逻辑，不含组件与�
 ├── subsystem/               #   子系统机制（defineSubsystem、注册表）
 ├── utils/                   #   工具函数（auth、http、message、tree 等）
 └── layout/                  #   布局类型、常量与主题解析
-src-theme/                   # Theme 主题层：全局样式与 CSS 变量
-src/                         # UI 组件层：布局、页面、共享组件与默认皮肤
-├── index.ts                 #   主入口，统一导出
-├── bootstrap.ts             #   createFlexAdmin（注册默认 UI 套件）
-├── App.vue                  #   根组件
-├── assets/                  #   静态资源（图标、插图、SVG）
-├── components/              #   通用组件（ReAuth / ReDialog / ReIcon / ReTableBar 等）
-├── directives/              #   自定义指令（权限、复制、长按、水波纹等）
-├── layout/                  #   布局系统（组件与 hooks）
-├── plugins/                 #   插件注册（i18n、Element Plus、ECharts、消息实现）
-└── views/                   #   页面（login、welcome、error、placeholder）
+theme/                       # Theme 主题风格层：多风格布局与皮肤套件
+├── default/                 #   默认风格（原有经典后台布局）
+│   ├── layout/              #     完整后台布局组件（Sidebar/Navbar/TagsNav/Content）
+│   ├── views/               #     默认视图（login、welcome、portal、error）
+│   ├── style/               #     默认全局 SCSS/CSS 样式与变量
+│   ├── App.vue              #     根组件
+│   ├── bootstrap.ts         #     注册 default 风格并启动
+│   └── index.ts             #     默认风格导出
+├── shared/                  #   跨风格通用 UI 资产
+│   ├── components/          #     通用组件（ReAuth / ReDialog / ReIcon / PureTableBar / OwlLoading 等）
+│   ├── directives/          #     自定义指令（权限、复制、长按、水波纹等）
+│   ├── plugins/             #     插件注册（i18n、Element Plus、ECharts、消息实现）
+│   └── assets/              #     静态资源（字体图标、插图、SVG）
+└── <新风格名称>/            #   新风格扩展（按需增加新风格，实现专用 layout 与样式即可）
+src/                         # 顶层入口与向下兼容层
+├── index.ts                 #   主入口，统一导出核心与默认风格
+├── bootstrap.ts             #   createFlexAdmin（默认使用 theme/default 启动）
+└── build-preset/            #   Vite 构建预设
 ```
 
 ## 核心特性

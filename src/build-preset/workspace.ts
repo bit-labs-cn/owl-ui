@@ -102,12 +102,18 @@ function exportsAliases(pkg: WorkspacePackage): Record<string, string> {
     exactAliases.push([find, resolve(pkg.dir, target)]);
   }
 
-  // 同一 find 只保留通配符那条：裸导入走目录解析，子路径继续拼接
+  // 同一 find：通配符（目录）优先于 exact（指向具体 index 文件的），
+  // 这样裸导入走目录解析（命中 index），子路径继续拼接不会出现 .../index/subpath 的问题。
   const merged = new Map<string, string>();
-  for (const [find, replacement] of [...wildcardAliases, ...exactAliases]) {
-    if (!merged.has(find)) merged.set(find, replacement);
+  for (const [find, replacement] of exactAliases) {
+    merged.set(find, replacement);
   }
-  return Object.fromEntries(merged);
+  for (const [find, replacement] of wildcardAliases) {
+    merged.set(find, replacement);
+  }
+  // 按 key 长度降序，保证具体深层子路径先于短前缀被匹配
+  const sorted = [...merged.entries()].sort((a, b) => b[0].length - a[0].length);
+  return Object.fromEntries(sorted);
 }
 
 export function createWorkspaceAlias(
@@ -120,7 +126,8 @@ export function createWorkspaceAlias(
   for (const pkg of packages) {
     aliases.push([pkg.name, pkg.srcDir]);
   }
-  // 子路径在前，包名兜底在后；同一 find 保留先出现的配置
+  // 按别名匹配长度降序排序：深层路径优先，短前缀与包名最后兜底
+  aliases.sort((a, b) => b[0].length - a[0].length);
   const merged = new Map<string, string>();
   for (const [find, replacement] of aliases) {
     if (!merged.has(find)) merged.set(find, replacement);
@@ -136,8 +143,11 @@ export function createTailwindContent(
   baseContent: string[],
   packages: WorkspacePackage[]
 ): string[] {
+  const dirs = ["src", "theme", "core"];
   return [
     ...baseContent,
-    ...packages.map(pkg => `${pkg.srcDir}/**/*.{vue,js,ts,jsx,tsx}`)
+    ...packages.flatMap(pkg =>
+      dirs.map(d => `${pkg.dir}/${d}/**/*.{vue,js,ts,jsx,tsx}`)
+    )
   ];
 }

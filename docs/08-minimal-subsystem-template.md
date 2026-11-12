@@ -1,30 +1,30 @@
 # 最小前端子系统模板
 
-本篇给出一个**可直接复制**的独立前端子系统包骨架。目标：新建一个 npm 包，依赖 `@bit-labs.cn/owl-ui`，导出 `defineSubsystem()`，由宿主在 `createFlexAdmin({ subsystems: [cmsSubsystem] })` 中注册；包内包含一个标准 CRUD 页（以文章为例），后端菜单的 path/component 需与该包的 `viewModulesPathPrefix` 一致。
+本篇给出一�?*可直接复�?*的独立前端子系统包骨架。目标：新建一�?npm 包，依赖 `@bit-labs.cn/owl-ui`，导�?`defineSubsystem()`，由宿主�?`createFlexAdmin({ subsystems: [cmsSubsystem] })` 中注册；包内包含一个标�?CRUD 页（以文章为例），后端菜单的 path/component 需与该包的 `viewModulesPathPrefix` 一致�?
 
 ## 适用场景
 
-- 新建独立业务子系统（如 CMS、设备管理），与 owl-admin-ui **平级**，不是往 owl-admin-ui 里加页面。
-- 宿主应用安装该包后，通过 `createFlexAdmin({ subsystems: [yourSubsystem] })` 注册；菜单可由后端下发或通过 `menuContributions` 挂到已有父菜单下。
+- 新建独立业务子系统（�?CMS、设备管理），与 owl-admin-ui **平级**，不是往 owl-admin-ui 里加页面�?
+- 宿主应用安装该包后，通过 `createFlexAdmin({ subsystems: [yourSubsystem] })` 注册；菜单可由后端下发或通过 `menuContributions` 挂到已有父菜单下�?
 
-## 最小目录结构
+## 最小目录结�?
 
 ```text
 cms-ui/
 ├── package.json
 ├── src/
-│   ├── index.ts
-│   ├── routes/
-│   │   └── index.ts
-│   ├── api/
-│   │   └── article.ts
-│   └── views/
-│       └── article/
-│           ├── index.vue
-│           ├── useArticleList.ts
-│           ├── columns.tsx
-│           ├── ArticleForm.vue
-│           └── types.ts
+�?  ├── index.ts
+�?  ├── routes/
+�?  �?  └── index.ts
+�?  ├── api/
+�?  �?  └── article.ts
+�?  └── views/
+�?      └── article/
+�?          ├── index.vue
+�?          ├── useArticleList.ts
+�?          ├── columns.tsx
+�?          ├── ArticleForm.vue
+�?          └── types.ts
 ```
 
 ## package.json
@@ -49,7 +49,7 @@ cms-ui/
 }
 ```
 
-说明：若宿主使用 workspace，可加 `"@bit-labs.cn/owl-ui": "workspace:*"` 在 dependencies。构建由宿主或本包自己的 vite 配置负责，此处仅包入口。
+说明：若宿主使用 workspace，可�?`"@bit-labs.cn/owl-ui": "workspace:*"` �?dependencies。构建由宿主或本包自己的 vite 配置负责，此处仅包入口�?
 
 ## src/index.ts
 
@@ -78,11 +78,11 @@ export default defineSubsystem({
 });
 ```
 
-说明：`viewModulesPathPrefix: "/cms"` 与后端菜单的 path/component 前缀一致时，动态路由才能解析到 `./views/article/index.vue`。若菜单完全由后端返回，可省略 `menuContributions`，只需后端配置 path 为 `/cms/article/index`、name 为 `CmsArticle`。
+说明：`viewModulesPathPrefix: "/cms"` 与后端菜单的 path/component 前缀一致时，动态路由才能解析到 `./views/article/index.vue`。若菜单完全由后端返回，可省�?`menuContributions`，只需后端配置 path �?`/cms/article/index`、name �?`CmsArticle`�?
 
 ## src/routes/index.ts
 
-可选。若子系统有需要直接挂在根下的静态路由（如独立首页），可在此声明；否则可导出空数组。
+可选。若子系统有需要直接挂在根下的静态路由（如独立首页），可在此声明；否则可导出空数组�?
 
 ```ts
 const Layout = () => import("@bit-labs.cn/owl-ui/layout/index.vue");
@@ -99,7 +99,7 @@ export default [
 ] satisfies RouteConfigsTable[];
 ```
 
-若不需要静态路由，可简化为：
+若不需要静态路由，可简化为�?
 
 ```ts
 export default [] satisfies RouteConfigsTable[];
@@ -121,7 +121,7 @@ export const articleAPI = {
 };
 ```
 
-URL 与后端 route 注册路径一致。
+URL 与后�?route 注册路径一致�?
 
 ## src/views/article/types.ts
 
@@ -134,7 +134,7 @@ export interface ArticleFormData {
 }
 ```
 
-字段名与后端 JSON tag 一致；状态与后端常量一致（如 1 启用 2 禁用）。
+字段名与后端 JSON tag 一致；状态与后端常量一致（�?1 启用 2 禁用）�?
 
 ## src/views/article/useArticleList.ts
 
@@ -195,7 +195,7 @@ export function createColumns(): TableColumnList {
   return [
     { label: "ID", prop: "id", width: 80 },
     { label: "标题", prop: "title", minWidth: 160 },
-    { label: "状态", prop: "status", minWidth: 100 },
+    { label: "状�?, prop: "status", minWidth: 100 },
     { label: "创建时间", prop: "createdAt", minWidth: 160 },
     { label: "操作", fixed: "right", width: 160, slot: "operation" }
   ];
@@ -218,7 +218,7 @@ const newFormInline = ref<ArticleFormData>({
   status: props.formInline?.status ?? 1
 });
 
-const rules = { title: [{ required: true, message: "请输入标题", trigger: "blur" }] };
+const rules = { title: [{ required: true, message: "请输入标�?, trigger: "blur" }] };
 
 function getRef() {
   return ruleFormRef.value;
@@ -229,12 +229,12 @@ defineExpose({ getRef, getFormData: () => newFormInline.value });
 <template>
   <el-form ref="ruleFormRef" :model="newFormInline" :rules="rules" label-width="80px">
     <el-form-item label="标题" prop="title">
-      <el-input v-model="newFormInline.title" placeholder="请输入标题" clearable />
+      <el-input v-model="newFormInline.title" placeholder="请输入标�? clearable />
     </el-form-item>
     <el-form-item label="内容" prop="content">
-      <el-input v-model="newFormInline.content" type="textarea" placeholder="请输入内容" />
+      <el-input v-model="newFormInline.content" type="textarea" placeholder="请输入内�? />
     </el-form-item>
-    <el-form-item label="状态" prop="status">
+    <el-form-item label="状�? prop="status">
       <el-radio-group v-model="newFormInline.status">
         <el-radio :value="1">启用</el-radio>
         <el-radio :value="2">禁用</el-radio>
@@ -246,7 +246,7 @@ defineExpose({ getRef, getFormData: () => newFormInline.value });
 
 ## src/views/article/index.vue
 
-页面 name 必须与后端菜单项 name 一致（如 `CmsArticle`），否则多标签/keep-alive 异常。
+页面 name 必须与后端菜单项 name 一致（�?`CmsArticle`），否则多标�?keep-alive 异常�?
 
 ```vue
 <script setup lang="ts">
@@ -329,11 +329,11 @@ function handleDelete(row: { id: string | number }) {
 </template>
 ```
 
-说明：若宿主未安装 `@pureadmin/table`，需在包中声明依赖或使用 owl-ui 提供的表格组件；此处与 owl-admin-ui 的 position 模式保持一致，便于复制。
+说明：若宿主未安�?`@pureadmin/table`，需在包中声明依赖或使用 owl-ui 提供的表格组件；此处�?owl-admin-ui �?position 模式保持一致，便于复制�?
 
 ## 宿主接入
 
-宿主应用（如集成后台 + CMS 的 SPA）中：
+宿主应用（如集成后台 + CMS �?SPA）中�?
 
 ```ts
 import { createFlexAdmin } from "@bit-labs.cn/owl-ui";
@@ -343,9 +343,9 @@ const app = await createFlexAdmin({ subsystems: [cmsSubsystem] });
 app.mount("#app");
 ```
 
-后端需提供 `/api/v1/articles` 接口，且菜单接口返回的菜单项中，对应本页的项 `name` 为 `CmsArticle`、path 或 component 为 `/cms/article/index`（与 `viewModulesPathPrefix` + 视图路径一致）。
+后端需提供 `/api/v1/articles` 接口，且菜单接口返回的菜单项中，对应本页的项 `name` �?`CmsArticle`、path �?component �?`/cms/article/index`（与 `viewModulesPathPrefix` + 视图路径一致）�?
 
 ## 完成定义
 
-- 按本文复制后，得到一个独立的前端子系统包，可被宿主通过 `createFlexAdmin({ subsystems: [sub] })` 注册。
-- 后端菜单的 path/component 与包内 `viewModulesPathPrefix` 及 `views/` 路径一致时，动态路由可正确解析到页面。
+- 按本文复制后，得到一个独立的前端子系统包，可被宿主通过 `createFlexAdmin({ subsystems: [sub] })` 注册�?
+- 后端菜单�?path/component 与包�?`viewModulesPathPrefix` �?`views/` 路径一致时，动态路由可正确解析到页面�?
