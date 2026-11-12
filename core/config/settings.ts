@@ -1,4 +1,4 @@
-import { getConfig } from "@bit-labs.cn/owl-ui/config";
+import { platformConfig } from "@bit-labs.cn/owl-ui/config";
 import { reactive } from "vue";
 
 const cached = reactive<Record<string, string>>({});
@@ -27,7 +27,7 @@ export function settingValue(path: string): string {
 export function settingSiteTitle(): string {
   const name = settingValue("admin.site.siteName").trim();
   if (name) return name;
-  const title = getConfig()?.Title;
+  const title = platformConfig.get()?.Title;
   return typeof title === "string" ? title : "";
 }
 

@@ -1,16 +1,13 @@
 import { $t } from "@bit-labs.cn/owl-ui/core/utils/i18nKey";
-import {
-  layoutComponent,
-  routeComponent
-} from "@bit-labs.cn/owl-ui/core/ui-kit";
+import { uiKitRegistry } from "@bit-labs.cn/owl-ui/core/ui-kit";
 
-const Layout = layoutComponent();
+const Layout = uiKitRegistry.layoutComponent();
 
 export default [
   {
     path: "/login",
     name: "Login",
-    component: routeComponent("login"),
+    component: uiKitRegistry.routeComponent("login"),
     meta: {
       title: $t("menus.pureLogin"),
       showLink: false,
@@ -20,7 +17,7 @@ export default [
   {
     path: "/unauthorized",
     name: "Unauthorized",
-    component: routeComponent("unauthorized"),
+    component: uiKitRegistry.routeComponent("unauthorized"),
     meta: {
       title: "系统未授权",
       showLink: false,
@@ -39,7 +36,7 @@ export default [
       {
         path: "/redirect/:path(.*)",
         name: "Redirect",
-        component: routeComponent("redirect")
+        component: uiKitRegistry.routeComponent("redirect")
       }
     ]
   }

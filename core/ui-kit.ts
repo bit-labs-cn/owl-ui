@@ -44,38 +44,39 @@ export interface OwlUiKit {
   installPlugins?: (app: App, config: PlatformConfigs) => void | Promise<void>;
 }
 
-let uiKit: OwlUiKit | null = null;
+/** 已注册的界面套件。页面组件在真正渲染时才读取，所以可以在路由模块加载时先拿到加载器。 */
+export class UiKitRegistry {
+  private kit: OwlUiKit | null = null;
 
-/** 注册 UI 套件。必须在创建 app 之前调用。 */
-export function registerUiKit(kit: OwlUiKit): void {
-  uiKit = kit;
-}
-
-export function getUiKit(): OwlUiKit {
-  if (!uiKit) {
-    throw new Error(
-      "owl-ui: 尚未注册 UI 套件。请在 createFlexAdmin 中先调用 registerUiKit。"
-    );
+  register(next: OwlUiKit): void {
+    this.kit = next;
   }
-  return uiKit;
+
+  isRegistered(): boolean {
+    return this.kit !== null;
+  }
+
+  require(): OwlUiKit {
+    if (!this.kit) {
+      throw new Error(
+        "owl-ui: 尚未注册界面套件。请在 createFlexAdmin 里先调用 uiKitRegistry.register。"
+      );
+    }
+    return this.kit;
+  }
+
+  layoutComponent(): OwlViewLoader {
+    return () => this.require().layout();
+  }
+
+  routeComponent(name: keyof OwlCoreViews): OwlViewLoader {
+    return () => this.require().views[name]();
+  }
+
+  translate(message: any): string {
+    if (this.kit?.translate) return this.kit.translate(message);
+    return typeof message === "string" ? message : "";
+  }
 }
 
-export function isUiKitRegistered(): boolean {
-  return uiKit !== null;
-}
-
-/** 作为路由 component 使用的布局加载器 */
-export function layoutComponent(): OwlViewLoader {
-  return () => getUiKit().layout();
-}
-
-/** 作为路由 component 使用的视图加载器 */
-export function routeComponent(name: keyof OwlCoreViews): OwlViewLoader {
-  return () => getUiKit().views[name]();
-}
-
-/** 文案转换，未注册翻译函数时原样返回 */
-export function translate(message: any): string {
-  if (uiKit?.translate) return uiKit.translate(message);
-  return typeof message === "string" ? message : "";
-}
+export const uiKitRegistry = new UiKitRegistry();

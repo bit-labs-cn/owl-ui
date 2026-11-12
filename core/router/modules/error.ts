@@ -1,5 +1,5 @@
 import { $t } from "@bit-labs.cn/owl-ui/core/utils/i18nKey";
-import { routeComponent } from "@bit-labs.cn/owl-ui/core/ui-kit";
+import { uiKitRegistry } from "@bit-labs.cn/owl-ui/core/ui-kit";
 
 export default {
   path: "/error",
@@ -14,7 +14,7 @@ export default {
     {
       path: "/error/403",
       name: "403",
-      component: routeComponent("error403"),
+      component: uiKitRegistry.routeComponent("error403"),
       meta: {
         title: $t("menus.pureFourZeroOne")
       }
@@ -22,7 +22,7 @@ export default {
     {
       path: "/error/404",
       name: "404",
-      component: routeComponent("error404"),
+      component: uiKitRegistry.routeComponent("error404"),
       meta: {
         title: $t("menus.pureFourZeroFour")
       }
@@ -30,7 +30,7 @@ export default {
     {
       path: "/error/500",
       name: "500",
-      component: routeComponent("error500"),
+      component: uiKitRegistry.routeComponent("error500"),
       meta: {
         title: $t("menus.pureFive")
       }

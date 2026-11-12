@@ -1,20 +1,14 @@
 import { setupStore } from "@bit-labs.cn/owl-ui/core/store";
-import { getConfig, getPlatformConfig } from "@bit-labs.cn/owl-ui/core/config";
+import { platformConfig } from "@bit-labs.cn/owl-ui/core/config";
 import { loadPublicSettings } from "@bit-labs.cn/owl-ui/core/config/loadPublicSettings";
 import { setHttpTimeout } from "@bit-labs.cn/owl-ui/core/utils/http";
 import { createApp, type App as VueApp, type Component } from "vue";
 import { injectResponsiveStorage } from "@bit-labs.cn/owl-ui/core/utils/responsive";
-import {
-  registerSubsystems,
-  getSubsystems
-} from "@bit-labs.cn/owl-ui/core/subsystem/registry";
+import { subsystemRegistry } from "@bit-labs.cn/owl-ui/core/subsystem/registry";
 import router, { applySubsystemRoutes } from "@bit-labs.cn/owl-ui/core/router";
-import {
-  setSplitSubAppHome,
-  setSubAppPortalEnabled
-} from "@bit-labs.cn/owl-ui/core/router/subAppPortal";
+import { subAppPortal } from "@bit-labs.cn/owl-ui/core/router/subAppPortal";
 import type { SubsystemDefinition } from "@bit-labs.cn/owl-ui/core/subsystem/types";
-import { getUiKit } from "@bit-labs.cn/owl-ui/core/ui-kit";
+import { uiKitRegistry } from "@bit-labs.cn/owl-ui/core/ui-kit";
 
 export interface SplitSubAppOptions {
   /** 开启后，只有携带 app 名称时才加载对应子系统菜单 */
@@ -41,28 +35,28 @@ function owlSplash(): OwlSplashController | undefined {
 
 /**
  * 框架核心启动流程：只负责业务逻辑与路由，不关心具体布局、组件库与样式。
- * UI 层须先调用 `registerUiKit()` 注册根组件、布局、视图和插件安装钩子。
+ * UI 层须先调用 `uiKitRegistry.register()` 注册根组件、布局、视图和插件安装钩子。
  */
 export async function createFlexAdminCore(
   options: FlexAdminOptions = {}
 ): Promise<VueApp> {
   // 1. 注册子系统（在 router 使用前将路由和视图模块写入 registry）
-  registerSubsystems(options.subsystems ?? []);
+  subsystemRegistry.register(options.subsystems ?? []);
   if (options.splitSubApp?.enable) {
-    setSubAppPortalEnabled(true);
-    setSplitSubAppHome(options.splitSubApp.home ?? "/");
+    subAppPortal.setEnabled(true);
+    subAppPortal.setHome(options.splitSubApp.home ?? "/");
   }
 
-  const kit = getUiKit();
+  const kit = uiKitRegistry.require();
   const app = createApp(kit.root);
 
   // 2. UI 层安装指令、全局组件与轻量插件
   await kit.installApp?.(app);
 
   // 3. 加载平台配置 → 初始化 store
-  const config = await getPlatformConfig(app);
+  const config = await platformConfig.load(app);
   owlSplash()?.set(80, "正在准备运行环境", "环境");
-  const httpTimeout = getConfig()?.HttpTimeout;
+  const httpTimeout = platformConfig.get()?.HttpTimeout;
   if (httpTimeout != null) {
     setHttpTimeout(httpTimeout);
   }
@@ -83,7 +77,7 @@ export async function createFlexAdminCore(
 
   // 6. 读取公开配置，再调用子系统 install。公开配置读完再进首屏，避免先闪内置标志。
   await loadPublicSettings();
-  for (const sub of getSubsystems()) {
+  for (const sub of subsystemRegistry.list()) {
     await sub.install?.(app);
   }
   owlSplash()?.set(96, "马上进入系统", "进入");

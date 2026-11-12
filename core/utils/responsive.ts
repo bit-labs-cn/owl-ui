@@ -2,14 +2,14 @@
 import type { App } from "vue";
 import Storage from "responsive-storage";
 import { routerArrays } from "@bit-labs.cn/owl-ui/layout/types";
-import { responsiveStorageNameSpace } from "@bit-labs.cn/owl-ui/config";
+import { platformConfig } from "@bit-labs.cn/owl-ui/config";
 import {
   createDefaultLayoutStorage,
   normalizeLayoutStorage
 } from "@bit-labs.cn/owl-ui/layout/utils/resolveLayoutTheme";
 
 export const injectResponsiveStorage = (app: App, config: PlatformConfigs) => {
-  const nameSpace = responsiveStorageNameSpace();
+  const nameSpace = platformConfig.storageNamespace();
   const storedLayout = Storage.getData("layout", nameSpace);
   const configObj = Object.assign(
     {

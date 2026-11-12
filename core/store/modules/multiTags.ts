@@ -7,10 +7,9 @@ import {
   isEqual,
   isNumber,
   isBoolean,
-  getConfig,
+  platformConfig,
   routerArrays,
-  storageLocal,
-  responsiveStorageNameSpace
+  storageLocal
 } from "../utils";
 import { usePermissionStoreHook } from "./permission";
 
@@ -19,10 +18,10 @@ export const useMultiTagsStore = defineStore({
   state: () => ({
     // 存储标签页信息（路由信息）
     multiTags: storageLocal().getItem<StorageConfigs>(
-      `${responsiveStorageNameSpace()}configure`
+      `${platformConfig.storageNamespace()}configure`
     )?.multiTagsCache
       ? storageLocal().getItem<StorageConfigs>(
-          `${responsiveStorageNameSpace()}tags`
+          `${platformConfig.storageNamespace()}tags`
         )
       : [
           ...routerArrays,
@@ -31,7 +30,7 @@ export const useMultiTagsStore = defineStore({
           )
         ],
     multiTagsCache: storageLocal().getItem<StorageConfigs>(
-      `${responsiveStorageNameSpace()}configure`
+      `${platformConfig.storageNamespace()}configure`
     )?.multiTagsCache
   }),
   getters: {
@@ -44,17 +43,17 @@ export const useMultiTagsStore = defineStore({
       this.multiTagsCache = multiTagsCache;
       if (multiTagsCache) {
         storageLocal().setItem(
-          `${responsiveStorageNameSpace()}tags`,
+          `${platformConfig.storageNamespace()}tags`,
           this.multiTags
         );
       } else {
-        storageLocal().removeItem(`${responsiveStorageNameSpace()}tags`);
+        storageLocal().removeItem(`${platformConfig.storageNamespace()}tags`);
       }
     },
     tagsCache(multiTags) {
       this.getMultiTagsCache &&
         storageLocal().setItem(
-          `${responsiveStorageNameSpace()}tags`,
+          `${platformConfig.storageNamespace()}tags`,
           multiTags
         );
     },
@@ -115,10 +114,10 @@ export const useMultiTagsStore = defineStore({
             this.multiTags.push(value);
             this.tagsCache(this.multiTags);
             if (
-              getConfig()?.MaxTagsLevel &&
-              isNumber(getConfig().MaxTagsLevel)
+              platformConfig.get()?.MaxTagsLevel &&
+              isNumber(platformConfig.get().MaxTagsLevel)
             ) {
-              if (this.multiTags.length > getConfig().MaxTagsLevel) {
+              if (this.multiTags.length > platformConfig.get().MaxTagsLevel) {
                 this.multiTags.splice(1, 1);
               }
             }

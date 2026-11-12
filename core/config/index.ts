@@ -1,55 +1,53 @@
 import axios from "axios";
 import type { App } from "vue";
 
-let config: object = {};
-const { VITE_PUBLIC_PATH } = import.meta.env;
+/** 平台配置。启动时从 platform-config.json 读入，之后按路径取值。 */
+export class PlatformConfig {
+  private values: Record<string, any> = {};
 
-const setConfig = (cfg?: unknown) => {
-  config = Object.assign(config, cfg);
-};
+  get(key?: string): PlatformConfigs {
+    if (typeof key !== "string" || !key) return this.values;
+    const segments = key.split(".");
+    let current: any = this.values;
+    for (const segment of segments) {
+      if (current && typeof current[segment] !== "undefined") {
+        current = current[segment];
+      } else {
+        return null as unknown as PlatformConfigs;
+      }
+    }
+    return current;
+  }
 
-const getConfig = (key?: string): PlatformConfigs => {
-  if (typeof key === "string") {
-    const arr = key.split(".");
-    if (arr && arr.length) {
-      let data = config;
-      arr.forEach(v => {
-        if (data && typeof data[v] !== "undefined") {
-          data = data[v];
-        } else {
-          data = null;
-        }
+  set(next?: unknown): void {
+    this.values = Object.assign(this.values, next);
+  }
+
+  storageNamespace(): string {
+    return this.get().ResponsiveStorageNameSpace;
+  }
+
+  /** 读取 public/platform-config.json，并挂到应用的全局属性上。 */
+  async load(app: App): Promise<PlatformConfigs | undefined> {
+    const publicPath = import.meta.env.VITE_PUBLIC_PATH ?? "";
+    app.config.globalProperties.$config = this.get();
+    try {
+      const { data } = await axios({
+        method: "get",
+        url: `${publicPath}platform-config.json`
       });
-      return data;
+      const current = app.config.globalProperties.$config;
+      if (app && current && typeof data === "object") {
+        const merged = Object.assign(current, data);
+        app.config.globalProperties.$config = merged;
+        this.set(merged);
+        return merged;
+      }
+      return current;
+    } catch {
+      throw "请在public文件夹下添加platform-config.json配置文件";
     }
   }
-  return config;
-};
+}
 
-/** 获取项目动态全局配置 */
-export const getPlatformConfig = async (app: App): Promise<undefined> => {
-  app.config.globalProperties.$config = getConfig();
-  return axios({
-    method: "get",
-    url: `${VITE_PUBLIC_PATH}platform-config.json`
-  })
-    .then(({ data: config }) => {
-      let $config = app.config.globalProperties.$config;
-      // 自动注入系统配置
-      if (app && $config && typeof config === "object") {
-        $config = Object.assign($config, config);
-        app.config.globalProperties.$config = $config;
-        // 设置全局配置
-        setConfig($config);
-      }
-      return $config;
-    })
-    .catch(() => {
-      throw "请在public文件夹下添加platform-config.json配置文件";
-    });
-};
-
-/** 本地响应式存储的命名空间 */
-const responsiveStorageNameSpace = () => getConfig().ResponsiveStorageNameSpace;
-
-export { getConfig, setConfig, responsiveStorageNameSpace };
+export const platformConfig = new PlatformConfig();

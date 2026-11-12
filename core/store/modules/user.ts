@@ -10,10 +10,7 @@ import {
 import { type UserResult, type RefreshTokenResult, userAPI } from "@bit-labs.cn/owl-ui/api/user";
 import { useMultiTagsStoreHook } from "./multiTags";
 import { removeDynamicRoutes } from "@bit-labs.cn/owl-ui/router/utils";
-import {
-  clearAsyncRouteCache,
-  clearCurrentSubApp
-} from "@bit-labs.cn/owl-ui/router/subAppPortal";
+import { subAppPortal } from "@bit-labs.cn/owl-ui/router/subAppPortal";
 import { type DataInfo, setToken, removeToken, userKey } from "@bit-labs.cn/owl-ui/utils/auth";
 
 const PERMISSIONS_CACHE_KEY = "user-permissions-cache";
@@ -208,8 +205,8 @@ export const useUserStore = defineStore({
       this.permissions = [];
       storageLocal().removeItem(PERMISSIONS_CACHE_KEY);
       storageLocal().removeItem(ACCESS_TOKEN_KEY);
-      clearCurrentSubApp();
-      clearAsyncRouteCache();
+      subAppPortal.clear();
+      subAppPortal.clearRouteCache();
       removeDynamicRoutes();
       removeToken();
       useMultiTagsStoreHook().handleTags("equal", [...routerArrays]);

@@ -1,11 +1,8 @@
 import { $t } from "@bit-labs.cn/owl-ui/core/utils/i18nKey";
-import {
-  layoutComponent,
-  routeComponent
-} from "@bit-labs.cn/owl-ui/core/ui-kit";
+import { uiKitRegistry } from "@bit-labs.cn/owl-ui/core/ui-kit";
 
 const { VITE_HIDE_HOME } = import.meta.env;
-const Layout = layoutComponent();
+const Layout = uiKitRegistry.layoutComponent();
 
 export default {
   path: "/",
@@ -21,7 +18,7 @@ export default {
     {
       path: "/welcome",
       name: "Welcome",
-      component: routeComponent("welcome"),
+      component: uiKitRegistry.routeComponent("welcome"),
       meta: {
         title: $t("menus.pureHome"),
         showLink: VITE_HIDE_HOME === "true" ? false : true

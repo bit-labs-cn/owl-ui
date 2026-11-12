@@ -2,10 +2,7 @@
 import Cookies from "js-cookie";
 import { siteTitle } from "@bit-labs.cn/owl-ui/config/siteBrand";
 import NProgress from "@bit-labs.cn/owl-ui/utils/progress";
-import {
-  routeComponent,
-  translate
-} from "@bit-labs.cn/owl-ui/core/ui-kit";
+import { uiKitRegistry } from "@bit-labs.cn/owl-ui/core/ui-kit";
 import { buildHierarchyTree } from "@bit-labs.cn/owl-ui/utils/tree";
 import remainingRouter from "./modules/remaining";
 import { useMultiTagsStoreHook } from "@bit-labs.cn/owl-ui/store/modules/multiTags";
@@ -30,14 +27,7 @@ import {
   formatTwoStageRoutes,
   formatFlatteningRoutes
 } from "./utils";
-import {
-  appFromLocationSearch,
-  clearCurrentSubApp,
-  getCurrentSubApp,
-  getSplitSubAppHome,
-  isSubAppPortalEnabled,
-  setCurrentSubApp
-} from "./subAppPortal";
+import { subAppPortal } from "./subAppPortal";
 import {
   type Router,
   createRouter,
@@ -129,8 +119,8 @@ router.beforeEach(async (to: ToRouteType, _from, next) => {
     to.matched.some(item => {
       if (!item.meta.title) return "";
       const Title = siteTitle();
-      if (Title) document.title = `${translate(item.meta.title)} | ${Title}`;
-      else document.title = translate(item.meta.title);
+      if (Title) document.title = `${uiKitRegistry.translate(item.meta.title)} | ${Title}`;
+      else document.title = uiKitRegistry.translate(item.meta.title);
     });
   }
   /** 如果已经登录并存在登录信息后不能跳转到路由白名单，而是继续保持在当前页面 */
@@ -139,11 +129,11 @@ router.beforeEach(async (to: ToRouteType, _from, next) => {
   }
   if (Cookies.get(multipleTabsKey) && userInfo) {
     await useUserStoreHook().ensurePermissionsFresh();
-    if (isSubAppPortalEnabled()) {
-      const appFromUrl = appFromLocationSearch();
-      if (appFromUrl) setCurrentSubApp(appFromUrl);
-      const home = getSplitSubAppHome();
-      const currentApp = getCurrentSubApp();
+    if (subAppPortal.isEnabled()) {
+      const appFromUrl = subAppPortal.readAppFromLocation();
+      if (appFromUrl) subAppPortal.select(appFromUrl);
+      const home = subAppPortal.home();
+      const currentApp = subAppPortal.current();
       // 登录后的跳转发生在路由注入之后，能直接匹配。
       // 刷新时若这次匹配还没带上首页，直接 next() 会停在空匹配上，界面空白。
       const enterPortalHome = () => {
@@ -183,7 +173,7 @@ router.beforeEach(async (to: ToRouteType, _from, next) => {
         return next();
       }
       if (to.path === home) {
-        clearCurrentSubApp();
+        subAppPortal.clear();
         removeDynamicRoutes();
         usePermissionStoreHook().clearDynamicMenus();
         useMultiTagsStoreHook().handleTags("equal", []);
@@ -214,7 +204,7 @@ router.beforeEach(async (to: ToRouteType, _from, next) => {
       ) {
         try {
           await initRouter(
-            isSubAppPortalEnabled() ? getCurrentSubApp() : undefined
+            subAppPortal.isEnabled() ? subAppPortal.current() : undefined
           );
         } catch (error: any) {
           if (error?.response?.status === 401) {
@@ -281,7 +271,7 @@ router.afterEach(() => {
 });
 
 // ─── 子系统路由注入 ───
-import { getSubsystemRoutes } from "@bit-labs.cn/owl-ui/subsystem/registry";
+import { subsystemRegistry } from "@bit-labs.cn/owl-ui/subsystem/registry";
 
 /** 注册子系统切换页。component 缺省时使用提示页。 */
 export function installSubAppPortalRoute(component?: RouteComponent) {
@@ -291,7 +281,7 @@ export function installSubAppPortalRoute(component?: RouteComponent) {
   router.addRoute({
     path: "/apps",
     name: "SubAppPortal",
-    component: component ?? routeComponent("portal"),
+    component: component ?? uiKitRegistry.routeComponent("portal"),
     meta: {
       title: "子系统",
       showLink: false,
@@ -302,14 +292,14 @@ export function installSubAppPortalRoute(component?: RouteComponent) {
 
 /**
  * 将已注册子系统的静态路由注入到 router 实例和菜单数据中。
- * 必须在 `registerSubsystems()` 之后、`router.isReady()` 之前调用。
+ * 必须在 `subsystemRegistry.register()` 之后、`router.isReady()` 之前调用。
  *
  * 处理逻辑与框架 handleAsyncRoutes 保持一致：
  *   1. 保持原始层级合并到 constantMenus（供侧边栏菜单渲染）
  *   2. 拍平为一维后逐条注入 "/" 根路由的 children（供 vue-router 匹配）
  */
 export function applySubsystemRoutes() {
-  const subsystemRoutes = getSubsystemRoutes();
+  const subsystemRoutes = subsystemRegistry.routes();
   if (!subsystemRoutes.length) return;
 
   const allRoutes = ascending(subsystemRoutes.flat(Infinity));

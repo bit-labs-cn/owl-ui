@@ -9,17 +9,12 @@ export type { FlexAdminOptions, SplitSubAppOptions } from "./bootstrap";
 
 // ─── UI 套件注册 ───
 export {
-  registerUiKit,
-  getUiKit,
-  isUiKitRegistered,
-  layoutComponent,
-  routeComponent,
-  translate
+  uiKitRegistry
 } from "./ui-kit";
 export type { OwlUiKit, OwlCoreViews, OwlViewLoader } from "./ui-kit";
 
 // ─── 子系统 ───
-export { defineSubsystem } from "./subsystem";
+export { subsystemRegistry, defineSubsystem } from "./subsystem";
 export type {
   SubsystemDefinition,
   SubsystemMenuContribution,
@@ -59,12 +54,7 @@ export { useEpThemeStoreHook } from "./store/modules/epTheme";
 export { useSettingStoreHook } from "./store/modules/settings";
 
 // ─── 配置 ───
-export {
-  getConfig,
-  setConfig,
-  getPlatformConfig,
-  responsiveStorageNameSpace
-} from "./config";
+export { platformConfig } from "./config";
 export { loadPublicSettings } from "./config/loadPublicSettings";
 
 // ─── HTTP 与鉴权 ───

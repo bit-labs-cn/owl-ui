@@ -1,11 +1,5 @@
-export {
-  registerSubsystems,
-  getSubsystems,
-  getSubsystemRoutes,
-  getExtraViewModules,
-  getSubsystemMenuContributions,
-  getLoginCustomization
-} from "./registry";
+export { subsystemRegistry } from "./registry";
+export type { SubsystemRegistry } from "./registry";
 export type {
   SubsystemDefinition,
   SubsystemMenuContribution,
@@ -14,7 +8,7 @@ export type {
 
 import type { SubsystemDefinition } from "./types";
 
-/** 定义一个子系统（提供类型推导和标准化入口） */
+/** 定义一个子系统，方便类型推导。本身不保存状态。 */
 export function defineSubsystem(
   definition: SubsystemDefinition
 ): SubsystemDefinition {

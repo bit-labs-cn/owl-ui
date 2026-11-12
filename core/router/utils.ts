@@ -16,7 +16,7 @@ import {
   storageLocal,
   isIncludeAllChildren
 } from "@pureadmin/utils";
-import { getConfig } from "@bit-labs.cn/owl-ui/config";
+import { platformConfig } from "@bit-labs.cn/owl-ui/config";
 import {
   buildHierarchyTree,
   handleTree
@@ -26,28 +26,18 @@ import { type menuType, routerArrays } from "@bit-labs.cn/owl-ui/layout/types";
 import { useMultiTagsStoreHook } from "@bit-labs.cn/owl-ui/store/modules/multiTags";
 import { usePermissionStoreHook } from "@bit-labs.cn/owl-ui/store/modules/permission";
 import type { SubsystemMenuContribution } from "@bit-labs.cn/owl-ui/subsystem/types";
-import {
-  asyncRoutesCacheKey,
-  clearCurrentSubApp,
-  getSplitSubAppHome,
-  isSubAppPortalEnabled,
-  normalizeAppParam,
-  setCurrentSubApp
-} from "./subAppPortal";
-import { routeComponent } from "@bit-labs.cn/owl-ui/core/ui-kit";
+import { subAppPortal } from "./subAppPortal";
+import { uiKitRegistry } from "@bit-labs.cn/owl-ui/core/ui-kit";
 
-const IFrame = routeComponent("frame");
+const IFrame = uiKitRegistry.routeComponent("frame");
 // https://cn.vitejs.dev/guide/features.html#glob-import
 const coreViewModules = import.meta.glob("/src/views/**/*.{vue,tsx}");
 
-import {
-  getExtraViewModules,
-  getSubsystemMenuContributions
-} from "@bit-labs.cn/owl-ui/subsystem/registry";
+import { subsystemRegistry } from "@bit-labs.cn/owl-ui/subsystem/registry";
 
 /** 合并框架核心视图 + 子系统视图模块（供动态路由匹配组件） */
 function getModulesRoutes(): Record<string, () => Promise<any>> {
-  return { ...coreViewModules, ...getExtraViewModules() };
+  return { ...coreViewModules, ...subsystemRegistry.viewModules() };
 }
 
 // 动态路由
@@ -316,7 +306,7 @@ function handleAsyncRoutes(routeList, options?: { menusOnly?: boolean }) {
   }
   const mergedRouteList = mergeMenuContributionsByName(
     baseForMerge,
-    getSubsystemMenuContributions()
+    subsystemRegistry.contributions()
   );
 
   if (mergedRouteList.length === 0) {
@@ -412,13 +402,13 @@ function handleAsyncRoutes(routeList, options?: { menusOnly?: boolean }) {
 
 /** 初始化路由（`new Promise` 写法防止在异步请求中造成无限循环）*/
 function initRouter(subApp?: string) {
-  const app = isSubAppPortalEnabled() && subApp ? subApp : undefined;
+  const app = subAppPortal.isEnabled() && subApp ? subApp : undefined;
   const menusOnly = Boolean(app);
-  const key = asyncRoutesCacheKey(app);
+  const key = subAppPortal.routeCacheKey(app);
   const apply = (data: unknown) => {
     handleAsyncRoutes(cloneDeep(data), { menusOnly });
   };
-  if (getConfig()?.CachingAsyncRoutes) {
+  if (platformConfig.get()?.CachingAsyncRoutes) {
     // 开启动态路由缓存本地localStorage
     const asyncRouteList = storageLocal().getItem(key) as any;
     if (asyncRouteList && asyncRouteList?.length > 0) {
@@ -505,9 +495,9 @@ function firstEnteredMenu(menus: any[]) {
 
 /** 进入一个或多个子系统。app 例："user,sms" 或 ["user", "sms"]。 */
 export async function enterSubApp(app: string | string[]) {
-  const name = normalizeAppParam(app);
+  const name = subAppPortal.normalizeParameter(app);
   if (!name) return;
-  setCurrentSubApp(name);
+  subAppPortal.select(name);
   useMultiTagsStoreHook().handleTags("equal", []);
   await initRouter(name);
   const topMenu = firstEnteredMenu(usePermissionStoreHook().wholeMenus ?? []);
@@ -531,11 +521,11 @@ export async function enterSubApp(app: string | string[]) {
 
 /** 回到门户，卸掉当前子系统的动态路由和标签。 */
 export async function leaveSubApp() {
-  clearCurrentSubApp();
+  subAppPortal.clear();
   removeDynamicRoutes();
   usePermissionStoreHook().clearDynamicMenus();
   useMultiTagsStoreHook().handleTags("equal", []);
-  await router.replace(getSplitSubAppHome());
+  await router.replace(subAppPortal.home());
 }
 
 /**

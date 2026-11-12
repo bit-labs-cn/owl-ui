@@ -1,9 +1,8 @@
 import { defineStore } from "pinia";
 import {
   store,
-  getConfig,
-  storageLocal,
-  responsiveStorageNameSpace
+  platformConfig,
+  storageLocal
 } from "../utils";
 import { resolveLayoutTheme } from "@bit-labs.cn/owl-ui/layout/utils/resolveLayoutTheme";
 
@@ -12,12 +11,12 @@ export const useEpThemeStore = defineStore({
   state: () => ({
     epThemeColor:
       storageLocal().getItem<StorageConfigs>(
-        `${responsiveStorageNameSpace()}layout`
-      )?.epThemeColor ?? getConfig().EpThemeColor,
+        `${platformConfig.storageNamespace()}layout`
+      )?.epThemeColor ?? platformConfig.get().EpThemeColor,
     epTheme: resolveLayoutTheme(
       storageLocal().getItem<StorageConfigs>(
-        `${responsiveStorageNameSpace()}layout`
-      )?.theme ?? getConfig().Theme ?? "clean"
+        `${platformConfig.storageNamespace()}layout`
+      )?.theme ?? platformConfig.get().Theme ?? "clean"
     )
   }),
   getters: {
@@ -36,13 +35,13 @@ export const useEpThemeStore = defineStore({
   actions: {
     setEpThemeColor(newColor: string): void {
       const layout = storageLocal().getItem<StorageConfigs>(
-        `${responsiveStorageNameSpace()}layout`
+        `${platformConfig.storageNamespace()}layout`
       );
       this.epTheme = layout?.theme;
       this.epThemeColor = newColor;
       if (!layout) return;
       layout.epThemeColor = newColor;
-      storageLocal().setItem(`${responsiveStorageNameSpace()}layout`, layout);
+      storageLocal().setItem(`${platformConfig.storageNamespace()}layout`, layout);
     }
   }
 });

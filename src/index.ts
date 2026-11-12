@@ -72,7 +72,7 @@ export {
 export { Auth } from "../theme/shared/components/ReAuth";
 export { OwlLoading } from "../theme/shared/components/OwlLoading";
 export { Perms } from "../theme/shared/components/RePerms";
-export { ReDialog, addDialog, closeDialog, updateDialog } from "../theme/shared/components/ReDialog";
+export { ReDialog, dialogService } from "../theme/shared/components/ReDialog";
 export {
   IconifyIconOffline,
   IconifyIconOnline,
@@ -85,9 +85,7 @@ export { default as Layout } from "../theme/default/layout/index.vue";
 
 // ─── 核心层 UI 适配 ───
 export {
-  registerUiKit,
-  getUiKit,
-  isUiKitRegistered
+  uiKitRegistry
 } from "@bit-labs.cn/owl-ui/core/ui-kit";
 export type { OwlUiKit, OwlCoreViews } from "@bit-labs.cn/owl-ui/core/ui-kit";
 
@@ -99,14 +97,7 @@ export type {
 } from "@bit-labs.cn/owl-ui/core/api/commonType";
 
 // ─── 配置 ───
-export {
-  getConfig,
-  getPlatformConfig,
-  responsiveStorageNameSpace
-} from "@bit-labs.cn/owl-ui/core/config";
+export { platformConfig } from "@bit-labs.cn/owl-ui/core/config";
 
 export type { SubAppEntry } from "@bit-labs.cn/owl-ui/core/router/subAppPortal";
-export {
-  groupSubAppEntries,
-  isSubAppPortalEnabled
-} from "@bit-labs.cn/owl-ui/core/router/subAppPortal";
+export { subAppPortal } from "@bit-labs.cn/owl-ui/core/router/subAppPortal";
