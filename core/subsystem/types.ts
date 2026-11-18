@@ -1,4 +1,15 @@
-import type { App } from "vue";
+import type { App, Component } from "vue";
+
+/** 顶栏右侧三个图标位，从左到右。未登记的位置不占宽度。 */
+export type LayoutHeaderSlotName = "header1" | "header2" | "header3";
+
+export interface SubsystemLayoutSlots {
+  header1?: Component;
+  header2?: Component;
+  header3?: Component;
+  /** 导航和页签之间的全宽横幅。内容为空时不占高度。 */
+  banner?: Component;
+}
 
 export interface SubsystemMenuContribution {
   /** 目标父菜单路由 name（按该值定位挂载点） */
@@ -68,6 +79,13 @@ export interface SubsystemDefinition {
    * 子系统未填写的字段会回退到 owl-ui 内置默认素材。
    */
   login?: SubsystemLoginCustomization;
+  /**
+   * 顶栏右侧扩展插槽，位于语言切换和用户菜单之间。
+   * `header1` 最靠左（原全屏位置），`header2` 居中（原通知铃铛位置），`header3` 最靠右。
+   * `banner` 在文档流里占住窗口最顶部，把下面的整块布局往下顶，不悬浮覆盖。
+   * 多个子系统登记同一位置时，后登记的覆盖先登记的。未登记的位置不渲染。
+   */
+  layoutSlots?: SubsystemLayoutSlots;
   /** 安装钩子：可注册子系统专属的全局组件、指令、插件等。引导过程会等待返回的 Promise。 */
   install?: (app: App) => void | Promise<void>;
 }

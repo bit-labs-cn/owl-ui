@@ -1,15 +1,13 @@
 <script setup lang="ts">
 import { useNav } from "@bit-labs.cn/owl-ui/layout/hooks/useNav";
 import LaySearch from "../lay-search/index.vue";
-import LayNotice from "../lay-notice/index.vue";
+import LayHeaderSlots from "../lay-header-slots/index.vue";
 import LayNavMix from "../lay-sidebar/NavMix.vue";
 import { useTranslationLang } from "@bit-labs.cn/owl-ui/layout/hooks/useTranslationLang";
-import LaySidebarFullScreen from "../lay-sidebar/components/SidebarFullScreen.vue";
 import LaySidebarBreadCrumb from "../lay-sidebar/components/SidebarBreadCrumb.vue";
 import LaySidebarTopCollapse from "../lay-sidebar/components/SidebarTopCollapse.vue";
 
 import GlobalizationIcon from "@bit-labs.cn/owl-ui/assets/svg/globalization.svg?component";
-import AccountSettingsIcon from "@iconify-icons/ri/user-settings-line";
 import LogoutCircleRLine from "@iconify-icons/ri/logout-circle-r-line";
 import Setting from "@iconify-icons/ri/settings-3-line";
 import Check from "@iconify-icons/ep/check";
@@ -84,10 +82,7 @@ const { t, locale, translationCh, translationEn } = useTranslationLang();
           </el-dropdown-menu>
         </template>
       </el-dropdown>
-      <!-- 全屏 -->
-      <LaySidebarFullScreen id="full-screen" />
-      <!-- 消息通知 -->
-      <LayNotice id="header-notice" />
+      <LayHeaderSlots />
       <!-- 退出登录 -->
       <el-dropdown trigger="click">
         <span class="el-dropdown-link navbar-bg-hover select-none">

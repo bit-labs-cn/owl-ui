@@ -6,8 +6,10 @@
 export { defineSubsystem } from "@bit-labs.cn/owl-ui/core/subsystem";
 export type {
   SubsystemDefinition,
+  SubsystemLayoutSlots,
   SubsystemMenuContribution,
-  SubsystemLoginCustomization
+  SubsystemLoginCustomization,
+  LayoutHeaderSlotName
 } from "@bit-labs.cn/owl-ui/core/subsystem";
 
 // ─── 路由工具 ───

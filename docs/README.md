@@ -22,7 +22,7 @@
 | 术语 | 含义 |
 | --- | --- |
 | **宿主应用** | 调用 `createFlexAdmin()` 的独立 SPA 项目，负责提供 `platform-config.json` 与入口 HTML |
-| **子系统** | 通过 `defineSubsystem()` 定义、在 `createFlexAdmin({ subsystems })` 中注册的扩展包，可提供 routes、viewModules、menuContributions |
+| **子系统** | 通过 `defineSubsystem()` 定义、在 `createFlexAdmin({ subsystems })` 中注册的扩展包，可提供 routes、viewModules、menuContributions、layoutSlots |
 | **viewModules** | 视图模块映射（如 `import.meta.glob` 结果），键名经 prefix 替换后用于动态路由组件解析 |
 | **Core 核心层** | `core/`，纯 TypeScript 逻辑（路由、状态、权限、HTTP、配置、子系统、启动流程），不引用组件与样式 |
 | **Theme 皮肤层** | `theme/default/`，默认后台皮肤，含布局、页面、样式；`theme/shared/` 放跨皮肤共用的组件、指令与插件 |

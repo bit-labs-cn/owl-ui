@@ -33,8 +33,7 @@
     }
   }
 
-  .set-icon,
-  .fullscreen-icon {
+  .set-icon {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -45,7 +44,7 @@
 
   .main-container {
     position: relative;
-    height: 100vh;
+    height: 100%;
     min-height: 100%;
     margin-left: $sideBarWidth;
     background: var(--owl-content-bg, #f8fafc);
@@ -442,8 +441,6 @@
       .search-container,
       /* 国际化 */
       .globalization,
-      /* 全屏 */
-      .fullscreen-icon,
       /* 消息通知 */
       .dropdown-badge,
       /* 用户名 */
@@ -502,8 +499,7 @@
         }
       }
 
-      .set-icon,
-      .fullscreen-icon {
+      .set-icon {
         height: var(--owl-header-height);
       }
     }
@@ -646,8 +642,6 @@ body[layout="vertical"] {
   .search-container,
   /* 国际化 */
   .globalization,
-  /* 全屏 */
-  .fullscreen-icon,
   /* 消息通知 */
   .dropdown-badge,
   /* 用户名 */

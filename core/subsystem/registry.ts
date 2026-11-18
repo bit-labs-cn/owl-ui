@@ -1,5 +1,6 @@
 import type {
   SubsystemDefinition,
+  SubsystemLayoutSlots,
   SubsystemLoginCustomization,
   SubsystemMenuContribution
 } from "./types";
@@ -10,6 +11,7 @@ export class SubsystemRegistry {
   private readonly extraViewModules: Record<string, () => Promise<any>> = {};
   private readonly menuContributions: SubsystemMenuContribution[] = [];
   private loginCustomization: SubsystemLoginCustomization | null = null;
+  private headerSlots: SubsystemLayoutSlots = {};
 
   /** 在创建路由之前登记。后登记的登录页字段覆盖先登记的。 */
   register(subsystems: SubsystemDefinition[]): void {
@@ -31,6 +33,12 @@ export class SubsystemRegistry {
         this.loginCustomization = {
           ...(this.loginCustomization ?? {}),
           ...subsystem.login
+        };
+      }
+      if (subsystem.layoutSlots) {
+        this.headerSlots = {
+          ...this.headerSlots,
+          ...subsystem.layoutSlots
         };
       }
     });
@@ -55,6 +63,11 @@ export class SubsystemRegistry {
   /** 没有任何子系统声明登录页时返回 null。 */
   login(): SubsystemLoginCustomization | null {
     return this.loginCustomization;
+  }
+
+  /** 顶栏三个扩展位。同一位置后登记的子系统覆盖先登记的。 */
+  layoutSlots(): SubsystemLayoutSlots {
+    return this.headerSlots;
   }
 }
 

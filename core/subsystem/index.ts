@@ -2,8 +2,10 @@ export { subsystemRegistry } from "./registry";
 export type { SubsystemRegistry } from "./registry";
 export type {
   SubsystemDefinition,
+  SubsystemLayoutSlots,
   SubsystemMenuContribution,
-  SubsystemLoginCustomization
+  SubsystemLoginCustomization,
+  LayoutHeaderSlotName
 } from "./types";
 
 import type { SubsystemDefinition } from "./types";

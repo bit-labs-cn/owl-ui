@@ -3,14 +3,13 @@ import { isAllEmpty } from "@pureadmin/utils";
 import { useNav } from "@bit-labs.cn/owl-ui/layout/hooks/useNav";
 import { transformI18n } from "@bit-labs.cn/owl-ui/plugins/i18n";
 import LaySearch from "../lay-search/index.vue";
-import LayNotice from "../lay-notice/index.vue";
+import LayHeaderSlots from "../lay-header-slots/index.vue";
 import { ref, toRaw, watch, onMounted, nextTick } from "vue";
 import { useRenderIcon } from "@bit-labs.cn/owl-ui/components/ReIcon/src/hooks";
 import { getParentPaths, findRouteByPath } from "@bit-labs.cn/owl-ui/router/utils";
 import { useTranslationLang } from "../../hooks/useTranslationLang";
 import { usePermissionStoreHook } from "@bit-labs.cn/owl-ui/store/modules/permission";
 import LaySidebarExtraIcon from "../lay-sidebar/components/SidebarExtraIcon.vue";
-import LaySidebarFullScreen from "../lay-sidebar/components/SidebarFullScreen.vue";
 
 import GlobalizationIcon from "@bit-labs.cn/owl-ui/assets/svg/globalization.svg?component";
 import AccountSettingsIcon from "@iconify-icons/ri/user-settings-line";
@@ -133,10 +132,7 @@ watch(
           </el-dropdown-menu>
         </template>
       </el-dropdown>
-      <!-- 全屏 -->
-      <LaySidebarFullScreen id="full-screen" />
-      <!-- 消息通知 -->
-      <LayNotice id="header-notice" />
+      <LayHeaderSlots />
       <!-- 退出登录 -->
       <el-dropdown trigger="click">
         <span class="el-dropdown-link navbar-bg-hover select-none">

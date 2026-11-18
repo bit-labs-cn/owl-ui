@@ -17,8 +17,10 @@ export type { OwlUiKit, OwlCoreViews, OwlViewLoader } from "./ui-kit";
 export { subsystemRegistry, defineSubsystem } from "./subsystem";
 export type {
   SubsystemDefinition,
+  SubsystemLayoutSlots,
   SubsystemMenuContribution,
-  SubsystemLoginCustomization
+  SubsystemLoginCustomization,
+  LayoutHeaderSlotName
 } from "./subsystem";
 
 // ─── 路由 ───

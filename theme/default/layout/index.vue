@@ -29,6 +29,7 @@ import {
 } from "@pureadmin/utils";
 
 import LayTag from "./components/lay-tag/index.vue";
+import LayBanner from "./components/lay-banner/index.vue";
 import LayNavbar from "./components/lay-navbar/index.vue";
 import LayContent from "./components/lay-content/index.vue";
 import LaySetting from "./components/lay-setting/index.vue";
@@ -173,6 +174,8 @@ const LayHeader = defineComponent({
     :class="['app-wrapper', set.classes]"
     :style="{ '--owl-header-height': `${headerHeight}px` }"
   >
+    <LayBanner />
+    <div class="app-frame">
     <div
       v-show="
         set.device === 'mobile' &&
@@ -194,12 +197,12 @@ const LayHeader = defineComponent({
         pureSetting.hiddenSideBar ? 'main-hidden' : ''
       ]"
     >
-      <div v-if="set.fixedHeader">
+      <div v-if="set.fixedHeader" class="layout-body">
         <LayHeader />
         <!-- 主体内容 -->
         <LayContent :fixed-header="set.fixedHeader" />
       </div>
-      <el-scrollbar v-else>
+      <el-scrollbar v-else class="layout-body">
         <el-backtop
           :title="t('buttons.pureBackTop')"
           target=".main-container .el-scrollbar__wrap"
@@ -213,14 +216,18 @@ const LayHeader = defineComponent({
     </div>
     <!-- 系统设置 -->
     <LaySetting />
+    </div>
   </div>
 </template>
 
 <style lang="scss" scoped>
 .app-wrapper {
   position: relative;
+  display: flex;
+  flex-direction: column;
   width: 100%;
   height: 100%;
+  overflow: hidden;
 
   &::after {
     display: table;
@@ -232,6 +239,18 @@ const LayHeader = defineComponent({
     position: fixed;
     top: 0;
   }
+}
+
+.app-frame {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  transform: translateZ(0);
+}
+
+.layout-body {
+  height: 100%;
 }
 
 .app-mask {

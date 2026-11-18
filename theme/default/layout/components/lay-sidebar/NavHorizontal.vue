@@ -2,14 +2,13 @@
 import { emitter } from "@bit-labs.cn/owl-ui/utils/mitt";
 import { useNav } from "@bit-labs.cn/owl-ui/layout/hooks/useNav";
 import LaySearch from "../lay-search/index.vue";
-import LayNotice from "../lay-notice/index.vue";
+import LayHeaderSlots from "../lay-header-slots/index.vue";
 import { platformConfig } from "@bit-labs.cn/owl-ui/config";
 import { ref, nextTick, computed, onMounted } from "vue";
 import { storageLocal, isAllEmpty } from "@pureadmin/utils";
 import { useTranslationLang } from "../../hooks/useTranslationLang";
 import { usePermissionStoreHook } from "@bit-labs.cn/owl-ui/store/modules/permission";
 import LaySidebarItem from "../lay-sidebar/components/SidebarItem.vue";
-import LaySidebarFullScreen from "../lay-sidebar/components/SidebarFullScreen.vue";
 
 import GlobalizationIcon from "@bit-labs.cn/owl-ui/assets/svg/globalization.svg?component";
 import AccountSettingsIcon from "@iconify-icons/ri/user-settings-line";
@@ -112,10 +111,7 @@ onMounted(() => {
           </el-dropdown-menu>
         </template>
       </el-dropdown>
-      <!-- 全屏 -->
-      <LaySidebarFullScreen id="full-screen" />
-      <!-- 消息通知 -->
-      <LayNotice id="header-notice" />
+      <LayHeaderSlots />
       <!-- 退出登录 -->
       <el-dropdown trigger="click">
         <span class="el-dropdown-link navbar-bg-hover">
